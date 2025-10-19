@@ -1,0 +1,22 @@
+<div class="notifications-container">
+  @for (notification of notifications; track notification.id) {
+  <div #notificationElement
+       class="notification"
+       [ngClass]="'notification--' + notification.type">
+    <div class="notification-icon">
+      <ng-icon [name]="getNotificationIcon(notification.type)" size="20"></ng-icon>
+    </div>
+
+    <div class="notification-content">
+      <div class="notification-title">{{ notification.title }}</div>
+      <div class="notification-message">{{ notification.message }}</div>
+    </div>
+
+    <button class="notification-close"
+            (click)="removeNotification(notification.id)"
+            aria-label="Fechar notificação">
+      <ng-icon name="heroXMark" size="16"></ng-icon>
+    </button>
+  </div>
+  }
+</div>

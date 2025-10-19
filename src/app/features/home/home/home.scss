@@ -1,0 +1,25 @@
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+
+  // Espaçamento entre as seções
+  app-hero {
+    margin-bottom: 0;
+  }
+
+  app-featured-products {
+    flex: 1;
+  }
+}
+
+// Garantir que o layout seja fluido
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: hidden; // Previne barra de rolagem horizontal
+}

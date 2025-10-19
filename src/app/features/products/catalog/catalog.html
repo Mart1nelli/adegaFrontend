@@ -1,0 +1,159 @@
+<div class="catalog-container">
+  <!-- Background Effects -->
+  <div class="background-effects">
+    <div class="effect-circle effect-1"></div>
+    <div class="effect-circle effect-2"></div>
+    <div class="effect-circle effect-3"></div>
+  </div>
+
+  <div class="catalog-header">
+    <div class="header-content">
+      <h1>
+        <ng-icon name="lucideWine" size="32"></ng-icon>
+        Catálogo de Produtos
+      </h1>
+      <p>Explore nossa seleção premium de bebidas e vinhos</p>
+      <div class="header-decoration">
+        <div class="decoration-line"></div>
+        <div class="decoration-badge">
+          <ng-icon name="heroSparkles" size="16"></ng-icon>
+          Destaques
+        </div>
+        <div class="decoration-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-card">
+      <div class="search-bar">
+        <div class="search-container">
+          <ng-icon name="heroMagnifyingGlass" size="18" class="search-icon"></ng-icon>
+          <input type="text"
+                 placeholder="Buscar produtos..."
+                 [(ngModel)]="searchTerm"
+                 (input)="onSearchChange()"
+                 class="search-input">
+          <button class="clear-search-btn" (click)="clearSearch()" *ngIf="searchTerm">
+            <ng-icon name="heroXMark" size="16"></ng-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="category-select" class="filter-label">
+            <ng-icon name="heroTag" size="14" class="filter-icon"></ng-icon>
+            Categoria
+          </label>
+          <select id="category-select" [(ngModel)]="selectedCategory" (change)="onFiltersChange()" class="category-filter">
+            <option value="">Todas as categorias</option>
+            <option *ngFor="let category of availableCategories()" [value]="category">{{ category }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="price-filter">
+            <input type="number" placeholder="Preço mínimo" [(ngModel)]="minPrice" (input)="onFiltersChange()" class="price-input">
+            <span class="price-separator">até</span>
+            <input type="number" placeholder="Preço máximo" [(ngModel)]="maxPrice" (input)="onFiltersChange()" class="price-input">
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button (click)="clearFilters()" class="clear-filters-btn">
+            <ng-icon name="heroArrowPath" size="16"></ng-icon>
+            <span>Limpar Filtros</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Carregando produtos...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+  <div class="error-container">
+    <div class="error-message">
+      <h3>Ops! Algo deu errado</h3>
+      <p>{{ errorMessage() }}</p>
+      <button (click)="loadProducts()" class="retry-button">
+        Tentar Novamente
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Products Grid -->
+  @if (!isLoading() && !errorMessage()) {
+  <div class="products-grid">
+    @if (products().length === 0) {
+    <div class="empty-state">
+      <h3>Nenhum produto encontrado</h3>
+      <p>Não há produtos disponíveis no momento.</p>
+    </div>
+    }
+
+    @for (product of products(); track product.id) {
+    <app-product-card
+      [product]="product"
+      (addToCart)="onAddToCart($event)">
+    </app-product-card>
+    }
+  </div>
+  }
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+  <div class="pagination">
+    <button class="page-btn"
+            [disabled]="currentPage() === 1"
+            (click)="goToPage(1)">
+      ≪
+    </button>
+    <button class="page-btn"
+            [disabled]="currentPage() === 1"
+            (click)="previousPage()">
+      ‹
+    </button>
+
+    @for (page of getPagesArray(); track page) {
+    @if (page === -1) {
+    <span class="ellipsis">…</span>
+    } @else {
+    <button class="page-btn"
+            [class.active]="page === currentPage()"
+            (click)="goToPage(page)">
+      {{ page }}
+    </button>
+    }
+    }
+
+    <button class="page-btn"
+            [disabled]="currentPage() === totalPages()"
+            (click)="nextPage()">
+      ›
+    </button>
+    <button class="page-btn"
+            [disabled]="currentPage() === totalPages()"
+            (click)="goToPage(totalPages())">
+      ≫
+    </button>
+  </div>
+  }
+
+  <!-- Results info -->
+  @if (!isLoading() && !errorMessage()) {
+  <div class="results-info">
+    <p>Mostrando {{ products().length }} de {{ totalItems() }} produtos</p>
+  </div>
+  }
+</div>

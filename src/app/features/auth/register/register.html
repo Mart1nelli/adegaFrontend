@@ -1,0 +1,87 @@
+<div class="register-container">
+  <div class="register-card">
+    <h1>Cadastrar-se na Adega do Pai</h1>
+
+    <form (ngSubmit)="onSubmit()" class="register-form">
+
+      <!-- Campo Nome -->
+      <div class="form-group">
+        <label for="name">Nome completo:</label>
+        <div class="input-container">
+          <ng-icon name="heroUser" size="18" class="input-icon"></ng-icon>
+          <input
+            id="name"
+            type="text"
+            [(ngModel)]="registerData().name"
+            name="name"
+            placeholder="Seu nome completo"
+            required>
+        </div>
+      </div>
+
+      <!-- Campo Email -->
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <div class="input-container">
+          <ng-icon name="heroEnvelope" size="18" class="input-icon"></ng-icon>
+          <input
+            id="email"
+            type="email"
+            [(ngModel)]="registerData().email"
+            name="email"
+            placeholder="seu@email.com"
+            required>
+        </div>
+      </div>
+
+      <!-- Campo Senha -->
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <div class="input-container">
+          <ng-icon name="heroLockClosed" size="18" class="input-icon"></ng-icon>
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="registerData().password"
+            name="password"
+            placeholder="Crie uma senha forte"
+            required>
+        </div>
+      </div>
+
+      <!-- Campo Telefone (opcional) -->
+      <div class="form-group">
+        <label for="phone">Telefone (opcional):</label>
+        <div class="input-container">
+          <ng-icon name="heroDevicePhoneMobile" size="18" class="input-icon"></ng-icon>
+          <input
+            id="phone"
+            type="tel"
+            [(ngModel)]="registerData().phone"
+            name="phone"
+            placeholder="(11) 99999-9999">
+        </div>
+      </div>
+
+      <!-- Mensagem de erro -->
+      <div *ngIf="errorMessage()" class="error-message">
+        {{ errorMessage() }}
+      </div>
+
+      <!-- Botão -->
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        class="register-button">
+        <span *ngIf="isLoading()">Cadastrando...</span>
+        <span *ngIf="!isLoading()">Cadastrar-se</span>
+      </button>
+    </form>
+
+    <!-- Link para login -->
+    <p class="login-link">
+      Já tem conta?
+      <a routerLink="/auth/login">Fazer login</a>
+    </p>
+  </div>
+</div>

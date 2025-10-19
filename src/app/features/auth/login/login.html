@@ -1,0 +1,57 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>Entrar na Adega do Pai</h1>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <div class="input-container">
+          <ng-icon name="heroEnvelope" size="18" class="input-icon"></ng-icon>
+          <input 
+          type="email"
+          id ="email"
+          [(ngModel)]="loginData().email"
+          name="email"
+          placeholder="seu@email.com"
+          required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <div class="input-container">
+          <ng-icon name="heroLockClosed" size="18" class="input-icon"></ng-icon>
+          <input type="password"
+          id="password"
+          [(ngModel)]="loginData().password"
+          name="password"
+          placeholder="Sua senha"
+          required>
+        </div>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-message">{{ errorMessage() }}</div>
+      }
+      
+      <button
+      type="submit"
+      [disabled]="isLoading()"
+      class="login-button">
+        @if (isLoading()) {
+          <span>Entrando...</span>
+        }
+    
+        @if (!isLoading()) {
+          <span>Entrar</span>
+        }
+      </button>
+    </form>
+
+    <p class="register-link">
+      Não tem conta?
+      <a routerLink="/auth/register">Cadastrar-se</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<div class="product-card">
+  <!-- Product Image Section -->
+  <div class="product-image-container">
+    <div class="product-image">
+      <img
+        [src]="product().imageUrl || '/assets/images/placeholder.png'"
+        [alt]="product().name"
+        loading="lazy">
+
+      <!-- Overlay com gradiente temático -->
+      <div class="image-overlay"></div>
+
+      <!-- Badges -->
+      <div class="product-badges">
+        @if (product().stock === 0) {
+          <span class="badge badge-out-of-stock">
+            <ng-icon name="heroExclamationTriangle" size="16" class="badge-icon"></ng-icon>
+            Esgotado
+          </span>
+        } @else if (product().stock < 10) {
+          <span class="badge badge-low-stock">
+            <ng-icon name="heroBolt" size="16" class="badge-icon"></ng-icon>
+            Últimas unidades
+          </span>
+        } @else {
+          <span class="badge badge-in-stock">
+            <ng-icon name="heroCheckCircle" size="16" class="badge-icon"></ng-icon>
+            Em estoque
+          </span>
+        }
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button
+          class="quick-action-btn"
+          (click)="onViewDetails()"
+          aria-label="Ver detalhes do produto">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Info Section -->
+  <div class="product-info">
+    <!-- Category Badge -->
+    @if (product().category) {
+      <div class="category-badge">
+        <ng-icon name="heroTag" size="12" class="category-icon"></ng-icon>
+        {{ getCategoryName() }}
+      </div>
+    }
+
+    <!-- Product Name -->
+    <h3 class="product-name">
+      <button (click)="onViewDetails()" class="product-link" type="button">
+        {{ product().name }}
+      </button>
+    </h3>
+
+    <!-- Product Description -->
+    <p class="product-description">
+      {{ product().description }}
+    </p>
+
+    <!-- Price Section -->
+    <div class="price-section">
+      <div class="price-container">
+        <span class="product-price">
+          R$ {{ product().price | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Stock Info -->
+    <div class="stock-info" [class.low-stock]="product().stock < 10">
+      @if (product().stock > 0) {
+        <div class="stock-indicator">
+          <div class="stock-dot"></div>
+          <span class="stock-text">
+            {{ product().stock }} unidade{{ product().stock > 1 ? 's' : '' }} disponível{{ product().stock > 1 ? 'is' : '' }}
+          </span>
+        </div>
+      } @else {
+        <div class="stock-indicator out-of-stock">
+          <div class="stock-dot"></div>
+          <span class="stock-text">Produto esgotado</span>
+        </div>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="product-actions">
+      <button
+        class="btn btn-secondary btn-full"
+        [disabled]="product().stock === 0"
+        (click)="onAddToCart()">
+        @if (product().stock > 0) {
+          <span class="btn-content">
+            <ng-icon name="heroShoppingBag" size="16" class="btn-icon"></ng-icon>
+            Adicionar ao Carrinho
+          </span>
+        } @else {
+          <span class="btn-content">
+            <ng-icon name="heroShoppingBag" size="16" class="btn-icon"></ng-icon>
+            Avise-me quando chegar
+          </span>
+        }
+      </button>
+    </div>
+  </div>
+</div>

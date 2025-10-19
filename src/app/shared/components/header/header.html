@@ -1,0 +1,40 @@
+<header class="header" [class.header-scrolled]="isScrolled()">
+  <div class="header-container">
+    <!-- Logo -->
+    <div class="header-logo">
+      <a routerLink="/home" class="logo-link">
+        <span class="logo-text">Adega do Pai</span>
+      </a>
+    </div>
+
+    <!-- Barra de busca -->
+    <div class="header-search">
+      <div class="search-container">
+        <ng-icon name="heroMagnifyingGlass" size="18" class="search-icon"></ng-icon>
+        <input
+          type="text"
+          placeholder="Buscar bebidas..."
+          class="search-input"
+        >
+      </div>
+    </div>
+
+    <!-- Ações do usuário -->
+    <div class="header-actions">
+      <button class="action-btn explore-btn" routerLink="/products">
+        <ng-icon name="heroBuildingStorefront" size="16" class="btn-icon"></ng-icon>
+        <span>Explorar Bebidas</span>
+      </button>
+
+      <button class="action-btn" routerLink="/auth/login">
+        <ng-icon name="heroUser" size="16" class="btn-icon"></ng-icon>
+        <span>Entrar</span>
+      </button>
+
+      <button class="action-btn cart-btn" routerLink="/cart">
+        <ng-icon name="heroShoppingBag" size="20" class="cart-icon"></ng-icon>
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>

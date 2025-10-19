@@ -1,0 +1,73 @@
+<section class="featured-products">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">
+        <ng-icon name="heroStar" size="16" class="section-badge-icon"></ng-icon>
+        <span>Destaques da Semana</span>
+      </div>
+
+      <h2 class="section-title">
+        <span class="title-accent">Produtos</span>
+        <span class="title-main">em Destaque</span>
+      </h2>
+
+      <p class="section-subtitle">
+        Descubra nossa seleção especial de bebidas premium, escolhidos a dedo para os verdadeiros conhecedores.
+      </p>
+
+      <div class="section-actions">
+        <a routerLink="/products" class="btn btn-outline">
+          <span>Ver Todos</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="products-showcase">
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Carregando produtos especiais...</p>
+        </div>
+      } @else if (featuredProducts().length === 0) {
+        <div class="empty-state">
+          <ng-icon name="lucideWine" size="16" class="empty-icon"></ng-icon>
+          <h3>Nenhum produto encontrado</h3>
+          <p>Volte em breve para ver nossas novidades!</p>
+        </div>
+      } @else {
+        <div class="products-grid">
+          @for (product of featuredProducts(); track product.id) {
+            <app-product-card
+              [product]="product"
+              (addToCart)="onAddToCart($event)">
+            </app-product-card>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="section-footer">
+      <div class="trust-indicators">
+        <div class="indicator">
+          <ng-icon name="lucideAward" size="16" class="indicator-icon"></ng-icon>
+          <span>Qualidade Garantida</span>
+        </div>
+        <div class="indicator">
+          <ng-icon name="lucideTruck" size="16" class="indicator-icon"></ng-icon>
+          <span>Entrega Express</span>
+        </div>
+        <div class="indicator">
+          <ng-icon name="heroShieldCheck" size="16" class="indicator-icon"></ng-icon>
+          <span>Pagamento Seguro</span>
+        </div>
+        <div class="indicator">
+          <ng-icon name="heroArrowPath" size="16" class="indicator-icon"></ng-icon>
+          <span>Devolução Fácil</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

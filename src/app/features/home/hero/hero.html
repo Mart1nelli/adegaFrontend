@@ -1,0 +1,87 @@
+<section class="hero" #heroSection>
+  <div class="hero-background">
+    <div class="hero-gradient"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <ng-icon name="lucideBeer" size="16" class="badge-icon"></ng-icon>
+        <span class="badge-text">Adega do Pai</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="title-main">Bem-vindo à</span>
+        <span class="title-accent">Adega do Pai</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        As melhores bebidas para todos os momentos. Qualidade, variedade e atendimento excepcional em um só lugar.
+      </p>
+
+      <div class="hero-features">
+        <div class="feature-item">
+          <ng-icon name="lucideAward" size="35" class="feature-icon"></ng-icon>
+          <span>Qualidade Premium</span>
+        </div>
+        <div class="feature-item">
+          <ng-icon name="lucideTruck" size="35" class="feature-icon"></ng-icon>
+          <span>Entrega Rápida</span>
+        </div>
+        <div class="feature-item">
+          <ng-icon name="heroShieldCheck" size="35" class="feature-icon"></ng-icon>
+          <span>Pagamento Seguro</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a routerLink="/products" class="btn btn-primary btn-large">
+          <span>Explorar Bebidas</span>
+          <ng-icon name="heroBuildingStorefront" size="20" class="btn-icon"></ng-icon>
+        </a>
+        <a routerLink="/auth/login" class="btn btn-outline btn-large">
+          <span>Entrar na Conta</span>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">200+</div>
+          <div class="stat-label">Produtos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Categorias</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Clientes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-graphic">
+        <div class="graphic-element">
+          <div class="shape shape-1"></div>
+          <div class="shape shape-2"></div>
+          <div class="shape shape-3"></div>
+        </div>
+        <div class="graphic-text">
+          <span class="graphic-accent">Bebidas</span>
+          <span class="graphic-main">Premium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll" [class.hidden]="isScrollIndicatorHidden" #scrollIndicator>
+    <div class="scroll-indicator" (click)="scrollToNextSection()" (keydown.enter)="scrollToNextSection()" (keydown.space)="scrollToNextSection()" tabindex="0" role="button" aria-label="Rolar para a próxima seção">
+      <span>Role para baixo</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M7 13l3 3 3-3"/>
+        <path d="M7 6l3 3 3-3"/>
+      </svg>
+    </div>
+  </div>
+</section>

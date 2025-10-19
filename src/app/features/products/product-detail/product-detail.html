@@ -1,0 +1,86 @@
+<div class="product-detail-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Carregando produto...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+  <div class="error-container">
+    <div class="error-message">
+      <h3>Ops! Produto não encontrado</h3>
+      <p>{{ errorMessage() }}</p>
+      <button (click)="goBack()" class="back-button">Voltar ao Catálogo</button>
+    </div>
+  </div>
+  }
+
+  <!-- Product Detail -->
+  @if (product(); as prod) {
+  <div class="product-detail">
+    <div class="product-image-section">
+      <img [src]="prod.imageUrl || '/assets/images/placeholder.png'"
+           [alt]="prod.name"
+           class="product-image">
+    </div>
+
+    <div class="product-info-section">
+      <button (click)="goBack()" class="back-button">← Voltar ao Catálogo</button>
+
+      <h1 class="product-title">{{ prod.name }}</h1>
+
+      @if (prod.category) {
+      <span class="product-category">{{ prod.category }}</span>
+      }
+
+      <div class="product-price">
+        R$ {{ prod.price | number:'1.2-2' }}
+      </div>
+
+      <div class="product-description">
+        <h3>Descrição</h3>
+        <p>{{ prod.description || 'Sem descrição disponível.' }}</p>
+      </div>
+
+      <div class="product-stock">
+        @if (prod.stock > 0) {
+        <span class="in-stock">
+          <ng-icon name="heroCheckCircle" size="16"></ng-icon>
+          {{ prod.stock }} em estoque
+        </span>
+        } @else {
+        <span class="out-of-stock">✗ Esgotado</span>
+        }
+      </div>
+
+      @if (prod.stock > 0) {
+      <div class="quantity-selector">
+        <span class="quantity-label">Quantidade:</span>
+        <div class="quantity-controls">
+          <button (click)="decreaseQuantity()"
+                  [disabled]="quantity() <= 1"
+                  class="quantity-btn">-</button>
+          <span class="quantity-value">{{ quantity() }}</span>
+          <button (click)="increaseQuantity()"
+                  [disabled]="quantity() >= prod.stock"
+                  class="quantity-btn">+</button>
+        </div>
+      </div>
+
+      <button (click)="addToCart()"
+              class="add-to-cart-btn"
+              [disabled]="prod.stock === 0">
+        @if (prod.stock > 0) {
+        <span>Adicionar ao Carrinho - R$ {{ (prod.price * quantity()) | number:'1.2-2' }}</span>
+        } @else {
+        <span>Produto Indisponível</span>
+        }
+      </button>
+      }
+    </div>
+  </div>
+  }
+</div>
