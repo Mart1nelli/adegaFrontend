@@ -35,9 +35,11 @@
                  [(ngModel)]="searchTerm"
                  (input)="onSearchChange()"
                  class="search-input">
-          <button class="clear-search-btn" (click)="clearSearch()" *ngIf="searchTerm">
+          @if (searchTerm) {
+          <button class="clear-search-btn" (click)="clearSearch()">
             <ng-icon name="heroXMark" size="16"></ng-icon>
           </button>
+          }
         </div>
       </div>
 
@@ -49,7 +51,9 @@
           </label>
           <select id="category-select" [(ngModel)]="selectedCategory" (change)="onFiltersChange()" class="category-filter">
             <option value="">Todas as categorias</option>
-            <option *ngFor="let category of availableCategories()" [value]="category">{{ category }}</option>
+            @for (category of availableCategories(); track category) {
+            <option [value]="category">{{ category }}</option>
+            }
           </select>
         </div>
 

@@ -1,13 +1,17 @@
 <div class="cart-container">
   <div class="cart-header">
     <h1><ng-icon name="heroShoppingBag" size="20" class="cart-title-icon"></ng-icon> Seu Carrinho</h1>
-    <span class="cart-count" *ngIf="totalItems() > 0">({{ totalItems() }} itens)</span>
+    @if (totalItems() > 0) {
+    <span class="cart-count">({{ totalItems() }} itens)</span>
+    }
   </div>
 
   <div class="cart-content">
     <!-- Carrinho com itens -->
-    <div class="cart-items" *ngIf="!isCartEmpty(); else emptyCartTemplate">
-      <div class="cart-item" *ngFor="let item of cartItems()">
+    @if (!isCartEmpty()) {
+    <div class="cart-items">
+      @for (item of cartItems(); track item.product.id) {
+      <div class="cart-item">
         <div class="item-image">
           <img [src]="item.product.imageUrl || '/assets/images/placeholder-product.jpg'"
                [alt]="item.product.name"
@@ -17,9 +21,11 @@
         <div class="item-details">
           <h3 class="item-name">{{ item.product.name }}</h3>
           <p class="item-price">R$ {{ item.product.price | number:'1.2-2' }}</p>
-          <p class="item-category" *ngIf="item.product.category">
+          @if (item.product.category) {
+          <p class="item-category">
             {{ typeof item.product.category === 'object' ? item.product.category.name : item.product.category }}
           </p>
+          }
         </div>
 
         <div class="item-controls">
@@ -52,12 +58,15 @@
           <span class="subtotal-value">R$ {{ getItemSubtotal(item) | number:'1.2-2' }}</span>
         </div>
       </div>
+      }
 
       <!-- Ações do carrinho -->
       <div class="cart-actions">
-        <button class="clear-cart-btn" (click)="clearCart()" *ngIf="cartItems().length > 0">
+        @if (cartItems().length > 0) {
+        <button class="clear-cart-btn" (click)="clearCart()">
           Limpar Carrinho
         </button>
+        }
 
         <button class="continue-shopping-btn" routerLink="/products">
           <ng-icon name="heroBuildingStorefront" size="16"></ng-icon>
@@ -65,23 +74,23 @@
         </button>
       </div>
     </div>
-
+    } @else {
     <!-- Carrinho vazio -->
-    <ng-template #emptyCartTemplate>
-      <div class="empty-cart">
-        <ng-icon name="heroShoppingBag" size="48" class="empty-cart-icon"></ng-icon>
-        <h2>Seu carrinho está vazio</h2>
-        <p>Adicione alguns produtos deliciosos ao seu carrinho!</p>
-        <button class="explore-btn" routerLink="/products">
-          <ng-icon name="heroBuildingStorefront" size="16" class="btn-icon"></ng-icon>
-          Explorar Bebidas
-        </button>
-      </div>
-    </ng-template>
+    <div class="empty-cart">
+      <ng-icon name="heroShoppingBag" size="48" class="empty-cart-icon"></ng-icon>
+      <h2>Seu carrinho está vazio</h2>
+      <p>Adicione alguns produtos deliciosos ao seu carrinho!</p>
+      <button class="explore-btn" routerLink="/products">
+        <ng-icon name="heroBuildingStorefront" size="16" class="btn-icon"></ng-icon>
+        Explorar Bebidas
+      </button>
+    </div>
+    }
   </div>
 
   <!-- Resumo do pedido (só mostra se houver itens) -->
-  <div class="cart-summary" *ngIf="!isCartEmpty()">
+  @if (!isCartEmpty()) {
+  <div class="cart-summary">
     <div class="summary-row">
       <span class="summary-label">Total de itens:</span>
       <span class="summary-value">{{ totalItems() }}</span>
@@ -96,4 +105,5 @@
       Finalizar Compra
     </button>
   </div>
+  }
 </div>

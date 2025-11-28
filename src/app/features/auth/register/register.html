@@ -64,17 +64,22 @@
       </div>
 
       <!-- Mensagem de erro -->
-      <div *ngIf="errorMessage()" class="error-message">
+      @if (errorMessage()) {
+      <div class="error-message">
         {{ errorMessage() }}
       </div>
+      }
 
       <!-- Botão -->
       <button
         type="submit"
         [disabled]="isLoading()"
         class="register-button">
-        <span *ngIf="isLoading()">Cadastrando...</span>
-        <span *ngIf="!isLoading()">Cadastrar-se</span>
+        @if (isLoading()) {
+        <span>Cadastrando...</span>
+        } @else {
+        <span>Cadastrar-se</span>
+        }
       </button>
     </form>
 
