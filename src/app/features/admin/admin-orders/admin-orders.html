@@ -1,0 +1,50 @@
+<div class="admin-section">
+  <div class="section-header">
+    <h1>Pedidos</h1>
+  </div>
+
+  @if (isLoading()) {
+    <p class="loading-msg">Carregando...</p>
+  } @else if (orders().length === 0) {
+    <p class="loading-msg">Nenhum pedido encontrado.</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Data</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Alterar Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user?.name ?? '—' }}</td>
+            <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>R$ {{ order.totalAmount | number:'1.2-2' }}</td>
+            <td>
+              <span class="badge" [ngClass]="statusClass(order.status)">
+                {{ statusLabel(order.status) }}
+              </span>
+            </td>
+            <td>
+              <select
+                class="status-select"
+                [value]="order.status"
+                (change)="updateStatus(order, getSelectValue($event))"
+              >
+                @for (opt of statusOptions; track opt) {
+                  <option [value]="opt">{{ statusLabel(opt) }}</option>
+                }
+              </select>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

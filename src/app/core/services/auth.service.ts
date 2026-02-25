@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, tap } from "rxjs";
-import { AuthResponse, LoginRequest, RegisterRequest, User } from "../models/auth.models";
+import { AuthResponse, ChangePasswordRequest, LoginRequest, RegisterRequest, User } from "../models/auth.models";
 import { ApiService } from "./api.service";
 
 @Injectable({
@@ -42,7 +42,6 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 
-
   loadUserProfile(): Observable<User> {
     return this.apiService.getProfile().pipe(
       tap(user => {
@@ -52,27 +51,47 @@ export class AuthService {
     )
   }
 
-  private setAuthData(response: AuthResponse): void {
-    // Salvar tokens no localStorage
-    localStorage.setItem('access_token', response.access_token);
-    localStorage.setItem('refresh_token', response.refresh_token);
+  refreshToken(): Observable<{ access_token: string }> {
+    const refresh_token = localStorage.getItem('refresh_token');
+    return this.apiService.refreshToken(refresh_token ?? '').pipe(
+      tap(response => {
+        localStorage.setItem('access_token', response.access_token);
+      })
+    );
+  }
 
-    // Atualizar estado
+  changePassword(data: ChangePasswordRequest): Observable<{ message: string }> {
+    return this.apiService.changePassword(data);
+  }
+
+  private setAuthData(response: AuthResponse): void {
+    localStorage.setItem('access_token', response.access_token);
+    if (response.refresh_token) {
+      localStorage.setItem('refresh_token', response.refresh_token);
+    }
     this._currentUser.set(response.user);
     this._isAuthenticated.set(true);
   }
 
   private clearAuthData(): void {
-    
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-
     this._currentUser.set(null);
     this._isAuthenticated.set(false);
   }
 
-  checkAuthStatus(): boolean {
+  /** Call on app startup to restore auth state from localStorage. */
+  initAuth(): void {
     const token = localStorage.getItem('access_token');
-    return !!token;
+    if (token) {
+      this.loadUserProfile().subscribe({
+        error: () => this.clearAuthData()
+      });
+    }
+  }
+
+  /** @deprecated use initAuth() instead */
+  checkAuthStatus(): boolean {
+    return !!localStorage.getItem('access_token');
   }
 }

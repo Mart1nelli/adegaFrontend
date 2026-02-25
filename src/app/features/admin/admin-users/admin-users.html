@@ -1,0 +1,43 @@
+<div class="admin-section">
+  <div class="section-header">
+    <h1>Usuários</h1>
+  </div>
+
+  @if (isLoading()) {
+    <p class="loading-msg">Carregando...</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Perfil</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="role-badge" [class.admin]="user.role === 'admin'">
+                {{ user.role === 'admin' ? 'Admin' : 'Usuário' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button
+                class="btn-icon delete"
+                [disabled]="user.id === currentUserId"
+                [title]="user.id === currentUserId ? 'Não é possível excluir a própria conta' : 'Excluir'"
+                (click)="deleteUser(user)"
+              >🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

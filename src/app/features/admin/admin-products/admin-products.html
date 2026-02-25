@@ -1,0 +1,103 @@
+<div class="admin-section">
+  <div class="section-header">
+    <h1>Produtos</h1>
+    <button class="btn btn-primary" (click)="openCreate()">+ Novo Produto</button>
+  </div>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Buscar por nome..."
+      class="search-input"
+      (keyup.enter)="search()"
+    />
+    <button class="btn btn-secondary" (click)="search()">Buscar</button>
+  </div>
+
+  @if (isLoading()) {
+    <p class="loading-msg">Carregando...</p>
+  } @else {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Preço</th>
+          <th>Estoque</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products(); track product.id) {
+          <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category?.name ?? '—' }}</td>
+            <td>R$ {{ product.price | number:'1.2-2' }}</td>
+            <td>{{ product.stock }}</td>
+            <td class="actions">
+              <button class="btn-icon edit" (click)="openEdit(product)">✏️</button>
+              <button class="btn-icon delete" (click)="delete(product)">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="btn btn-secondary" [disabled]="page() <= 1" (click)="prevPage()">«</button>
+      <span>Página {{ page() }} / {{ totalPages() }}</span>
+      <button class="btn btn-secondary" [disabled]="page() >= totalPages()" (click)="nextPage()">»</button>
+    </div>
+  }
+</div>
+
+<!-- Modal -->
+@if (showModal()) {
+  <div class="modal-overlay" (click)="showModal.set(false)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ isEditing() ? 'Editar Produto' : 'Novo Produto' }}</h2>
+      <form (ngSubmit)="save()" class="modal-form">
+        <div class="form-row">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="form.name" name="name" required class="form-input" />
+        </div>
+        <div class="form-row">
+          <label>Descrição</label>
+          <textarea [(ngModel)]="form.description" name="description" class="form-input" rows="2"></textarea>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label>Preço (R$)</label>
+            <input type="number" [(ngModel)]="form.price" name="price" required min="0" step="0.01" class="form-input" />
+          </div>
+          <div>
+            <label>Estoque</label>
+            <input type="number" [(ngModel)]="form.stock" name="stock" required min="0" class="form-input" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Categoria</label>
+          <select [(ngModel)]="form.categoryId" name="categoryId" class="form-input">
+            <option [ngValue]="null">— Selecione —</option>
+            @for (cat of categories(); track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-row">
+          <label>URL da Imagem</label>
+          <input type="url" [(ngModel)]="form.imageUrl" name="imageUrl" class="form-input" placeholder="https://..." />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="showModal.set(false)">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+            {{ isSaving() ? 'Salvando...' : 'Salvar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

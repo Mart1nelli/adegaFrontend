@@ -1,0 +1,121 @@
+<div class="addresses-container">
+  <div class="page-header">
+    <h1>Meus Endereços</h1>
+    <button class="btn-primary" (click)="openCreateForm()">
+      <ng-icon name="heroPlus" size="16"></ng-icon>
+      Novo Endereço
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">Carregando endereços...</div>
+  }
+
+  @if (!isLoading() && addresses().length === 0) {
+    <div class="empty-state">
+      <ng-icon name="heroMapPin" size="48" class="empty-icon"></ng-icon>
+      <h2>Nenhum endereço cadastrado</h2>
+      <p>Adicione um endereço para poder fazer pedidos.</p>
+      <button class="btn-primary" (click)="openCreateForm()">
+        <ng-icon name="heroPlus" size="16"></ng-icon>
+        Adicionar Endereço
+      </button>
+    </div>
+  }
+
+  <div class="addresses-list">
+    @for (address of addresses(); track address.id) {
+      <div class="address-card" [class.default]="address.isDefault">
+        @if (address.isDefault) {
+          <span class="default-badge">Padrão</span>
+        }
+        <div class="address-info">
+          <ng-icon name="heroHome" size="20" class="address-icon"></ng-icon>
+          <div>
+            <p class="address-street">{{ address.street }}{{ address.number ? ', ' + address.number : '' }}</p>
+            @if (address.complement) {
+              <p class="address-detail">{{ address.complement }}</p>
+            }
+            @if (address.neighborhood) {
+              <p class="address-detail">{{ address.neighborhood }}</p>
+            }
+            <p class="address-city">{{ address.city }}, {{ address.state }} - {{ address.zipCode }}</p>
+            @if (address.country) {
+              <p class="address-country">{{ address.country }}</p>
+            }
+          </div>
+        </div>
+        <div class="address-actions">
+          <button class="btn-icon" (click)="openEditForm(address)" title="Editar">
+            <ng-icon name="heroPencil" size="16"></ng-icon>
+          </button>
+          <button class="btn-icon btn-danger" (click)="deleteAddress(address.id)" title="Excluir">
+            <ng-icon name="heroTrash" size="16"></ng-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Form Modal -->
+  @if (showForm()) {
+    <div class="modal-overlay" (click)="closeForm()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
+          <button class="btn-icon" (click)="closeForm()">✕</button>
+        </div>
+        <form class="address-form" (ngSubmit)="saveAddress()">
+          <div class="form-group">
+            <label for="street">Rua / Avenida *</label>
+            <input id="street" type="text" [(ngModel)]="formData.street" name="street" required placeholder="Ex: Rua das Flores">
+          </div>
+          <div class="form-row">
+            <div class="form-group form-group--grow">
+              <label for="number">Número</label>
+              <input id="number" type="text" [(ngModel)]="formData.number" name="number" placeholder="123">
+            </div>
+            <div class="form-group form-group--grow">
+              <label for="complement">Complemento</label>
+              <input id="complement" type="text" [(ngModel)]="formData.complement" name="complement" placeholder="Apto 4">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="neighborhood">Bairro</label>
+            <input id="neighborhood" type="text" [(ngModel)]="formData.neighborhood" name="neighborhood" placeholder="Centro">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Cidade *</label>
+              <input id="city" type="text" [(ngModel)]="formData.city" name="city" required>
+            </div>
+            <div class="form-group">
+              <label for="state">Estado *</label>
+              <input id="state" type="text" [(ngModel)]="formData.state" name="state" required maxlength="2" placeholder="SP">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="zipCode">CEP *</label>
+              <input id="zipCode" type="text" [(ngModel)]="formData.zipCode" name="zipCode" required placeholder="00000-000">
+            </div>
+            <div class="form-group">
+              <label for="country">País</label>
+              <input id="country" type="text" [(ngModel)]="formData.country" name="country">
+            </div>
+          </div>
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" [(ngModel)]="formData.isDefault" name="isDefault">
+              Definir como endereço padrão
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeForm()">Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

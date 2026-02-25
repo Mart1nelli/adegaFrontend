@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ApiService } from './core/services/api.service';
+import { AuthService } from './core/services/auth.service';
 import { Notifications } from './shared/components/notifications/notifications';
 
 @Component({
@@ -10,11 +10,11 @@ import { Notifications } from './shared/components/notifications/notifications';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit {
 
-  private apiService = inject(ApiService);
-  protected readonly title = signal('adega-do-pai-frontend');
+  private authService = inject(AuthService);
 
-  connectionStatus = signal<string | null>(null);
-
+  ngOnInit(): void {
+    this.authService.initAuth();
+  }
 }

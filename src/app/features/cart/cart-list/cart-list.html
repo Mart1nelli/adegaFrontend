@@ -23,7 +23,7 @@
           <p class="item-price">R$ {{ item.product.price | number:'1.2-2' }}</p>
           @if (item.product.category) {
           <p class="item-category">
-            {{ typeof item.product.category === 'object' ? item.product.category.name : item.product.category }}
+            {{ item.product.category.name }}
           </p>
           }
         </div>

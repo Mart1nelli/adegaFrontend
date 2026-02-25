@@ -1,0 +1,133 @@
+<div class="checkout-container">
+  <h1 class="checkout-title">Finalizar Pedido</h1>
+
+  <!-- Step Indicator -->
+  <div class="steps">
+    <div class="step" [class.active]="step() === 'address'" [class.done]="step() === 'review' || step() === 'done'">
+      <span class="step-num">1</span>
+      <span class="step-label">Endereço</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" [class.active]="step() === 'review'" [class.done]="step() === 'done'">
+      <span class="step-num">2</span>
+      <span class="step-label">Revisão</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" [class.done]="step() === 'done'">
+      <span class="step-num">3</span>
+      <span class="step-label">Confirmado</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Address -->
+  @if (step() === 'address') {
+    <div class="checkout-card">
+      <h2>Selecione o Endereço de Entrega</h2>
+
+      @if (isLoading()) {
+        <div class="loading">Carregando endereços...</div>
+      } @else if (addresses().length === 0) {
+        <div class="empty-address">
+          <p>Nenhum endereço cadastrado.</p>
+          <a routerLink="/account/addresses" class="btn btn-secondary">Adicionar Endereço</a>
+        </div>
+      } @else {
+        <div class="address-list">
+          @for (addr of addresses(); track addr.id) {
+            <label class="address-option" [class.selected]="selectedAddressId() === addr.id">
+              <input
+                type="radio"
+                [value]="addr.id"
+                [checked]="selectedAddressId() === addr.id"
+                (change)="selectedAddressId.set(addr.id)"
+              />
+              <div class="address-info">
+                <p class="address-line1">{{ addr.street }}, {{ addr.number }}</p>
+                @if (addr.complement) {
+                  <p class="address-detail">{{ addr.complement }}</p>
+                }
+                <p class="address-detail">{{ addr.neighborhood }} — {{ addr.city }}/{{ addr.state }}</p>
+                <p class="address-detail">CEP: {{ addr.zipCode }}</p>
+                @if (addr.isDefault) {
+                  <span class="default-badge">Padrão</span>
+                }
+              </div>
+            </label>
+          }
+        </div>
+        <div class="step-actions">
+          <a routerLink="/account/addresses" class="btn btn-secondary">Gerenciar Endereços</a>
+          <button class="btn btn-primary" (click)="goToReview()">
+            Continuar
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Step 2: Review -->
+  @if (step() === 'review') {
+    <div class="checkout-card">
+      <h2>Revisão do Pedido</h2>
+
+      <div class="review-section">
+        <h3>Endereço de Entrega</h3>
+        @if (selectedAddress) {
+          <p>{{ selectedAddress.street }}, {{ selectedAddress.number }}</p>
+          <p>{{ selectedAddress.neighborhood }} — {{ selectedAddress.city }}/{{ selectedAddress.state }}</p>
+          <p>CEP: {{ selectedAddress.zipCode }}</p>
+        }
+      </div>
+
+      <div class="review-section">
+        <h3>Itens</h3>
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd</th>
+              <th>Preço</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of cartItems; track item.product.id) {
+              <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>R$ {{ item.product.price | number:'1.2-2' }}</td>
+                <td>R$ {{ (item.product.price * item.quantity) | number:'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="total-label"><strong>Total</strong></td>
+              <td><strong>R$ {{ cartTotal | number:'1.2-2' }}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn btn-secondary" (click)="step.set('address')">Voltar</button>
+        <button class="btn btn-primary" [disabled]="isPlacing()" (click)="placeOrder()">
+          @if (isPlacing()) { Processando... } @else { Confirmar Pedido }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Step 3: Done -->
+  @if (step() === 'done') {
+    <div class="checkout-card done-card">
+      <div class="success-icon">✓</div>
+      <h2>Pedido Confirmado!</h2>
+      <p>Seu pedido <strong>#{{ orderId() }}</strong> foi registrado com sucesso.</p>
+      <div class="done-actions">
+        <a routerLink="/account/orders" class="btn btn-primary">Ver Meus Pedidos</a>
+        <a routerLink="/products" class="btn btn-secondary">Continuar Comprando</a>
+      </div>
+    </div>
+  }
+</div>

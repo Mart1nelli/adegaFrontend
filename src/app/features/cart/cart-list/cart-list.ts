@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroBuildingStorefront, heroMinus, heroPlus, heroShoppingBag, heroTrash } from '@ng-icons/heroicons/outline';
-import { CartItem, CartService } from '../../../core/services/cart.service';
+import { CartItemView, CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
@@ -17,20 +17,21 @@ export class CartList {
 
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   // Signals do serviço do carrinho
-  cartItems = this.cartService.cartItems$;
+  cartItems = this.cartService.cartItems;
   totalItems = this.cartService.totalItems;
   totalPrice = this.cartService.totalPrice;
 
   // Método para aumentar quantidade
-  increaseQuantity(item: CartItem) {
+  increaseQuantity(item: CartItemView) {
     this.cartService.updateQuantity(item.product.id, item.quantity + 1);
     this.notificationService.showSuccess('Quantidade atualizada!');
   }
 
   // Método para diminuir quantidade
-  decreaseQuantity(item: CartItem) {
+  decreaseQuantity(item: CartItemView) {
     if (item.quantity > 1) {
       this.cartService.updateQuantity(item.product.id, item.quantity - 1);
       this.notificationService.showSuccess('Quantidade atualizada!');
@@ -50,7 +51,7 @@ export class CartList {
   }
 
   // Método para calcular subtotal de um item
-  getItemSubtotal(item: CartItem): number {
+  getItemSubtotal(item: CartItemView): number {
     return item.product.price * item.quantity;
   }
 
@@ -59,14 +60,8 @@ export class CartList {
     return this.cartItems().length === 0;
   }
 
-  // Método para continuar comprando
-  continueShopping() {
-    // Implementar navegação para produtos
-  }
-
   // Método para finalizar compra
   checkout() {
-    // Implementar navegação para checkout
-    this.notificationService.showInfo('Funcionalidade de checkout em desenvolvimento!');
+    this.router.navigate(['/checkout']);
   }
 }

@@ -4,9 +4,9 @@ export interface Product {
   description?: string;
   price: number;
   imageUrl?: string;
-  category?: Category | string; // Pode ser objeto Category ou string
+  category?: Category;
   categoryId?: number;
-  supplier?: Supplier | string; // Pode ser objeto Supplier ou string
+  supplier?: Supplier;
   supplierId?: number;
   stock: number;
   isActive?: boolean;
@@ -43,7 +43,7 @@ export interface Review {
 }
 
 export interface ProductFilters {
-  category?: string;
+  categoryId?: number;
   minPrice?: number;
   maxPrice?: number;
   search?: string;
@@ -57,4 +57,115 @@ export interface PaginatedProducts {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface Address {
+  id: number;
+  userId: number;
+  street: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country?: string;
+  isDefault?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateAddressRequest {
+  street: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country?: string;
+  isDefault?: boolean;
+}
+
+export interface CartItem {
+  id: number;
+  cartId: number;
+  productId: number;
+  product: Product;
+  quantity: number;
+  createdAt?: string;
+}
+
+export interface Cart {
+  id: number;
+  userId: number;
+  cartItems: CartItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateCartItemRequest {
+  cartId: number;
+  productId: number;
+  quantity?: number;
+}
+
+export interface UpdateCartItemRequest {
+  quantity: number;
+}
+
+export interface OrderItem {
+  id: number;
+  orderId: number;
+  productId: number;
+  product?: Product;
+  quantity: number;
+  unitPrice: number;
+  price?: number;
+}
+
+export interface Order {
+  id: number;
+  userId: number;
+  totalAmount: number;
+  status: string;
+  addressId?: number;
+  address?: Address;
+  user?: { id: number; name: string; email: string };
+  items?: OrderItem[];
+  orderItems?: OrderItem[];
+  payments?: Payment[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateOrderRequest {
+  userId?: number;
+  addressId?: number;
+  items: { productId: number; quantity: number }[];
+  status?: string;
+}
+
+export interface Payment {
+  id: number;
+  orderId: number;
+  userId: number;
+  amount: number;
+  status: string;
+  methodId?: number;
+  transactionId?: string;
+  createdAt?: string;
+}
+
+export interface PaymentMethod {
+  id: number;
+  name: string;
+  description?: string;
+  isActive: boolean;
+}
+
+// LocalCartItem is only used before the user logs in (localStorage fallback)
+export interface LocalCartItem {
+  product: Product;
+  quantity: number;
 }

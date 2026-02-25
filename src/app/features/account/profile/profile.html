@@ -1,0 +1,145 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Minha Conta</h1>
+    <p class="subtitle">
+      Olá, <strong>{{ user?.name ?? 'Usuário' }}</strong>! Gerencie seu perfil abaixo.
+    </p>
+  </div>
+
+  <div class="account-nav">
+    <a routerLink="/account/profile" class="nav-item active">
+      <ng-icon name="heroUser"></ng-icon>
+      Perfil
+    </a>
+    <a routerLink="/account/addresses" class="nav-item">
+      Endereços
+    </a>
+    <a routerLink="/account/orders" class="nav-item">
+      Meus Pedidos
+    </a>
+  </div>
+
+  <div class="profile-tabs">
+    <button class="tab-btn" [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
+      <ng-icon name="heroUser"></ng-icon>
+      Dados Pessoais
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'password'" (click)="activeTab.set('password')">
+      <ng-icon name="heroLockClosed"></ng-icon>
+      Alterar Senha
+    </button>
+  </div>
+
+  <!-- Profile Tab -->
+  @if (activeTab() === 'profile') {
+    <div class="tab-content">
+      <form (ngSubmit)="saveProfile()" class="profile-form">
+        <div class="form-group">
+          <label for="name">Nome Completo</label>
+          <input
+            id="name"
+            type="text"
+            [(ngModel)]="profileForm.name"
+            name="name"
+            required
+            class="form-input"
+            placeholder="Seu nome completo"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            [value]="user?.email ?? ''"
+            name="email"
+            disabled
+            class="form-input disabled"
+            title="O e-mail não pode ser alterado"
+          />
+          <small class="hint">O e-mail não pode ser alterado.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Telefone</label>
+          <input
+            id="phone"
+            type="tel"
+            [(ngModel)]="profileForm.phone"
+            name="phone"
+            class="form-input"
+            placeholder="(99) 99999-9999"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="isSavingProfile()">
+            @if (isSavingProfile()) {
+              <span class="loading-dot">Salvando...</span>
+            } @else {
+              Salvar Alterações
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Password Tab -->
+  @if (activeTab() === 'password') {
+    <div class="tab-content">
+      <form (ngSubmit)="savePassword()" class="profile-form">
+        <div class="form-group">
+          <label for="currentPassword">Senha Atual</label>
+          <input
+            id="currentPassword"
+            type="password"
+            [(ngModel)]="passwordForm.currentPassword"
+            name="currentPassword"
+            required
+            class="form-input"
+            placeholder="Digite sua senha atual"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Nova Senha</label>
+          <input
+            id="newPassword"
+            type="password"
+            [(ngModel)]="passwordForm.newPassword"
+            name="newPassword"
+            required
+            minlength="6"
+            class="form-input"
+            placeholder="Mínimo 6 caracteres"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar Nova Senha</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            required
+            class="form-input"
+            placeholder="Repita a nova senha"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="isSavingPassword()">
+            @if (isSavingPassword()) {
+              <span>Salvando...</span>
+            } @else {
+              Alterar Senha
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

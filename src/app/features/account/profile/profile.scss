@@ -1,0 +1,122 @@
+.profile-container {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.profile-header {
+  margin-bottom: 1.5rem;
+  h1 { font-size: 1.75rem; font-weight: 700; color: #111; }
+  .subtitle { color: #555; margin-top: .25rem; }
+}
+
+.account-nav {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #555;
+    font-size: .9rem;
+    transition: background .2s;
+
+    &:hover { background: #f3f4f6; color: #111; }
+    &.active { background: #7c3aed; color: #fff; }
+  }
+}
+
+.profile-tabs {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1.5rem;
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .6rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+    font-size: .9rem;
+    transition: all .2s;
+
+    &:hover { border-color: #7c3aed; color: #7c3aed; }
+    &.active { border-color: #7c3aed; background: #7c3aed; color: #fff; }
+  }
+}
+
+.tab-content {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+
+  label {
+    font-size: .875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+}
+
+.form-input {
+  padding: .6rem .75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s;
+
+  &:focus { border-color: #7c3aed; box-shadow: 0 0 0 2px rgba(124,58,237,.1); }
+  &.disabled { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
+}
+
+.hint {
+  font-size: .8rem;
+  color: #9ca3af;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: .5rem;
+}
+
+.btn {
+  padding: .6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s;
+
+  &:disabled { opacity: .6; cursor: not-allowed; }
+
+  &.btn-primary {
+    background: #7c3aed;
+    color: #fff;
+    &:hover:not(:disabled) { background: #6d28d9; }
+  }
+}

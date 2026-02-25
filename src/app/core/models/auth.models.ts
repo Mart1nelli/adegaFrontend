@@ -12,7 +12,7 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
   user: User;
 }
 
@@ -26,4 +26,9 @@ export interface User {
 
 export interface RefreshTokenRequest {
   refreshToken: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
 }

@@ -5,7 +5,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowPath, heroMagnifyingGlass, heroSparkles, heroTag, heroXMark } from '@ng-icons/heroicons/outline';
 import { lucideWine } from '@ng-icons/lucide';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { PaginatedProducts, Product, ProductFilters } from '../../../core/models/product.models';
+import { Category, PaginatedProducts, Product, ProductFilters } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -39,12 +39,18 @@ export class Catalog implements OnInit, OnDestroy {
 
   // Filter properties
   searchTerm = '';
-  selectedCategory = '';
+  selectedCategoryId: number | null = null;
   minPrice: number | null = null;
   maxPrice: number | null = null;
-  availableCategories = signal<string[]>([]);
+  availableCategories = signal<Category[]>([]);
 
   ngOnInit() {
+    // Load categories from API
+    this.apiService.getCategories().subscribe({
+      next: (cats) => this.availableCategories.set(cats),
+      error: () => this.availableCategories.set([])
+    });
+
     // Configurar o Subject com debounce para controlar as requisições
     this.filterSubject$.pipe(
       debounceTime(300),
@@ -78,37 +84,15 @@ export class Catalog implements OnInit, OnDestroy {
         this.products.set(response.data || []);
         this.totalItems.set(response.total || 0);
         this.totalPages.set(response.totalPages || 1);
-        this.extractAvailableCategories(response.data || []);
         this.isLoading.set(false);
       },
       error: (error) => {
         this.errorMessage.set('Erro ao carregar produtos. Tente novamente em alguns segundos.');
         this.isLoading.set(false);
         console.error('Erro:', error);
-        // Resetar estado em caso de erro
         this.products.set([]);
-        this.availableCategories.set([]);
       }
     });
-  }
-
-  private extractAvailableCategories(products: Product[]) {
-    if (!products || !Array.isArray(products)) {
-      this.availableCategories.set([]);
-      return;
-    }
-
-    const categories = new Set<string>();
-    products.forEach(product => {
-      if (product && product.category) {
-        // Se category é um objeto, pegar o name; se é string, usar diretamente
-        const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
-        if (categoryName) {
-          categories.add(categoryName);
-        }
-      }
-    });
-    this.availableCategories.set(Array.from(categories).sort());
   }
 
   onSearchChange() {
@@ -129,8 +113,8 @@ export class Catalog implements OnInit, OnDestroy {
       filters.search = this.searchTerm.trim();
     }
 
-    if (this.selectedCategory) {
-      filters.category = this.selectedCategory;
+    if (this.selectedCategoryId) {
+      filters.categoryId = this.selectedCategoryId;
     }
 
     if (this.minPrice !== null && this.minPrice > 0) {
@@ -151,7 +135,7 @@ export class Catalog implements OnInit, OnDestroy {
 
   clearFilters() {
     this.searchTerm = '';
-    this.selectedCategory = '';
+    this.selectedCategoryId = null;
     this.minPrice = null;
     this.maxPrice = null;
     this.currentPage.set(1);
@@ -223,3 +207,4 @@ export class Catalog implements OnInit, OnDestroy {
     );
   }
 }
+

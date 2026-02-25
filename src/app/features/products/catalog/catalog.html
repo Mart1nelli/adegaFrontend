@@ -49,10 +49,10 @@
             <ng-icon name="heroTag" size="14" class="filter-icon"></ng-icon>
             Categoria
           </label>
-          <select id="category-select" [(ngModel)]="selectedCategory" (change)="onFiltersChange()" class="category-filter">
-            <option value="">Todas as categorias</option>
-            @for (category of availableCategories(); track category) {
-            <option [value]="category">{{ category }}</option>
+          <select id="category-select" [(ngModel)]="selectedCategoryId" (change)="onFiltersChange()" class="category-filter">
+            <option [value]="null">Todas as categorias</option>
+            @for (category of availableCategories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
             }
           </select>
         </div>
