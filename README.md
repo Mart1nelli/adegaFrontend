@@ -57,3 +57,18 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+### Docker
+
+A `Dockerfile` is included in this folder that builds the Angular app and serves it via Nginx.  The accompanying `docker-compose.yml` no longer needs a `version` field; it’s ignored by newer Docker.
+
+You can either build independently:
+
+```bash
+cd adega-do-pai-frontend
+docker build -t adega-frontend .
+docker run --rm -p4200:80 adega-frontend
+```
+
+or simply start all services via `docker-compose` from the repository root; the frontend container will be reachable at `http://localhost:4200`.
+
