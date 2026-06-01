@@ -9,23 +9,21 @@ import { NotificationService } from '../../../core/services/notification.service
 @Component({
   selector: 'app-product-detail',
   imports: [CommonModule],
-  templateUrl: './product-detail.html'
+  templateUrl: './product-detail.html',
 })
-export class ProductDetail implements OnInit{
-
+export class ProductDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private apiService = inject(ApiService);
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
-  
+
   product = signal<Product | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
   quantity = signal(1);
 
   ngOnInit() {
-
     const id = this.route.snapshot.params['id'];
 
     if (id) {
@@ -48,7 +46,7 @@ export class ProductDetail implements OnInit{
         this.errorMessage.set('Erro ao carregar produto');
         this.isLoading.set(false);
         console.error('Erro:', error);
-      }
+      },
     });
   }
 
@@ -58,7 +56,8 @@ export class ProductDetail implements OnInit{
     if (prod) {
       this.cartService.addToCart(prod, this.quantity());
       this.notificationService.showSuccess(
-        `"${prod.name}" foi adiciona ao carrinho!`, 'Produto adicionado'
+        `"${prod.name}" foi adiciona ao carrinho!`,
+        'Produto adicionado',
       );
     }
   }

@@ -2,10 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroArrowPath, heroMagnifyingGlass, heroSparkles, heroTag, heroXMark } from '@ng-icons/heroicons/outline';
+import {
+  heroArrowPath,
+  heroMagnifyingGlass,
+  heroSparkles,
+  heroTag,
+  heroXMark,
+} from '@ng-icons/heroicons/outline';
 import { lucideWine } from '@ng-icons/lucide';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { Category, PaginatedProducts, Product, ProductFilters } from '../../../core/models/product.models';
+import {
+  Category,
+  PaginatedProducts,
+  Product,
+  ProductFilters,
+} from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -15,10 +26,18 @@ import { ProductCard } from '../product-card/product-card';
   selector: 'app-catalog',
   imports: [CommonModule, FormsModule, ProductCard, NgIconComponent],
   templateUrl: './catalog.html',
-  providers: [provideIcons({ heroTag, heroXMark, heroArrowPath, heroMagnifyingGlass, heroSparkles, lucideWine })]
+  providers: [
+    provideIcons({
+      heroTag,
+      heroXMark,
+      heroArrowPath,
+      heroMagnifyingGlass,
+      heroSparkles,
+      lucideWine,
+    }),
+  ],
 })
 export class Catalog implements OnInit, OnDestroy {
-
   private apiService = inject(ApiService);
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
@@ -47,14 +66,11 @@ export class Catalog implements OnInit, OnDestroy {
     // Load categories from API
     this.apiService.getCategories().subscribe({
       next: (cats) => this.availableCategories.set(cats),
-      error: () => this.availableCategories.set([])
+      error: () => this.availableCategories.set([]),
     });
 
     // Configurar o Subject com debounce para controlar as requisições
-    this.filterSubject$.pipe(
-      debounceTime(300),
-      takeUntil(this.destroy$)
-    ).subscribe(filters => {
+    this.filterSubject$.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe((filters) => {
       this.loadProducts(filters);
     });
 
@@ -75,7 +91,7 @@ export class Catalog implements OnInit, OnDestroy {
     const filtersWithPagination: ProductFilters = {
       ...filters,
       page: this.currentPage(),
-      limit: this.itemsPerPage
+      limit: this.itemsPerPage,
     };
 
     this.apiService.getProducts(filtersWithPagination).subscribe({
@@ -90,7 +106,7 @@ export class Catalog implements OnInit, OnDestroy {
         this.isLoading.set(false);
         console.error('Erro:', error);
         this.products.set([]);
-      }
+      },
     });
   }
 
@@ -105,7 +121,7 @@ export class Catalog implements OnInit, OnDestroy {
   private applyFilters() {
     const filters: ProductFilters = {
       page: this.currentPage(),
-      limit: this.itemsPerPage
+      limit: this.itemsPerPage,
     };
 
     if (this.searchTerm.trim()) {
@@ -202,8 +218,7 @@ export class Catalog implements OnInit, OnDestroy {
     this.cartService.addToCart(product);
     this.notificationService.showSuccess(
       `"${product.name}" foi adicionado ao carrinho!`,
-      'Produto adicionado'
+      'Produto adicionado',
     );
   }
 }
-

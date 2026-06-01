@@ -1,32 +1,55 @@
-<section class="relative flex flex-col justify-center min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-64px)] min-[480px]:min-h-[calc(100vh-56px)] overflow-hidden text-white group/hero" #heroSection>
-  
+<section
+  class="relative flex flex-col justify-center min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-64px)] min-[480px]:min-h-[calc(100vh-56px)] overflow-hidden text-white group/hero"
+  #heroSection
+>
   <!-- Radioactive Nuclear Glow and Dark Obsidian Backdrop -->
   <div class="absolute inset-0 z-[-1] bg-[#0A0A0C]">
-    <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-primary/10 blur-[80px] nuclear-glow-pulse"></div>
-    <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[400px] h-[400px] rounded-full bg-secondary/5 blur-[120px] nuclear-glow-pulse"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-accent/5 blur-[100px] nuclear-glow-pulse"></div>
+    <div
+      class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-75 h-75 rounded-full bg-primary/10 blur-[80px] nuclear-glow-pulse"
+    ></div>
+    <div
+      class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-100 h-100 rounded-full bg-secondary/5 blur-[120px] nuclear-glow-pulse"
+    ></div>
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-87.5 h-87.5 rounded-full bg-accent/5 blur-[100px] nuclear-glow-pulse"
+    ></div>
   </div>
 
-  <div class="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center lg:text-left text-center py-12">
-    
+  <div
+    class="container mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center lg:text-left text-center py-12"
+  >
     <div class="lg:col-span-7 flex flex-col justify-center">
-      <div class="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary/10 px-5 py-2 mb-6 text-xs sm:text-sm font-bold uppercase tracking-wider text-primary shadow-neon-yellow self-center lg:self-start">
+      <div
+        class="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary/10 px-5 py-2 mb-6 text-xs sm:text-sm font-bold uppercase tracking-wider text-primary shadow-neon-yellow self-center lg:self-start"
+      >
         <ng-icon name="lucideBeer" size="18"></ng-icon>
         <span class="font-fun">Mmm... Cerveja... 🤤</span>
       </div>
 
       <h1 class="mb-6">
-        <span class="block text-2xl lg:text-3xl font-fun font-normal mb-2 opacity-95 text-white">Bem-vindo à melhor adega de Springfield!</span>
-        <span class="block text-4xl sm:text-5xl lg:text-7xl font-fun font-black leading-tight text-primary drop-shadow-[4px_4px_0px_#000000] tracking-wider uppercase">Adega do Pai</span>
+        <span class="block text-2xl lg:text-3xl font-fun font-normal mb-2 opacity-95 text-white"
+          >Bem-vindo à melhor adega de Springfield!</span
+        >
+        <span
+          class="block text-4xl sm:text-5xl lg:text-7xl font-fun font-black leading-tight text-primary drop-shadow-[4px_4px_0px_#000000] tracking-wider uppercase"
+          >Adega do Pai</span
+        >
       </h1>
 
-      <p class="text-base sm:text-lg lg:text-xl leading-relaxed mb-10 text-gray-300 lg:max-w-[600px] max-w-none mx-auto lg:mx-0">
-        Garanta sua Duff gelada, vinhos finos e destilados sem sair do sofá. O portal definitivo das bebidas que faria até o Homer esquecer do trabalho na Usina!
+      <p
+        class="text-base sm:text-lg lg:text-xl leading-relaxed mb-10 text-gray-300 lg:max-w-150 max-w-none mx-auto lg:mx-0"
+      >
+        Garanta sua Duff gelada, vinhos finos e destilados sem sair do sofá. O portal definitivo das
+        bebidas que faria até o Homer esquecer do trabalho na Usina!
       </p>
 
       <div class="flex flex-wrap gap-4 mb-10 justify-center lg:justify-start">
-        <div class="flex items-center gap-3 bg-dark-surface border-2 border-black p-3.5 rounded-xl shadow-cartoon">
-          <div class="flex items-center justify-center bg-primary/20 text-primary border border-primary/30 rounded-lg p-2.5">
+        <div
+          class="flex items-center gap-3 bg-dark-surface border-2 border-black p-3.5 rounded-xl shadow-cartoon"
+        >
+          <div
+            class="flex items-center justify-center bg-primary/20 text-primary border border-primary/30 rounded-lg p-2.5"
+          >
             <ng-icon name="lucideBeer" size="24"></ng-icon>
           </div>
           <div class="text-left">
@@ -34,9 +57,13 @@
             <p class="text-xs text-gray-400 m-0">Direto de Springfield</p>
           </div>
         </div>
-        
-        <div class="flex items-center gap-3 bg-dark-surface border-2 border-black p-3.5 rounded-xl shadow-cartoon">
-          <div class="flex items-center justify-center bg-secondary/20 text-secondary border border-secondary/30 rounded-lg p-2.5">
+
+        <div
+          class="flex items-center gap-3 bg-dark-surface border-2 border-black p-3.5 rounded-xl shadow-cartoon"
+        >
+          <div
+            class="flex items-center justify-center bg-secondary/20 text-secondary border border-secondary/30 rounded-lg p-2.5"
+          >
             <ng-icon name="lucideTruck" size="24"></ng-icon>
           </div>
           <div class="text-left">
@@ -47,72 +74,208 @@
       </div>
 
       <div class="flex flex-wrap gap-4 mb-10 justify-center lg:justify-start">
-        <a routerLink="/products" class="btn-homer-primary text-base min-w-[180px] no-underline">
+        <a routerLink="/products" class="btn-homer-primary text-base min-w-45 no-underline">
           <span>Ver Bebidas</span>
-          <ng-icon name="heroBuildingStorefront" size="18" class="transition-transform duration-200 group-hover:translate-x-1"></ng-icon>
+          <ng-icon
+            name="heroBuildingStorefront"
+            size="18"
+            class="transition-transform duration-200 group-hover:translate-x-1"
+          ></ng-icon>
         </a>
-        <a routerLink="/auth/login" class="btn-homer-outline text-base min-w-[180px] no-underline">
+        <a routerLink="/auth/login" class="btn-homer-outline text-base min-w-45 no-underline">
           <span>Fazer Login</span>
         </a>
       </div>
 
-      <div class="flex gap-8 lg:gap-12 justify-center lg:justify-start border-t border-white/10 pt-6">
+      <div
+        class="flex gap-8 lg:gap-12 justify-center lg:justify-start border-t border-white/10 pt-6"
+      >
         <div class="text-center lg:text-left">
           <div class="text-2xl sm:text-3xl font-fun font-extrabold text-primary mb-0.5">200+</div>
-          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">Rótulos</div>
+          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">
+            Rótulos
+          </div>
         </div>
         <div class="text-center lg:text-left">
           <div class="text-2xl sm:text-3xl font-fun font-extrabold text-secondary mb-0.5">15+</div>
-          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">Categorias</div>
+          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">
+            Categorias
+          </div>
         </div>
         <div class="text-center lg:text-left">
           <div class="text-2xl sm:text-3xl font-fun font-extrabold text-accent mb-0.5">100%</div>
-          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">Homer Approved</div>
+          <div class="text-[10px] sm:text-xs font-bold tracking-wider uppercase text-gray-400">
+            Homer Approved
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Visual Simpsons/Donut section -->
-    <div class="lg:col-span-5 flex flex-col items-center justify-center relative min-h-[320px] md:min-h-[400px]">
-      
+    <div
+      class="lg:col-span-5 flex flex-col items-center justify-center relative min-h-80 md:min-h-100"
+    >
       <!-- Rotating Donut -->
-      <div class="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px] flex items-center justify-center animate-spin-slow">
+      <div
+        class="relative w-65 h-65 sm:w-80 sm:h-80 md:w-95 md:h-95 flex items-center justify-center animate-spin-slow"
+      >
         <!-- SVG Donut with sprinkles! -->
-        <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-[0_15px_30px_rgba(236,72,153,0.4)]">
+        <svg
+          viewBox="0 0 200 200"
+          class="w-full h-full drop-shadow-[0_15px_30px_rgba(236,72,153,0.4)]"
+        >
           <!-- Donut Dough -->
-          <path d="M100,20 A80,80 0 1,0 100,180 A80,80 0 1,0 100,20 Z M100,60 A40,40 0 1,1 100,140 A40,40 0 1,1 100,60 Z" fill="#E6A15C" stroke="#000000" stroke-width="4"/>
+          <path
+            d="M100,20 A80,80 0 1,0 100,180 A80,80 0 1,0 100,20 Z M100,60 A40,40 0 1,1 100,140 A40,40 0 1,1 100,60 Z"
+            fill="#E6A15C"
+            stroke="#000000"
+            stroke-width="4"
+          />
           <!-- Pink Donut Frosting -->
-          <path d="M100,24 A76,76 0 1,0 100,176 A76,76 0 1,0 100,24 Z M100,64 A36,36 0 1,1 100,136 A36,36 0 1,1 100,64 Z" fill="#F48FB1"/>
+          <path
+            d="M100,24 A76,76 0 1,0 100,176 A76,76 0 1,0 100,24 Z M100,64 A36,36 0 1,1 100,136 A36,36 0 1,1 100,64 Z"
+            fill="#F48FB1"
+          />
           <!-- Frosting Drippings (simulated with random sprinkle shapes on frosting) -->
           <!-- Sprinkles! (random colorful rectangles & capsules) -->
-          <rect x="75" y="40" width="12" height="4" rx="2" fill="#FED90F" transform="rotate(25, 75, 40)" stroke="#000" stroke-width="1"/>
-          <rect x="120" y="45" width="12" height="4" rx="2" fill="#3B82F6" transform="rotate(-15, 120, 45)" stroke="#000" stroke-width="1"/>
-          <rect x="50" y="80" width="12" height="4" rx="2" fill="#EF4444" transform="rotate(45, 50, 80)" stroke="#000" stroke-width="1"/>
-          <rect x="145" y="85" width="12" height="4" rx="2" fill="#10B981" transform="rotate(-30, 145, 85)" stroke="#000" stroke-width="1"/>
-          <rect x="60" y="120" width="12" height="4" rx="2" fill="#FED90F" transform="rotate(-10, 60, 120)" stroke="#000" stroke-width="1"/>
-          <rect x="125" y="125" width="12" height="4" rx="2" fill="#3B82F6" transform="rotate(50, 125, 125)" stroke="#000" stroke-width="1"/>
-          <rect x="85" y="150" width="12" height="4" rx="2" fill="#EF4444" transform="rotate(15, 85, 150)" stroke="#000" stroke-width="1"/>
-          <rect x="100" y="32" width="12" height="4" rx="2" fill="#10B981" transform="rotate(80, 100, 32)" stroke="#000" stroke-width="1"/>
+          <rect
+            x="75"
+            y="40"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#FED90F"
+            transform="rotate(25, 75, 40)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="120"
+            y="45"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#3B82F6"
+            transform="rotate(-15, 120, 45)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="50"
+            y="80"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#EF4444"
+            transform="rotate(45, 50, 80)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="145"
+            y="85"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#10B981"
+            transform="rotate(-30, 145, 85)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="60"
+            y="120"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#FED90F"
+            transform="rotate(-10, 60, 120)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="125"
+            y="125"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#3B82F6"
+            transform="rotate(50, 125, 125)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="85"
+            y="150"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#EF4444"
+            transform="rotate(15, 85, 150)"
+            stroke="#000"
+            stroke-width="1"
+          />
+          <rect
+            x="100"
+            y="32"
+            width="12"
+            height="4"
+            rx="2"
+            fill="#10B981"
+            transform="rotate(80, 100, 32)"
+            stroke="#000"
+            stroke-width="1"
+          />
         </svg>
       </div>
 
       <!-- Duff Can Styled Banner over Donut -->
-      <div class="absolute bg-secondary border-4 border-black px-6 py-3 rounded-2xl shadow-cartoon -rotate-6 scale-90 sm:scale-100 hover:rotate-0 transition-transform duration-300">
-        <span class="font-fun text-3xl font-black text-white tracking-widest uppercase drop-shadow-[2px_2px_0px_#000000]">Duff Beer</span>
+      <div
+        class="absolute bg-secondary border-4 border-black px-6 py-3 rounded-2xl shadow-cartoon -rotate-6 scale-90 sm:scale-100 hover:rotate-0 transition-transform duration-300"
+      >
+        <span
+          class="font-fun text-3xl font-black text-white tracking-widest uppercase drop-shadow-[2px_2px_0px_#000000]"
+          >Duff Beer</span
+        >
         <div class="h-1 bg-white my-1 rounded"></div>
-        <span class="text-xs font-bold text-yellow-300 tracking-widest uppercase block text-center">Springfield Standard</span>
+        <span class="text-xs font-bold text-yellow-300 tracking-widest uppercase block text-center"
+          >Springfield Standard</span
+        >
       </div>
-
     </div>
   </div>
 
   <!-- Scroll Down Indicator -->
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300" [class.opacity-0]="isScrollIndicatorHidden" [class.pointer-events-none]="isScrollIndicatorHidden" #scrollIndicator>
-    <div class="flex flex-col items-center gap-2 cursor-pointer opacity-75 hover:opacity-100 transition-all text-primary font-bold group/scroll p-2" (click)="scrollToNextSection()" (keydown.enter)="scrollToNextSection()" (keydown.space)="scrollToNextSection()" tabindex="0" role="button" aria-label="Rolar para a próxima seção">
-      <span class="text-[10px] sm:text-xs font-bold uppercase tracking-widest font-fun">Explorar Duff's</span>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="animate-bounce text-primary" aria-hidden="true">
-        <path d="M7 13l5 5 5-5"/>
-        <path d="M7 6l5 5 5-5"/>
+  <div
+    class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300"
+    [class.opacity-0]="isScrollIndicatorHidden"
+    [class.pointer-events-none]="isScrollIndicatorHidden"
+    #scrollIndicator
+  >
+    <div
+      class="flex flex-col items-center gap-2 cursor-pointer opacity-75 hover:opacity-100 transition-all text-primary font-bold group/scroll p-2"
+      (click)="scrollToNextSection()"
+      (keydown.enter)="scrollToNextSection()"
+      (keydown.space)="scrollToNextSection()"
+      tabindex="0"
+      role="button"
+      aria-label="Rolar para a próxima seção"
+    >
+      <span class="text-[10px] sm:text-xs font-bold uppercase tracking-widest font-fun"
+        >Explorar Duff's</span
+      >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3"
+        class="animate-bounce text-primary"
+        aria-hidden="true"
+      >
+        <path d="M7 13l5 5 5-5" />
+        <path d="M7 6l5 5 5-5" />
       </svg>
     </div>
   </div>

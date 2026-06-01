@@ -11,16 +11,15 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './login.html',
-  providers: [provideIcons({ heroEnvelope, heroLockClosed })]
+  providers: [provideIcons({ heroEnvelope, heroLockClosed })],
 })
 export class Login {
-
   private authService = inject(AuthService);
   private router = inject(Router);
 
   loginData = signal<LoginRequest>({
     email: '',
-    password: ''
+    password: '',
   });
 
   isLoading = signal(false);
@@ -43,7 +42,7 @@ export class Login {
         this.isLoading.set(false);
         this.errorMessage.set('Email ou senha incorretos');
         console.error('Erro no login:', error);
-      }
+      },
     });
   }
 }

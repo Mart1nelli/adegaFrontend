@@ -1,7 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroCheckCircle, heroExclamationTriangle, heroInformationCircle, heroXCircle, heroXMark } from '@ng-icons/heroicons/outline';
+import {
+  heroCheckCircle,
+  heroExclamationTriangle,
+  heroInformationCircle,
+  heroXCircle,
+  heroXMark,
+} from '@ng-icons/heroicons/outline';
 import { Subscription } from 'rxjs';
 import { Notification, NotificationService } from '../../../core/services/notification.service';
 
@@ -9,10 +23,17 @@ import { Notification, NotificationService } from '../../../core/services/notifi
   selector: 'app-notifications',
   imports: [CommonModule, NgIconComponent],
   templateUrl: './notifications.html',
-  providers: [provideIcons({ heroCheckCircle, heroXCircle, heroExclamationTriangle, heroInformationCircle, heroXMark })]
+  providers: [
+    provideIcons({
+      heroCheckCircle,
+      heroXCircle,
+      heroExclamationTriangle,
+      heroInformationCircle,
+      heroXMark,
+    }),
+  ],
 })
 export class Notifications implements OnInit, OnDestroy {
-
   private notificationService = inject(NotificationService);
   private subscription!: Subscription;
 
@@ -21,15 +42,13 @@ export class Notifications implements OnInit, OnDestroy {
   notifications: Notification[] = [];
 
   ngOnInit() {
-    this.subscription = this.notificationService.notifications$.subscribe(
-      notifications => {
-        this.notifications = notifications;
-        // Aguardar o próximo ciclo de detecção de mudanças
-        setTimeout(() => {
-          this.animateNotifications();
-        }, 0);
-      }
-    );
+    this.subscription = this.notificationService.notifications$.subscribe((notifications) => {
+      this.notifications = notifications;
+      // Aguardar o próximo ciclo de detecção de mudanças
+      setTimeout(() => {
+        this.animateNotifications();
+      }, 0);
+    });
   }
 
   ngOnDestroy() {
@@ -75,11 +94,16 @@ export class Notifications implements OnInit, OnDestroy {
 
   getNotificationIcon(type: string): string {
     switch (type) {
-      case 'success': return 'heroCheckCircle';
-      case 'error': return 'heroXCircle';
-      case 'warning': return 'heroExclamationTriangle';
-      case 'info': return 'heroInformationCircle';
-      default: return 'heroInformationCircle';
+      case 'success':
+        return 'heroCheckCircle';
+      case 'error':
+        return 'heroXCircle';
+      case 'warning':
+        return 'heroExclamationTriangle';
+      case 'info':
+        return 'heroInformationCircle';
+      default:
+        return 'heroInformationCircle';
     }
   }
 }

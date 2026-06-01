@@ -18,7 +18,7 @@ interface ProductForm {
 @Component({
   selector: 'app-admin-products',
   imports: [CommonModule, FormsModule],
-  templateUrl: './admin-products.html'
+  templateUrl: './admin-products.html',
 })
 export class AdminProducts implements OnInit {
   private apiService = inject(ApiService);
@@ -39,7 +39,7 @@ export class AdminProducts implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
-    this.apiService.getCategories().subscribe(cats => this.categories.set(cats));
+    this.apiService.getCategories().subscribe((cats) => this.categories.set(cats));
   }
 
   emptyForm(): ProductForm {
@@ -48,14 +48,18 @@ export class AdminProducts implements OnInit {
 
   loadProducts() {
     this.isLoading.set(true);
-    this.apiService.getProducts({ page: this.page(), limit: 15, search: this.searchText }).subscribe({
-      next: (data: PaginatedProducts) => {
-        this.products.set(data.data);
-        this.totalPages.set(data.totalPages);
-        this.isLoading.set(false);
-      },
-      error: () => { this.isLoading.set(false); }
-    });
+    this.apiService
+      .getProducts({ page: this.page(), limit: 15, search: this.searchText })
+      .subscribe({
+        next: (data: PaginatedProducts) => {
+          this.products.set(data.data);
+          this.totalPages.set(data.totalPages);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 
   search() {
@@ -77,7 +81,7 @@ export class AdminProducts implements OnInit {
       price: product.price,
       stock: product.stock,
       categoryId: product.category?.id ?? null,
-      imageUrl: product.imageUrl ?? ''
+      imageUrl: product.imageUrl ?? '',
     };
     this.isEditing.set(true);
     this.showModal.set(true);
@@ -85,16 +89,27 @@ export class AdminProducts implements OnInit {
 
   save() {
     this.isSaving.set(true);
-    const body: any = { ...this.form };
-    delete body.id;
 
-    const req = this.isEditing() && this.form.id
-      ? this.apiService.updateProduct(this.form.id, body)
-      : this.apiService.createProduct(body);
+    // Criamos um novo objeto contendo tudo do form, mas omitindo explicitamente o ID na tipagem
+    const productData: Omit<ProductForm, 'id'> = {
+      name: this.form.name,
+      description: this.form.description,
+      price: this.form.price,
+      stock: this.form.stock,
+      categoryId: this.form.categoryId,
+      imageUrl: this.form.imageUrl,
+    };
+
+    const req =
+      this.isEditing() && this.form.id
+        ? this.apiService.updateProduct(this.form.id, productData)
+        : this.apiService.createProduct(productData);
 
     req.subscribe({
       next: () => {
-        this.notificationService.showSuccess(this.isEditing() ? 'Produto atualizado!' : 'Produto criado!');
+        this.notificationService.showSuccess(
+          this.isEditing() ? 'Produto atualizado!' : 'Produto criado!',
+        );
         this.showModal.set(false);
         this.loadProducts();
         this.isSaving.set(false);
@@ -102,7 +117,7 @@ export class AdminProducts implements OnInit {
       error: () => {
         this.notificationService.showError('Erro ao salvar produto.');
         this.isSaving.set(false);
-      }
+      },
     });
   }
 
@@ -113,10 +128,20 @@ export class AdminProducts implements OnInit {
         this.notificationService.showSuccess('Produto excluído.');
         this.loadProducts();
       },
-      error: () => this.notificationService.showError('Erro ao excluir produto.')
+      error: () => this.notificationService.showError('Erro ao excluir produto.'),
     });
   }
 
-  prevPage() { if (this.page() > 1) { this.page.update(p => p - 1); this.loadProducts(); } }
-  nextPage() { if (this.page() < this.totalPages()) { this.page.update(p => p + 1); this.loadProducts(); } }
+  prevPage() {
+    if (this.page() > 1) {
+      this.page.update((p) => p - 1);
+      this.loadProducts();
+    }
+  }
+  nextPage() {
+    if (this.page() < this.totalPages()) {
+      this.page.update((p) => p + 1);
+      this.loadProducts();
+    }
+  }
 }

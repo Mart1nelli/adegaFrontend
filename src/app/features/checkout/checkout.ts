@@ -13,7 +13,7 @@ type CheckoutStep = 'address' | 'review' | 'done';
 @Component({
   selector: 'app-checkout',
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './checkout.html'
+  templateUrl: './checkout.html',
 })
 export class Checkout implements OnInit {
   private apiService = inject(ApiService);
@@ -30,9 +30,15 @@ export class Checkout implements OnInit {
   selectedAddressId = signal<number | null>(null);
   orderId = signal<number | null>(null);
 
-  get cartItems() { return this.cartService.cartItems(); }
-  get cartTotal() { return this.cartService.totalPrice(); }
-  get currentUser() { return this.authService.currentUser(); }
+  get cartItems() {
+    return this.cartService.cartItems();
+  }
+  get cartTotal() {
+    return this.cartService.totalPrice();
+  }
+  get currentUser() {
+    return this.authService.currentUser();
+  }
 
   ngOnInit() {
     if (this.cartItems.length === 0) {
@@ -47,14 +53,14 @@ export class Checkout implements OnInit {
     this.apiService.getMyAddresses().subscribe({
       next: (addresses) => {
         this.addresses.set(addresses);
-        const def = addresses.find(a => a.isDefault);
+        const def = addresses.find((a) => a.isDefault);
         if (def) this.selectedAddressId.set(def.id);
         else if (addresses.length > 0) this.selectedAddressId.set(addresses[0].id);
         this.isLoading.set(false);
       },
       error: () => {
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -71,15 +77,15 @@ export class Checkout implements OnInit {
     if (!user) return;
     this.isPlacing.set(true);
 
-    const items = this.cartItems.map(item => ({
+    const items = this.cartItems.map((item) => ({
       productId: item.product.id,
-      quantity: item.quantity
+      quantity: item.quantity,
     }));
 
     const body: CreateOrderRequest = {
       userId: user.id,
       addressId: this.selectedAddressId() ?? undefined,
-      items
+      items,
     };
 
     this.apiService.createOrder(body).subscribe({
@@ -93,11 +99,11 @@ export class Checkout implements OnInit {
         const msg = err?.error?.message ?? 'Erro ao finalizar o pedido.';
         this.notificationService.showError(msg);
         this.isPlacing.set(false);
-      }
+      },
     });
   }
 
   get selectedAddress(): Address | undefined {
-    return this.addresses().find(a => a.id === this.selectedAddressId());
+    return this.addresses().find((a) => a.id === this.selectedAddressId());
   }
 }

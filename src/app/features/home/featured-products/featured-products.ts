@@ -13,11 +13,18 @@ import { ProductCard } from '../../products/product-card/product-card';
   selector: 'app-featured-products',
   imports: [CommonModule, ProductCard, NgIconComponent],
   templateUrl: './featured-products.html',
-  providers: [provideIcons({ lucideWine, lucideAward, lucideTruck, heroShieldCheck, heroArrowPath, heroStar })]
+  providers: [
+    provideIcons({
+      lucideWine,
+      lucideAward,
+      lucideTruck,
+      heroShieldCheck,
+      heroArrowPath,
+      heroStar,
+    }),
+  ],
 })
-export class FeaturedProducts implements OnInit{
- 
-
+export class FeaturedProducts implements OnInit {
   private apiService = inject(ApiService);
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
@@ -25,8 +32,8 @@ export class FeaturedProducts implements OnInit{
   featuredProducts = signal<Product[]>([]);
   isLoading = signal(false);
 
-   ngOnInit() {
-     this.loadFeaturedProducts();
+  ngOnInit() {
+    this.loadFeaturedProducts();
   }
 
   private loadFeaturedProducts() {
@@ -40,14 +47,15 @@ export class FeaturedProducts implements OnInit{
       error: (error) => {
         console.error('Erro ao carregar produtos em destaque:', error);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
     this.notificationService.showSuccess(
-      `"${product.name}" foi adicionado ao carrinho!`, 'Produto adicionado'
+      `"${product.name}" foi adicionado ao carrinho!`,
+      'Produto adicionado',
     );
   }
 }

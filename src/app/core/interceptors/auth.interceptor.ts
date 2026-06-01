@@ -9,9 +9,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = localStorage.getItem('access_token');
 
-  const authReq = token
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-    : req;
+  const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -31,11 +29,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               isRefreshing = false;
               authService.logout();
               return throwError(() => refreshError);
-            })
+            }),
           );
         }
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

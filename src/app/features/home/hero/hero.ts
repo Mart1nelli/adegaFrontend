@@ -3,13 +3,32 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } fro
 import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroBuildingStorefront, heroShieldCheck, heroUser } from '@ng-icons/heroicons/outline';
-import { lucideAward, lucideBeer, lucideCoffee, lucideMartini, lucideTruck, lucideWine } from '@ng-icons/lucide';
+import {
+  lucideAward,
+  lucideBeer,
+  lucideCoffee,
+  lucideMartini,
+  lucideTruck,
+  lucideWine,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-hero',
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './hero.html',
-  providers: [provideIcons({ lucideBeer, lucideAward, lucideTruck, lucideWine, lucideMartini, lucideCoffee, heroShieldCheck, heroBuildingStorefront, heroUser })]
+  providers: [
+    provideIcons({
+      lucideBeer,
+      lucideAward,
+      lucideTruck,
+      lucideWine,
+      lucideMartini,
+      lucideCoffee,
+      heroShieldCheck,
+      heroBuildingStorefront,
+      heroUser,
+    }),
+  ],
 })
 export class Hero implements OnInit, OnDestroy {
   @ViewChild('heroSection', { static: true }) heroSection!: ElementRef;
@@ -39,8 +58,8 @@ export class Hero implements OnInit, OnDestroy {
       },
       {
         threshold: 0.1, // Quando 10% do hero ainda está visível
-        rootMargin: '-50px 0px' // Margem para ativar um pouco antes
-      }
+        rootMargin: '-50px 0px', // Margem para ativar um pouco antes
+      },
     );
 
     // Observa a seção hero
@@ -70,13 +89,13 @@ export class Hero implements OnInit, OnDestroy {
     if (nextSection) {
       nextSection.scrollIntoView({
         behavior: 'smooth',
-        block: 'start'
+        block: 'start',
       });
     } else {
       // Fallback: rola uma tela para baixo
       window.scrollBy({
         top: window.innerHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }

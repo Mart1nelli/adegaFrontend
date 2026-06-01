@@ -3,7 +3,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroDevicePhoneMobile, heroEnvelope, heroLockClosed, heroUser } from '@ng-icons/heroicons/outline';
+import {
+  heroDevicePhoneMobile,
+  heroEnvelope,
+  heroLockClosed,
+  heroUser,
+} from '@ng-icons/heroicons/outline';
 import { RegisterRequest } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -11,10 +16,9 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-register',
   imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './register.html',
-  providers: [provideIcons({ heroUser, heroEnvelope, heroLockClosed, heroDevicePhoneMobile })]
+  providers: [provideIcons({ heroUser, heroEnvelope, heroLockClosed, heroDevicePhoneMobile })],
 })
 export class Register {
-
   private authService = inject(AuthService);
   private router = inject(Router);
 
@@ -23,7 +27,7 @@ export class Register {
     email: '',
     password: '',
     name: '',
-    phone: ''
+    phone: '',
   });
 
   // Estado de loading e erro
@@ -49,7 +53,7 @@ export class Register {
         this.isLoading.set(false);
         this.errorMessage.set('Erro ao cadastrar. Tente novamente.');
         console.error('Erro no registro:', error);
-      }
+      },
     });
   }
 }

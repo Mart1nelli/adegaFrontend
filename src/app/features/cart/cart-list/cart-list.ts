@@ -2,7 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroBuildingStorefront, heroMinus, heroPlus, heroShoppingBag, heroTrash } from '@ng-icons/heroicons/outline';
+import {
+  heroBuildingStorefront,
+  heroMinus,
+  heroPlus,
+  heroShoppingBag,
+  heroTrash,
+} from '@ng-icons/heroicons/outline';
 import { CartItemView, CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -10,10 +16,11 @@ import { NotificationService } from '../../../core/services/notification.service
   selector: 'app-cart-list',
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './cart-list.html',
-  providers: [provideIcons({ heroShoppingBag, heroBuildingStorefront, heroPlus, heroMinus, heroTrash })]
+  providers: [
+    provideIcons({ heroShoppingBag, heroBuildingStorefront, heroPlus, heroMinus, heroTrash }),
+  ],
 })
 export class CartList {
-
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
