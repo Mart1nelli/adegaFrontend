@@ -11,7 +11,6 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './login.html',
-  styleUrl: './login.scss',
   providers: [provideIcons({ heroEnvelope, heroLockClosed })]
 })
 export class Login {

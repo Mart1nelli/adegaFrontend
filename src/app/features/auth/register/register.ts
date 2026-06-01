@@ -11,7 +11,6 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-register',
   imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './register.html',
-  styleUrl: './register.scss',
   providers: [provideIcons({ heroUser, heroEnvelope, heroLockClosed, heroDevicePhoneMobile })]
 })
 export class Register {

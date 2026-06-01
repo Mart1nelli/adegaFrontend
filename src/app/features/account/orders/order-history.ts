@@ -8,8 +8,7 @@ import { NotificationService } from '../../../core/services/notification.service
 @Component({
   selector: 'app-order-history',
   imports: [CommonModule, RouterLink],
-  templateUrl: './order-history.html',
-  styleUrl: './order-history.scss'
+  templateUrl: './order-history.html'
 })
 export class OrderHistory implements OnInit {
   private apiService = inject(ApiService);

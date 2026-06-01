@@ -7,193 +7,59 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-admin-layout',
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <div class="admin-layout">
-      <aside class="admin-sidebar">
-        <div class="sidebar-header">
-          <span class="sidebar-logo">Adega do Pai</span>
-          <span class="sidebar-badge">Admin</span>
+    <div class="flex h-screen bg-[#0B0B0D] overflow-hidden">
+
+      <!-- Sidebar -->
+      <aside class="w-60 min-w-60 bg-[#0F0F13] border-r border-[#FED90F]/10 flex flex-col py-5 px-3 gap-1 overflow-y-auto">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2.5 px-3 pb-4 border-b border-[#FED90F]/10 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-[#FED90F]/10 border border-[#FED90F]/25 flex items-center justify-center text-base">🍺</div>
+          <span class="text-[#FED90F] font-black text-base font-[Fredoka] leading-none">Adega do Pai</span>
+          <span class="ml-auto bg-[#FED90F]/10 border border-[#FED90F]/30 text-[#FED90F] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Admin</span>
         </div>
-        <div class="sidebar-user">
-          <div class="user-avatar">{{ (authService.currentUser()?.name ?? 'A')[0] }}</div>
-          <div class="user-info">
-            <p class="user-name">{{ authService.currentUser()?.name }}</p>
-            <p class="user-role">Administrador</p>
+
+        <!-- User -->
+        <div class="flex items-center gap-2.5 px-3 py-2.5 bg-[#FED90F]/5 border border-[#FED90F]/10 rounded-xl mb-3">
+          <div class="w-8 h-8 rounded-full bg-[#FED90F]/20 border-2 border-[#FED90F]/40 flex items-center justify-center text-[#FED90F] font-black text-sm flex-shrink-0">
+            {{ (authService.currentUser()?.name ?? 'A')[0].toUpperCase() }}
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-[#FED90F] text-xs font-semibold truncate leading-none mb-0.5">{{ authService.currentUser()?.name }}</p>
+            <p class="text-[#FED90F]/40 text-[10px]">Administrador</p>
           </div>
         </div>
-        <nav class="sidebar-nav">
-          <p class="nav-section">Gestão</p>
-          <a routerLink="/admin/products" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">📦</span> Produtos
-          </a>
-          <a routerLink="/admin/users" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">👤</span> Usuários
-          </a>
-          <a routerLink="/admin/orders" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">🛒</span> Pedidos
-          </a>
-        </nav>
-        <a routerLink="/home" class="back-link">← Voltar à loja</a>
+
+        <!-- Nav -->
+        <p class="text-[#FED90F]/40 text-[10px] font-bold uppercase tracking-[0.1em] px-3 py-1">Gestão</p>
+
+        <a routerLink="/admin/products" routerLinkActive="bg-[#FED90F]/15 border-[#FED90F]/35 text-[#FED90F] font-bold"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-white/50 text-sm font-medium transition-all hover:bg-[#FED90F]/8 hover:text-[#FED90F] hover:border-[#FED90F]/15">
+          <span class="text-base">📦</span> Produtos
+        </a>
+        <a routerLink="/admin/users" routerLinkActive="bg-[#FED90F]/15 border-[#FED90F]/35 text-[#FED90F] font-bold"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-white/50 text-sm font-medium transition-all hover:bg-[#FED90F]/8 hover:text-[#FED90F] hover:border-[#FED90F]/15">
+          <span class="text-base">👤</span> Usuários
+        </a>
+        <a routerLink="/admin/orders" routerLinkActive="bg-[#FED90F]/15 border-[#FED90F]/35 text-[#FED90F] font-bold"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-white/50 text-sm font-medium transition-all hover:bg-[#FED90F]/8 hover:text-[#FED90F] hover:border-[#FED90F]/15">
+          <span class="text-base">🛒</span> Pedidos
+        </a>
+
+        <!-- Back to store -->
+        <a routerLink="/home"
+           class="mt-auto flex items-center gap-2 px-3 py-2.5 text-white/25 text-xs font-medium hover:text-[#FED90F] transition-colors border-t border-[#FED90F]/8 pt-4 mt-4">
+          ← Voltar à loja
+        </a>
       </aside>
-      <main class="admin-content">
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto bg-[#0B0B0D] p-6">
         <router-outlet></router-outlet>
       </main>
+
     </div>
-  `,
-  styles: [`
-    :host { display: block; height: 100vh; }
-
-    .admin-layout {
-      display: flex;
-      height: 100vh;
-      background: #0a0a0a;
-      font-family: inherit;
-      overflow: hidden;
-    }
-
-    .admin-sidebar {
-      width: 240px;
-      min-width: 240px;
-      background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%);
-      border-right: 1px solid rgba(244,196,48,0.15);
-      display: flex;
-      flex-direction: column;
-      padding: 1.5rem 1rem;
-      gap: .75rem;
-      overflow-y: auto;
-    }
-
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(244,196,48,0.15);
-    }
-
-    .sidebar-logo {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #F4C430;
-      letter-spacing: -.02em;
-    }
-
-    .sidebar-badge {
-      background: rgba(244,196,48,0.15);
-      border: 1px solid rgba(244,196,48,0.35);
-      color: #F4C430;
-      font-size: .7rem;
-      font-weight: 700;
-      padding: .15rem .5rem;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-
-    .sidebar-user {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      padding: .75rem;
-      background: rgba(244,196,48,0.06);
-      border-radius: 8px;
-      border: 1px solid rgba(244,196,48,0.1);
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(244,196,48,0.2);
-      border: 2px solid rgba(244,196,48,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #F4C430;
-      font-weight: 800;
-      font-size: 1rem;
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-
-    .user-info { overflow: hidden; }
-    .user-name {
-      font-size: .85rem;
-      font-weight: 600;
-      color: #F4C430;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .user-role { font-size: .75rem; color: rgba(244,196,48,0.5); }
-
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: .25rem;
-      flex: 1;
-      padding-top: .5rem;
-    }
-
-    .nav-section {
-      font-size: .7rem;
-      font-weight: 700;
-      color: rgba(244,196,48,0.4);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      padding: .5rem .75rem .25rem;
-      margin: 0;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      padding: .65rem .75rem;
-      border-radius: 8px;
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      font-size: .9rem;
-      font-weight: 500;
-      transition: all .2s;
-      border: 1px solid transparent;
-    }
-
-    .nav-link:hover {
-      background: rgba(244,196,48,0.08);
-      color: #F4C430;
-      border-color: rgba(244,196,48,0.15);
-    }
-
-    .nav-link.active {
-      background: rgba(244,196,48,0.15);
-      color: #F4C430;
-      border-color: rgba(244,196,48,0.35);
-      font-weight: 700;
-    }
-
-    .nav-icon { font-size: 1rem; line-height: 1; }
-
-    .back-link {
-      display: block;
-      padding: .6rem .75rem;
-      color: rgba(255,255,255,0.35);
-      text-decoration: none;
-      font-size: .85rem;
-      border-top: 1px solid rgba(244,196,48,0.1);
-      padding-top: 1rem;
-      margin-top: auto;
-      transition: color .2s;
-    }
-
-    .back-link:hover { color: #F4C430; }
-
-    .admin-content {
-      flex: 1;
-      overflow-y: auto;
-      background: #0a0a0a;
-      padding: 2rem;
-    }
-  `]
+  `
 })
 export class AdminLayout {
   authService = inject(AuthService);

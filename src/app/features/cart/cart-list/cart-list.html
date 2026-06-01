@@ -1,109 +1,156 @@
-<div class="cart-container">
-  <div class="cart-header">
-    <h1><ng-icon name="heroShoppingBag" size="20" class="cart-title-icon"></ng-icon> Seu Carrinho</h1>
-    @if (totalItems() > 0) {
-    <span class="cart-count">({{ totalItems() }} itens)</span>
-    }
+<div class="min-h-screen bg-dark-bg text-white pt-28 pb-16 px-4 md:px-8 relative overflow-hidden">
+  
+  <!-- Background Radioactive Effects -->
+  <div class="absolute inset-0 pointer-events-none z-0">
+    <div class="absolute top-[20%] left-[-10%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[100px] nuclear-glow-pulse"></div>
+    <div class="absolute bottom-[20%] right-[-10%] w-[250px] h-[250px] rounded-full bg-primary/5 blur-[80px] nuclear-glow-pulse"></div>
   </div>
 
-  <div class="cart-content">
-    <!-- Carrinho com itens -->
-    @if (!isCartEmpty()) {
-    <div class="cart-items">
-      @for (item of cartItems(); track item.product.id) {
-      <div class="cart-item">
-        <div class="item-image">
-          <img [src]="item.product.imageUrl || '/assets/images/placeholder-product.jpg'"
-               [alt]="item.product.name"
-               loading="lazy">
-        </div>
+  <div class="max-w-[1000px] mx-auto relative z-10">
+    
+    <!-- Cart Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-black pb-6 mb-8">
+      <div class="flex items-center gap-3">
+        <h1 class="font-fun text-3xl md:text-4xl font-black text-primary drop-shadow-[2px_2px_0px_#000000] tracking-wider uppercase flex items-center gap-2 m-0">
+          <ng-icon name="heroShoppingBag" size="28" class="align-middle"></ng-icon>
+          Seu Carrinho
+        </h1>
+        @if (totalItems() > 0) {
+          <span class="inline-block bg-accent text-white text-xs font-bold font-fun px-2.5 py-1 rounded-full shadow-[2px_2px_0px_#000000] border border-black">
+            {{ totalItems() }} itens
+          </span>
+        }
+      </div>
+    </div>
 
-        <div class="item-details">
-          <h3 class="item-name">{{ item.product.name }}</h3>
-          <p class="item-price">R$ {{ item.product.price | number:'1.2-2' }}</p>
-          @if (item.product.category) {
-          <p class="item-category">
-            {{ item.product.category.name }}
-          </p>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Cart Items List (Column Left) -->
+      <div class="lg:col-span-8 flex flex-col gap-6">
+        @if (!isCartEmpty()) {
+          <!-- Loop Items -->
+          @for (item of cartItems(); track item.product.id) {
+            <div class="bg-dark-surface border-2 border-black p-5 rounded-2xl shadow-cartoon flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:border-primary">
+              
+              <!-- Item Image -->
+              <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-black bg-dark-panel flex-shrink-0">
+                <img [src]="item.product.imageUrl || '/assets/images/placeholder.png'"
+                     [alt]="item.product.name"
+                     class="w-full h-full object-cover">
+              </div>
+
+              <!-- Item Details -->
+              <div class="flex-1 min-w-0">
+                <h3 class="font-fun font-bold text-base text-white truncate m-0 mb-1">{{ item.product.name }}</h3>
+                <p class="text-sm font-bold text-primary m-0">R$ {{ item.product.price | number:'1.2-2' }}</p>
+                @if (item.product.category) {
+                  <span class="inline-block bg-white/5 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded mt-1.5 uppercase">
+                    {{ item.product.category.name || item.product.category }}
+                  </span>
+                }
+              </div>
+
+              <!-- Quantity Controls & Delete -->
+              <div class="flex items-center gap-4">
+                <div class="flex items-center bg-dark-panel border-2 border-black rounded-lg overflow-hidden shadow-[2px_2px_0px_#000000]">
+                  <button class="w-8 h-8 flex items-center justify-center font-bold text-primary hover:bg-primary hover:text-black disabled:opacity-35 transition-all"
+                          (click)="decreaseQuantity(item)"
+                          [disabled]="item.quantity <= 1"
+                          aria-label="Diminuir quantidade">
+                    <ng-icon name="heroMinus" size="12"></ng-icon>
+                  </button>
+
+                  <span class="w-8 text-center font-bold text-sm font-fun text-white">{{ item.quantity }}</span>
+
+                  <button class="w-8 h-8 flex items-center justify-center font-bold text-primary hover:bg-primary hover:text-black disabled:opacity-35 transition-all"
+                          (click)="increaseQuantity(item)"
+                          aria-label="Aumentar quantidade">
+                    <ng-icon name="heroPlus" size="12"></ng-icon>
+                  </button>
+                </div>
+
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-black bg-secondary hover:bg-secondary-hover text-white transition-all shadow-[2px_2px_0px_#000000]"
+                        (click)="removeItem(item.product.id)"
+                        aria-label="Remover item">
+                  <ng-icon name="heroTrash" size="14"></ng-icon>
+                </button>
+              </div>
+
+              <!-- Item Subtotal -->
+              <div class="text-right sm:pl-4 border-t sm:border-t-0 sm:border-l border-white/5 pt-3 sm:pt-0 flex-shrink-0">
+                <span class="block text-[10px] text-gray-500 font-bold uppercase tracking-wider">Subtotal</span>
+                <span class="text-base font-fun font-black text-primary">R$ {{ getItemSubtotal(item) | number:'1.2-2' }}</span>
+              </div>
+            </div>
           }
-        </div>
 
-        <div class="item-controls">
-          <div class="quantity-controls">
-            <button class="quantity-btn"
-                    (click)="decreaseQuantity(item)"
-                    [disabled]="item.quantity <= 1"
-                    aria-label="Diminuir quantidade">
-              <ng-icon name="heroMinus" size="16"></ng-icon>
+          <!-- Cart Actions -->
+          <div class="flex flex-wrap gap-4 mt-2 justify-between">
+            <button class="btn-homer-secondary py-2.5 px-6 text-sm" (click)="clearCart()">
+              Limpar Carrinho
             </button>
 
-            <span class="quantity">{{ item.quantity }}</span>
-
-            <button class="quantity-btn"
-                    (click)="increaseQuantity(item)"
-                    aria-label="Aumentar quantidade">
-              <ng-icon name="heroPlus" size="16"></ng-icon>
+            <button class="btn-homer-outline py-2.5 px-6 text-sm no-underline" routerLink="/products">
+              <ng-icon name="heroBuildingStorefront" size="14" class="align-middle mr-1.5"></ng-icon>
+              <span>Continuar Comprando</span>
             </button>
           </div>
 
-          <button class="remove-btn"
-                  (click)="removeItem(item.product.id)"
-                  aria-label="Remover item">
-            <ng-icon name="heroTrash" size="16"></ng-icon>
+        } @else {
+          <!-- Empty Cart Simpsons Style -->
+          <div class="flex flex-col items-center justify-center text-center p-8 md:p-12 bg-dark-surface border-2 border-black rounded-2xl shadow-cartoon py-16">
+            <!-- Sad Donut graphic -->
+            <div class="w-32 h-32 mb-6 opacity-85">
+              <svg viewBox="0 0 200 200" class="w-full h-full">
+                <path d="M100,20 A80,80 0 1,0 100,180 A80,80 0 1,0 100,20 Z M100,60 A40,40 0 1,1 100,140 A40,40 0 1,1 100,60 Z" fill="#b08a68" stroke="#000000" stroke-width="4"/>
+                <path d="M100,24 A76,76 0 1,0 100,176 A76,76 0 1,0 100,24 Z M100,64 A36,36 0 1,1 100,136 A36,36 0 1,1 100,64 Z" fill="#F48FB1"/>
+                <circle cx="70" cy="90" r="8" fill="#000"/>
+                <circle cx="130" cy="90" r="8" fill="#000"/>
+                <path d="M85,130 Q100,115 115,130" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            
+            <h2 class="font-fun text-2xl font-black text-primary uppercase drop-shadow-[1px_1px_0px_#000] mb-3">D'oh! Carrinho Vazio!</h2>
+            <p class="text-gray-400 text-sm max-w-sm mb-8">
+              Seu carrinho está tão vazio quanto a geladeira do Homer no final de semana! Vamos consertar isso enchendo ele de bebidas geladas!
+            </p>
+            <button class="btn-homer-primary py-3 px-8 text-sm" routerLink="/products">
+              <ng-icon name="heroBuildingStorefront" size="16" class="align-middle mr-1.5"></ng-icon>
+              Explorar Cardápio
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Checkout Summary Panel (Column Right) -->
+      @if (!isCartEmpty()) {
+        <div class="lg:col-span-4 bg-dark-surface border-2 border-black p-6 rounded-2xl shadow-cartoon">
+          <h2 class="font-fun text-xl font-black text-white uppercase tracking-wider mb-6">Resumo do Pedido</h2>
+          
+          <div class="flex flex-col gap-4 mb-6 border-b border-white/5 pb-6">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-400">Quantidade de itens:</span>
+              <span class="font-bold text-white font-fun">{{ totalItems() }} un</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-400">Entrega:</span>
+              <span class="font-bold text-green-400 font-fun uppercase">Grátis (Moe Express)</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-baseline mb-8">
+            <span class="font-fun font-bold text-base text-white uppercase">Total</span>
+            <span class="text-2xl font-fun font-black text-primary drop-shadow-[1px_1px_0px_#000000]">
+              R$ {{ totalPrice() | number:'1.2-2' }}
+            </span>
+          </div>
+
+          <button class="btn-homer-primary w-full py-3.5 font-fun text-sm font-bold uppercase tracking-wider shadow-neon-yellow" (click)="checkout()">
+            Finalizar Compra
           </button>
         </div>
-
-        <div class="item-subtotal">
-          <span class="subtotal-label">Subtotal</span>
-          <span class="subtotal-value">R$ {{ getItemSubtotal(item) | number:'1.2-2' }}</span>
-        </div>
-      </div>
       }
 
-      <!-- Ações do carrinho -->
-      <div class="cart-actions">
-        @if (cartItems().length > 0) {
-        <button class="clear-cart-btn" (click)="clearCart()">
-          Limpar Carrinho
-        </button>
-        }
-
-        <button class="continue-shopping-btn" routerLink="/products">
-          <ng-icon name="heroBuildingStorefront" size="16"></ng-icon>
-          Continuar Comprando
-        </button>
-      </div>
     </div>
-    } @else {
-    <!-- Carrinho vazio -->
-    <div class="empty-cart">
-      <ng-icon name="heroShoppingBag" size="48" class="empty-cart-icon"></ng-icon>
-      <h2>Seu carrinho está vazio</h2>
-      <p>Adicione alguns produtos deliciosos ao seu carrinho!</p>
-      <button class="explore-btn" routerLink="/products">
-        <ng-icon name="heroBuildingStorefront" size="16" class="btn-icon"></ng-icon>
-        Explorar Bebidas
-      </button>
-    </div>
-    }
   </div>
-
-  <!-- Resumo do pedido (só mostra se houver itens) -->
-  @if (!isCartEmpty()) {
-  <div class="cart-summary">
-    <div class="summary-row">
-      <span class="summary-label">Total de itens:</span>
-      <span class="summary-value">{{ totalItems() }}</span>
-    </div>
-
-    <div class="summary-row total-row">
-      <span class="summary-label">Total:</span>
-      <span class="summary-value total-price">R$ {{ totalPrice() | number:'1.2-2' }}</span>
-    </div>
-
-    <button class="checkout-btn" (click)="checkout()">
-      Finalizar Compra
-    </button>
-  </div>
-  }
 </div>

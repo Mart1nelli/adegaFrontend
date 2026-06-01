@@ -9,7 +9,6 @@ import { Notification, NotificationService } from '../../../core/services/notifi
   selector: 'app-notifications',
   imports: [CommonModule, NgIconComponent],
   templateUrl: './notifications.html',
-  styleUrl: './notifications.scss',
   providers: [provideIcons({ heroCheckCircle, heroXCircle, heroExclamationTriangle, heroInformationCircle, heroXMark })]
 })
 export class Notifications implements OnInit, OnDestroy {

@@ -6,8 +6,7 @@ import { Hero } from '../hero/hero';
 @Component({
   selector: 'app-home',
   imports: [Hero, FeaturedProducts, Header],
-  templateUrl: './home.html',
-  styleUrl: './home.scss'
+  templateUrl: './home.html'
 })
 export class Home {
 

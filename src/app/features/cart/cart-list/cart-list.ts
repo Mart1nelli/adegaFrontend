@@ -10,7 +10,6 @@ import { NotificationService } from '../../../core/services/notification.service
   selector: 'app-cart-list',
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './cart-list.html',
-  styleUrl: './cart-list.scss',
   providers: [provideIcons({ heroShoppingBag, heroBuildingStorefront, heroPlus, heroMinus, heroTrash })]
 })
 export class CartList {

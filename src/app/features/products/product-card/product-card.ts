@@ -9,7 +9,6 @@ import { Product } from '../../../core/models/product.models';
   selector: 'app-product-card',
   imports: [CommonModule, NgIconComponent],
   templateUrl: './product-card.html',
-  styleUrl: './product-card.scss',
   providers: [provideIcons({ heroExclamationTriangle, heroBolt, heroCheckCircle, heroShoppingBag, heroTag })]
 })
 export class ProductCard {

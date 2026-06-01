@@ -10,7 +10,6 @@ import { CartService } from '../../../core/services/cart.service';
   selector: 'app-header',
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
   providers: [provideIcons({ heroShoppingBag, heroBuildingStorefront, heroUser, heroMagnifyingGlass })]
 })
 export class Header {

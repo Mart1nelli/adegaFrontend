@@ -15,7 +15,6 @@ import { ProductCard } from '../product-card/product-card';
   selector: 'app-catalog',
   imports: [CommonModule, FormsModule, ProductCard, NgIconComponent],
   templateUrl: './catalog.html',
-  styleUrl: './catalog.scss',
   providers: [provideIcons({ heroTag, heroXMark, heroArrowPath, heroMagnifyingGlass, heroSparkles, lucideWine })]
 })
 export class Catalog implements OnInit, OnDestroy {

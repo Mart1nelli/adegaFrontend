@@ -13,7 +13,6 @@ import { NotificationService } from '../../../core/services/notification.service
   selector: 'app-profile',
   imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './profile.html',
-  styleUrl: './profile.scss',
   providers: [provideIcons({ heroUser, heroLockClosed })]
 })
 export class Profile implements OnInit {

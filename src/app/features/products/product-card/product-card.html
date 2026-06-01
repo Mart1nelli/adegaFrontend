@@ -1,113 +1,95 @@
-<div class="product-card">
+<div class="homer-card group flex h-full flex-col relative">
   <!-- Product Image Section -->
-  <div class="product-image-container">
-    <div class="product-image">
-      <img
-        [src]="product().imageUrl || '/assets/images/placeholder.png'"
-        [alt]="product().name"
-        loading="lazy">
+  <div class="relative w-full h-[220px] overflow-hidden bg-gradient-to-br from-dark-panel to-dark-bg border-b-2 border-black">
+    <img
+      [src]="product().imageUrl || '/assets/images/placeholder.png'"
+      [alt]="product().name"
+      loading="lazy"
+      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110">
 
-      <!-- Overlay com gradiente temático -->
-      <div class="image-overlay"></div>
+    <!-- Theme Glow Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
-      <!-- Badges -->
-      <div class="product-badges">
-        @if (product().stock === 0) {
-          <span class="badge badge-out-of-stock">
-            <ng-icon name="heroExclamationTriangle" size="16" class="badge-icon"></ng-icon>
-            Esgotado
-          </span>
-        } @else if (product().stock < 10) {
-          <span class="badge badge-low-stock">
-            <ng-icon name="heroBolt" size="16" class="badge-icon"></ng-icon>
-            Últimas unidades
-          </span>
-        } @else {
-          <span class="badge badge-in-stock">
-            <ng-icon name="heroCheckCircle" size="16" class="badge-icon"></ng-icon>
-            Em estoque
-          </span>
-        }
-      </div>
+    <!-- Badges -->
+    <div class="absolute right-3 top-3 z-[2]">
+      @if (product().stock === 0) {
+        <span class="inline-flex items-center gap-1 rounded-full border border-black bg-secondary px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-[2px_2px_0px_#000000]">
+          Esgotado
+        </span>
+      } @else if (product().stock < 10) {
+        <span class="inline-flex animate-pulse items-center gap-1 rounded-full border border-black bg-primary px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-black shadow-[2px_2px_0px_#000000]">
+          Últimas unidades
+        </span>
+      } @else {
+        <span class="inline-flex items-center gap-1 rounded-full border border-black bg-green-500 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-[2px_2px_0px_#000000]">
+          Disponível
+        </span>
+      }
+    </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <button
-          class="quick-action-btn"
-          (click)="onViewDetails()"
-          aria-label="Ver detalhes do produto">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-      </div>
+    <!-- Quick Actions -->
+    <div class="absolute bottom-3 right-3 z-[2] translate-y-[10px] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+      <button
+        class="flex h-[36px] w-[36px] items-center justify-center rounded-full border-2 border-black bg-primary text-black transition-all duration-150 hover:bg-white hover:scale-110 active:scale-95 shadow-[2px_2px_0px_#000000]"
+        (click)="onViewDetails()"
+        aria-label="Ver detalhes do produto">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
     </div>
   </div>
 
   <!-- Product Info Section -->
-  <div class="product-info">
+  <div class="flex flex-1 flex-col gap-3 p-5 bg-dark-surface">
     <!-- Category Badge -->
     @if (product().category) {
-      <div class="category-badge">
-        <ng-icon name="heroTag" size="12" class="category-icon"></ng-icon>
+      <div class="self-start inline-flex items-center gap-1 rounded border border-black/40 bg-accent/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent">
+        <ng-icon name="heroTag" size="10"></ng-icon>
         {{ getCategoryName() }}
       </div>
     }
 
     <!-- Product Name -->
-    <h3 class="product-name">
-      <button (click)="onViewDetails()" class="product-link" type="button">
+    <h3 class="m-0">
+      <button (click)="onViewDetails()" class="w-full text-left font-fun font-bold text-base leading-tight text-white transition-colors hover:text-primary bg-transparent border-none p-0 cursor-pointer" type="button">
         {{ product().name }}
       </button>
     </h3>
 
     <!-- Product Description -->
-    <p class="product-description">
+    <p class="m-0 line-clamp-2 text-xs leading-relaxed text-gray-400">
       {{ product().description }}
     </p>
 
     <!-- Price Section -->
-    <div class="price-section">
-      <div class="price-container">
-        <span class="product-price">
+    <div class="mt-auto pt-2">
+      <div class="flex items-baseline justify-between gap-2 border-t border-white/5 pt-3">
+        <span class="text-lg font-fun font-black text-primary">
           R$ {{ product().price | number:'1.2-2' }}
+        </span>
+        <span class="text-[10px] text-gray-500 font-medium font-fun">
+          {{ product().stock > 0 ? product().stock + ' un' : 'Sem estoque' }}
         </span>
       </div>
     </div>
 
-    <!-- Stock Info -->
-    <div class="stock-info" [class.low-stock]="product().stock < 10">
-      @if (product().stock > 0) {
-        <div class="stock-indicator">
-          <div class="stock-dot"></div>
-          <span class="stock-text">
-            {{ product().stock }} unidade{{ product().stock > 1 ? 's' : '' }} disponível{{ product().stock > 1 ? 'is' : '' }}
-          </span>
-        </div>
-      } @else {
-        <div class="stock-indicator out-of-stock">
-          <div class="stock-dot"></div>
-          <span class="stock-text">Produto esgotado</span>
-        </div>
-      }
-    </div>
-
     <!-- Action Buttons -->
-    <div class="product-actions">
+    <div class="mt-1">
       <button
-        class="btn btn-secondary btn-full"
+        class="w-full text-xs py-2 px-4 justify-center"
+        [class]="product().stock === 0 ? 'btn-homer-secondary opacity-50' : 'btn-homer-primary'"
         [disabled]="product().stock === 0"
         (click)="onAddToCart()">
         @if (product().stock > 0) {
-          <span class="btn-content">
-            <ng-icon name="heroShoppingBag" size="16" class="btn-icon"></ng-icon>
-            Adicionar ao Carrinho
+          <span class="flex items-center justify-center gap-2">
+            <ng-icon name="heroShoppingBag" size="14"></ng-icon>
+            Adicionar
           </span>
         } @else {
-          <span class="btn-content">
-            <ng-icon name="heroShoppingBag" size="16" class="btn-icon"></ng-icon>
-            Avise-me quando chegar
+          <span class="flex items-center justify-center gap-2">
+            Esgotado
           </span>
         }
       </button>

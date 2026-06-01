@@ -7,8 +7,7 @@ import { Notifications } from './shared/components/notifications/notifications';
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, Notifications],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  templateUrl: './app.html'
 })
 export class App implements OnInit {
 

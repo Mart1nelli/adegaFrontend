@@ -11,7 +11,6 @@ import { NotificationService } from '../../../core/services/notification.service
   selector: 'app-addresses',
   imports: [CommonModule, FormsModule, NgIconComponent],
   templateUrl: './addresses.html',
-  styleUrl: './addresses.scss',
   providers: [provideIcons({ heroPlus, heroTrash, heroPencil, heroMapPin, heroHome })]
 })
 export class Addresses implements OnInit {

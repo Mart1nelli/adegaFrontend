@@ -13,8 +13,7 @@ type CheckoutStep = 'address' | 'review' | 'done';
 @Component({
   selector: 'app-checkout',
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './checkout.html',
-  styleUrl: './checkout.scss'
+  templateUrl: './checkout.html'
 })
 export class Checkout implements OnInit {
   private apiService = inject(ApiService);

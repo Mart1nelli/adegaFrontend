@@ -9,7 +9,6 @@ import { lucideAward, lucideBeer, lucideCoffee, lucideMartini, lucideTruck, luci
   selector: 'app-hero',
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './hero.html',
-  styleUrl: './hero.scss',
   providers: [provideIcons({ lucideBeer, lucideAward, lucideTruck, lucideWine, lucideMartini, lucideCoffee, heroShieldCheck, heroBuildingStorefront, heroUser })]
 })
 export class Hero implements OnInit, OnDestroy {

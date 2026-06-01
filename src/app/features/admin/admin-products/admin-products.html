@@ -1,99 +1,165 @@
-<div class="admin-section">
-  <div class="section-header">
-    <h1>Produtos</h1>
-    <button class="btn btn-primary" (click)="openCreate()">+ Novo Produto</button>
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-black text-[#FED90F] font-[Fredoka]">Produtos</h1>
+      <p class="text-white/40 text-sm mt-0.5">Gerencie o catálogo da adega</p>
+    </div>
+    <button (click)="openCreate()"
+      class="flex items-center gap-2 bg-[#FED90F] hover:bg-[#E5C20D] text-[#0B0B0D] font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] active:scale-[0.98]">
+      + Novo Produto
+    </button>
   </div>
 
-  <div class="search-bar">
+  <!-- Search -->
+  <div class="flex gap-3">
     <input
       type="text"
       [(ngModel)]="searchText"
       placeholder="Buscar por nome..."
-      class="search-input"
       (keyup.enter)="search()"
+      class="flex-1 bg-[#141418] border border-[#FED90F]/15 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 focus:ring-1 focus:ring-[#FED90F]/20 transition-all"
     />
-    <button class="btn btn-secondary" (click)="search()">Buscar</button>
+    <button (click)="search()"
+      class="px-4 py-2.5 bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl text-[#FED90F] text-sm font-medium hover:bg-[#FED90F]/10 transition-all">
+      Buscar
+    </button>
   </div>
 
+  <!-- Loading -->
   @if (isLoading()) {
-    <p class="loading-msg">Carregando...</p>
+    <div class="flex items-center justify-center py-16">
+      <div class="w-8 h-8 rounded-full border-2 border-[#FED90F]/20 border-t-[#FED90F] animate-spin"></div>
+    </div>
   } @else {
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Categoria</th>
-          <th>Preço</th>
-          <th>Estoque</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (product of products(); track product.id) {
-          <tr>
-            <td>{{ product.id }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.category?.name ?? '—' }}</td>
-            <td>R$ {{ product.price | number:'1.2-2' }}</td>
-            <td>{{ product.stock }}</td>
-            <td class="actions">
-              <button class="btn-icon edit" (click)="openEdit(product)">✏️</button>
-              <button class="btn-icon delete" (click)="delete(product)">🗑️</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
 
-    <div class="pagination">
-      <button class="btn btn-secondary" [disabled]="page() <= 1" (click)="prevPage()">«</button>
-      <span>Página {{ page() }} / {{ totalPages() }}</span>
-      <button class="btn btn-secondary" [disabled]="page() >= totalPages()" (click)="nextPage()">»</button>
+    <!-- Table -->
+    <div class="bg-[#141418] border border-[#FED90F]/10 rounded-2xl overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-[#FED90F]/10">
+            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">ID</th>
+            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Nome</th>
+            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Categoria</th>
+            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Preço</th>
+            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Estoque</th>
+            <th class="text-right px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/[0.04]">
+          @for (product of products(); track product.id) {
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="px-5 py-3.5 text-white/40 font-mono text-xs">{{ product.id }}</td>
+              <td class="px-5 py-3.5 text-white font-medium">{{ product.name }}</td>
+              <td class="px-5 py-3.5">
+                <span class="bg-[#FED90F]/10 text-[#FED90F] text-xs font-medium px-2.5 py-1 rounded-full">
+                  {{ product.category?.name ?? '—' }}
+                </span>
+              </td>
+              <td class="px-5 py-3.5 text-[#FED90F] font-semibold">R$ {{ product.price | number:'1.2-2' }}</td>
+              <td class="px-5 py-3.5">
+                <span class="text-sm font-medium" [class]="product.stock > 10 ? 'text-green-400' : product.stock > 0 ? 'text-amber-400' : 'text-red-400'">
+                  {{ product.stock }}
+                </span>
+              </td>
+              <td class="px-5 py-3.5">
+                <div class="flex items-center justify-end gap-2">
+                  <button (click)="openEdit(product)" title="Editar"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A22] border border-white/5 text-white/40 hover:text-[#FED90F] hover:border-[#FED90F]/30 transition-all text-sm">
+                    ✏️
+                  </button>
+                  <button (click)="delete(product)" title="Excluir"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A22] border border-white/5 text-white/40 hover:text-[#DC2626] hover:border-[#DC2626]/30 transition-all text-sm">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-center gap-3">
+      <button (click)="prevPage()" [disabled]="page() <= 1"
+        class="px-4 py-2 rounded-xl border border-[#FED90F]/15 text-[#FED90F] text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FED90F]/10 transition-all">
+        «
+      </button>
+      <span class="text-white/50 text-sm">Página {{ page() }} / {{ totalPages() }}</span>
+      <button (click)="nextPage()" [disabled]="page() >= totalPages()"
+        class="px-4 py-2 rounded-xl border border-[#FED90F]/15 text-[#FED90F] text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FED90F]/10 transition-all">
+        »
+      </button>
     </div>
   }
 </div>
 
 <!-- Modal -->
 @if (showModal()) {
-  <div class="modal-overlay" (click)="showModal.set(false)">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <h2>{{ isEditing() ? 'Editar Produto' : 'Novo Produto' }}</h2>
-      <form (ngSubmit)="save()" class="modal-form">
-        <div class="form-row">
-          <label>Nome</label>
-          <input type="text" [(ngModel)]="form.name" name="name" required class="form-input" />
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+       (click)="showModal.set(false)">
+    <div class="bg-[#141418] border border-[#FED90F]/20 rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
+         (click)="$event.stopPropagation()">
+
+      <div class="flex items-center justify-between p-6 border-b border-[#FED90F]/10">
+        <h2 class="text-white font-bold text-lg">{{ isEditing() ? 'Editar Produto' : 'Novo Produto' }}</h2>
+        <button (click)="showModal.set(false)"
+          class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all text-sm">✕</button>
+      </div>
+
+      <form (ngSubmit)="save()" class="p-6 space-y-4">
+
+        <div class="space-y-1.5">
+          <label class="text-white/60 text-sm font-medium">Nome</label>
+          <input type="text" [(ngModel)]="form.name" name="name" required
+            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
         </div>
-        <div class="form-row">
-          <label>Descrição</label>
-          <textarea [(ngModel)]="form.description" name="description" class="form-input" rows="2"></textarea>
+
+        <div class="space-y-1.5">
+          <label class="text-white/60 text-sm font-medium">Descrição</label>
+          <textarea [(ngModel)]="form.description" name="description" rows="2"
+            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all resize-none"></textarea>
         </div>
-        <div class="form-row two-col">
-          <div>
-            <label>Preço (R$)</label>
-            <input type="number" [(ngModel)]="form.price" name="price" required min="0" step="0.01" class="form-input" />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="text-white/60 text-sm font-medium">Preço (R$)</label>
+            <input type="number" [(ngModel)]="form.price" name="price" required min="0" step="0.01"
+              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#FED90F]/50 transition-all" />
           </div>
-          <div>
-            <label>Estoque</label>
-            <input type="number" [(ngModel)]="form.stock" name="stock" required min="0" class="form-input" />
+          <div class="space-y-1.5">
+            <label class="text-white/60 text-sm font-medium">Estoque</label>
+            <input type="number" [(ngModel)]="form.stock" name="stock" required min="0"
+              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#FED90F]/50 transition-all" />
           </div>
         </div>
-        <div class="form-row">
-          <label>Categoria</label>
-          <select [(ngModel)]="form.categoryId" name="categoryId" class="form-input">
-            <option [ngValue]="null">— Selecione —</option>
+
+        <div class="space-y-1.5">
+          <label class="text-white/60 text-sm font-medium">Categoria</label>
+          <select [(ngModel)]="form.categoryId" name="categoryId"
+            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#FED90F]/50 transition-all">
+            <option [ngValue]="null" class="bg-[#1A1A22]">— Selecione —</option>
             @for (cat of categories(); track cat.id) {
-              <option [ngValue]="cat.id">{{ cat.name }}</option>
+              <option [ngValue]="cat.id" class="bg-[#1A1A22]">{{ cat.name }}</option>
             }
           </select>
         </div>
-        <div class="form-row">
-          <label>URL da Imagem</label>
-          <input type="url" [(ngModel)]="form.imageUrl" name="imageUrl" class="form-input" placeholder="https://..." />
+
+        <div class="space-y-1.5">
+          <label class="text-white/60 text-sm font-medium">URL da Imagem</label>
+          <input type="url" [(ngModel)]="form.imageUrl" name="imageUrl" placeholder="https://..."
+            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
         </div>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-secondary" (click)="showModal.set(false)">Cancelar</button>
-          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" (click)="showModal.set(false)"
+            class="flex-1 py-3 rounded-xl border border-white/10 text-white/60 text-sm font-medium hover:border-white/20 hover:text-white/80 transition-all">
+            Cancelar
+          </button>
+          <button type="submit" [disabled]="isSaving()"
+            class="flex-1 bg-[#FED90F] hover:bg-[#E5C20D] disabled:opacity-50 text-[#0B0B0D] font-bold py-3 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)]">
             {{ isSaving() ? 'Salvando...' : 'Salvar' }}
           </button>
         </div>

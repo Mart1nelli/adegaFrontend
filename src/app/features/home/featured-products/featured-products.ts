@@ -13,7 +13,6 @@ import { ProductCard } from '../../products/product-card/product-card';
   selector: 'app-featured-products',
   imports: [CommonModule, ProductCard, NgIconComponent],
   templateUrl: './featured-products.html',
-  styleUrl: './featured-products.scss',
   providers: [provideIcons({ lucideWine, lucideAward, lucideTruck, heroShieldCheck, heroArrowPath, heroStar })]
 })
 export class FeaturedProducts implements OnInit{

@@ -18,8 +18,7 @@ interface ProductForm {
 @Component({
   selector: 'app-admin-products',
   imports: [CommonModule, FormsModule],
-  templateUrl: './admin-products.html',
-  styleUrl: './admin-products.scss'
+  templateUrl: './admin-products.html'
 })
 export class AdminProducts implements OnInit {
   private apiService = inject(ApiService);

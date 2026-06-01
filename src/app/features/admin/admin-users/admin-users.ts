@@ -8,8 +8,7 @@ import { NotificationService } from '../../../core/services/notification.service
 @Component({
   selector: 'app-admin-users',
   imports: [CommonModule],
-  templateUrl: './admin-users.html',
-  styleUrl: './admin-users.scss'
+  templateUrl: './admin-users.html'
 })
 export class AdminUsers implements OnInit {
   private apiService = inject(ApiService);

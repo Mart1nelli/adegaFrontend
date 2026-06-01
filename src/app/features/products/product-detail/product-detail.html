@@ -1,86 +1,129 @@
-<div class="product-detail-container">
-  <!-- Loading State -->
-  @if (isLoading()) {
-  <div class="loading-container">
-    <div class="loading-spinner"></div>
-    <p>Carregando produto...</p>
+<div class="min-h-screen bg-dark-bg text-white pt-28 pb-16 px-4 md:px-8 relative overflow-hidden">
+  
+  <!-- Radioactive Nuclear Glow and Dark Obsidian Backdrop -->
+  <div class="absolute inset-0 pointer-events-none z-0">
+    <div class="absolute top-[20%] left-[-10%] w-[350px] h-[350px] rounded-full bg-primary/5 blur-[120px] nuclear-glow-pulse"></div>
+    <div class="absolute bottom-[20%] right-[-10%] w-[300px] h-[300px] rounded-full bg-secondary/5 blur-[100px] nuclear-glow-pulse"></div>
   </div>
-  }
 
-  <!-- Error State -->
-  @if (errorMessage()) {
-  <div class="error-container">
-    <div class="error-message">
-      <h3>Ops! Produto não encontrado</h3>
-      <p>{{ errorMessage() }}</p>
-      <button (click)="goBack()" class="back-button">Voltar ao Catálogo</button>
-    </div>
-  </div>
-  }
+  <div class="max-w-[1100px] mx-auto relative z-10">
+    <!-- Go Back Button -->
+    <button (click)="goBack()" class="btn-homer-outline px-5 py-2.5 text-xs mb-8">
+      ← Voltar ao Cardápio
+    </button>
 
-  <!-- Product Detail -->
-  @if (product(); as prod) {
-  <div class="product-detail">
-    <div class="product-image-section">
-      <img [src]="prod.imageUrl || '/assets/images/placeholder.png'"
-           [alt]="prod.name"
-           class="product-image">
-    </div>
-
-    <div class="product-info-section">
-      <button (click)="goBack()" class="back-button">← Voltar ao Catálogo</button>
-
-      <h1 class="product-title">{{ prod.name }}</h1>
-
-      @if (prod.category) {
-      <span class="product-category">{{ prod.category }}</span>
-      }
-
-      <div class="product-price">
-        R$ {{ prod.price | number:'1.2-2' }}
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-20 bg-dark-surface border-2 border-black rounded-2xl shadow-cartoon">
+        <div class="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin shadow-neon-yellow mb-6"></div>
+        <p class="text-lg font-fun font-bold text-primary animate-pulse">Buscando detalhes com o Homer...</p>
       </div>
+    }
 
-      <div class="product-description">
-        <h3>Descrição</h3>
-        <p>{{ prod.description || 'Sem descrição disponível.' }}</p>
+    <!-- Error State -->
+    @if (errorMessage()) {
+      <div class="flex flex-col items-center justify-center p-8 bg-red-950/20 border-2 border-secondary rounded-2xl shadow-cartoon max-w-lg mx-auto text-center">
+        <h3 class="text-xl font-bold font-fun text-secondary mb-3">D'oh! Algo deu errado</h3>
+        <p class="text-gray-400 text-sm mb-6">{{ errorMessage() }}</p>
+        <button (click)="goBack()" class="btn-homer-primary px-8 py-2.5">
+          Voltar ao Catálogo
+        </button>
       </div>
+    }
 
-      <div class="product-stock">
-        @if (prod.stock > 0) {
-        <span class="in-stock">
-          <ng-icon name="heroCheckCircle" size="16"></ng-icon>
-          {{ prod.stock }} em estoque
-        </span>
-        } @else {
-        <span class="out-of-stock">✗ Esgotado</span>
-        }
-      </div>
+    <!-- Product Detail -->
+    @if (product(); as prod) {
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        <!-- Left Side: Product Image -->
+        <div class="lg:col-span-5">
+          <div class="homer-card w-full aspect-square overflow-hidden bg-gradient-to-br from-dark-panel to-dark-bg border-4 border-black relative">
+            <img [src]="prod.imageUrl || '/assets/images/placeholder.png'"
+                 [alt]="prod.name"
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+          </div>
+        </div>
 
-      @if (prod.stock > 0) {
-      <div class="quantity-selector">
-        <span class="quantity-label">Quantidade:</span>
-        <div class="quantity-controls">
-          <button (click)="decreaseQuantity()"
-                  [disabled]="quantity() <= 1"
-                  class="quantity-btn">-</button>
-          <span class="quantity-value">{{ quantity() }}</span>
-          <button (click)="increaseQuantity()"
-                  [disabled]="quantity() >= prod.stock"
-                  class="quantity-btn">+</button>
+        <!-- Right Side: Product Information -->
+        <div class="lg:col-span-7 bg-dark-surface border-2 border-black p-6 md:p-8 rounded-2xl shadow-cartoon">
+          
+          @if (prod.category) {
+            <span class="inline-block bg-accent/15 border border-accent/30 text-accent text-xs font-bold font-fun px-3 py-1 rounded-md uppercase tracking-wider mb-4">
+              {{ prod.category.name || prod.category }}
+            </span>
+          }
+
+          <h1 class="font-fun text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight drop-shadow-[2px_2px_0px_#000000] mb-4">
+            {{ prod.name }}
+          </h1>
+
+          <div class="text-3xl font-fun font-black text-primary drop-shadow-[1px_1px_0px_#000000] mb-6">
+            R$ {{ prod.price | number:'1.2-2' }}
+          </div>
+
+          <div class="border-t border-white/5 pt-6 mb-6">
+            <h3 class="font-fun text-sm font-bold uppercase text-gray-400 tracking-wider mb-2.5">Descrição</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">{{ prod.description || 'Nenhuma descrição fornecida para este item.' }}</p>
+          </div>
+
+          <!-- Homer Approved Recommendation Box -->
+          <div class="bg-primary/5 border-2 border-dashed border-primary/30 p-4 rounded-xl mb-6 flex items-start gap-3.5">
+            <span class="text-3xl select-none">🤤</span>
+            <div>
+              <h4 class="text-xs font-bold font-fun text-primary uppercase tracking-wide m-0">O Pai Recomenda</h4>
+              <p class="text-xs text-gray-300 italic m-0 mt-1">
+                "Mmm... {{ prod.name }}... a causa e a solução para todos os problemas da vida!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Stock Indicator -->
+          <div class="mb-6 flex items-center gap-2 text-sm">
+            @if (prod.stock > 0) {
+              <span class="inline-flex items-center gap-1.5 font-bold text-green-400 font-fun">
+                <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+                {{ prod.stock }} unidades no freezer
+              </span>
+            } @else {
+              <span class="inline-flex items-center gap-1.5 font-bold text-secondary font-fun uppercase">
+                <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                Esgotado - O Homer bebeu tudo!
+              </span>
+            }
+          </div>
+
+          <!-- Quantity & Purchase Options -->
+          @if (prod.stock > 0) {
+            <div class="flex flex-col sm:flex-row sm:items-center gap-6 border-t border-white/5 pt-6">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold font-fun text-gray-400 uppercase tracking-wider">Quantidade:</span>
+                <div class="flex items-center bg-dark-panel border-2 border-black rounded-lg overflow-hidden shadow-[2px_2px_0px_#000000]">
+                  <button (click)="decreaseQuantity()"
+                          [disabled]="quantity() <= 1"
+                          class="w-9 h-9 flex items-center justify-center font-bold text-base text-primary hover:bg-primary hover:text-black disabled:opacity-35 transition-all">-</button>
+                  <span class="w-10 text-center font-bold text-sm font-fun text-white">{{ quantity() }}</span>
+                  <button (click)="increaseQuantity()"
+                          [disabled]="quantity() >= prod.stock"
+                          class="w-9 h-9 flex items-center justify-center font-bold text-base text-primary hover:bg-primary hover:text-black disabled:opacity-35 transition-all">+</button>
+                </div>
+              </div>
+
+              <button (click)="addToCart()"
+                      class="btn-homer-primary flex-1 py-3 px-6 text-sm font-fun font-bold uppercase tracking-wider shadow-neon-yellow"
+                      [disabled]="prod.stock === 0">
+                <span>Comprar - R$ {{ (prod.price * quantity()) | number:'1.2-2' }}</span>
+              </button>
+            </div>
+          } @else {
+            <div class="border-t border-white/5 pt-6">
+              <button class="btn-homer-secondary w-full py-3.5" disabled>
+                Indisponível
+              </button>
+            </div>
+          }
         </div>
       </div>
-
-      <button (click)="addToCart()"
-              class="add-to-cart-btn"
-              [disabled]="prod.stock === 0">
-        @if (prod.stock > 0) {
-        <span>Adicionar ao Carrinho - R$ {{ (prod.price * quantity()) | number:'1.2-2' }}</span>
-        } @else {
-        <span>Produto Indisponível</span>
-        }
-      </button>
-      }
-    </div>
+    }
   </div>
-  }
 </div>

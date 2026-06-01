@@ -10,8 +10,7 @@ const STATUS_OPTIONS = ['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED'
 @Component({
   selector: 'app-admin-orders',
   imports: [CommonModule, FormsModule],
-  templateUrl: './admin-orders.html',
-  styleUrl: './admin-orders.scss'
+  templateUrl: './admin-orders.html'
 })
 export class AdminOrders implements OnInit {
   private apiService = inject(ApiService);

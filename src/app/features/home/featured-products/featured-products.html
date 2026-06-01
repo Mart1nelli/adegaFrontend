@@ -1,45 +1,50 @@
-<section class="featured-products">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-badge">
-        <ng-icon name="heroStar" size="16" class="section-badge-icon"></ng-icon>
-        <span>Destaques da Semana</span>
-      </div>
+<section class="py-20 lg:py-32 bg-[#0B0B0D]">
+  <div class="container mx-auto px-4 max-w-7xl">
+    <div class="flex flex-col lg:flex-row gap-8 justify-between items-end mb-16">
+      <div class="flex-1 max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
+        <div class="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary/10 px-4 py-2 mb-6 text-xs sm:text-sm font-bold uppercase tracking-wider text-primary shadow-neon-yellow">
+          <ng-icon name="heroStar" size="16"></ng-icon>
+          <span class="font-fun">Destaques da Usina</span>
+        </div>
 
-      <h2 class="section-title">
-        <span class="title-accent">Produtos</span>
-        <span class="title-main">em Destaque</span>
-      </h2>
+        <h2 class="text-4xl lg:text-5xl font-fun font-black text-white mb-6">
+          <span class="text-primary tracking-wide drop-shadow-[2px_2px_0_#000000] uppercase">Produtos</span>
+          <span class="text-white block mt-2">Mais Desejados</span>
+        </h2>
 
-      <p class="section-subtitle">
-        Descubra nossa seleção especial de bebidas premium, escolhidos a dedo para os verdadeiros conhecedores.
-      </p>
+        <p class="text-base sm:text-lg text-gray-400 leading-relaxed mb-8">
+          A seleção favorita do Homer para curtir em frente à TV ou no Bar do Moe. Garanta os melhores rótulos e a legítima Duff Beer!
+        </p>
 
-      <div class="section-actions">
-        <a routerLink="/products" class="btn btn-outline">
-          <span>Ver Todos</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </a>
+        <div class="flex justify-center lg:justify-start">
+          <a routerLink="/products" class="btn-homer-outline no-underline">
+            <span>Ver Todos</span>
+            <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
 
-    <div class="products-showcase">
+    <!-- Products Showcase -->
+    <div class="relative w-full">
       @if (isLoading()) {
-        <div class="loading-state">
-          <div class="loading-spinner"></div>
-          <p>Carregando produtos especiais...</p>
+        <div class="flex flex-col items-center justify-center min-h-[400px] text-primary">
+          <div class="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mb-4 shadow-neon-yellow"></div>
+          <p class="text-lg font-fun animate-pulse">Abastecendo os freezers da usina...</p>
         </div>
       } @else if (featuredProducts().length === 0) {
-        <div class="empty-state">
-          <ng-icon name="lucideWine" size="16" class="empty-icon"></ng-icon>
-          <h3>Nenhum produto encontrado</h3>
-          <p>Volte em breve para ver nossas novidades!</p>
+        <div class="flex flex-col items-center justify-center min-h-[300px] rounded-2xl border-2 border-black bg-dark-surface p-8 text-center shadow-cartoon">
+          <div class="mb-4 rounded-full bg-primary/10 p-4 text-primary">
+            <ng-icon name="lucideWine" size="32"></ng-icon>
+          </div>
+          <h3 class="mb-2 text-xl font-bold font-fun text-white">Nenhum produto encontrado</h3>
+          <p class="text-gray-400">Volte em breve para ver nossas novidades!</p>
         </div>
       } @else {
-        <div class="products-grid">
-          @for (product of featuredProducts(); track product.id) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          @for (product of featuredProducts() | slice:0:4; track product.id) {
             <app-product-card
               [product]="product"
               (addToCart)="onAddToCart($event)">
@@ -49,23 +54,32 @@
       }
     </div>
 
-    <div class="section-footer">
-      <div class="trust-indicators">
-        <div class="indicator">
-          <ng-icon name="lucideAward" size="16" class="indicator-icon"></ng-icon>
-          <span>Qualidade Garantida</span>
+    <!-- Features bottom footer bar -->
+    <div class="mt-20 border-t border-white/10 pt-12">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div class="flex flex-col items-center gap-3 bg-dark-surface border-2 border-black p-5 rounded-2xl shadow-cartoon">
+          <div class="rounded-full bg-primary/10 border border-primary/20 p-3 text-primary">
+            <ng-icon name="lucideAward" size="24"></ng-icon>
+          </div>
+          <span class="text-sm font-bold font-fun text-white">Duff Oficial</span>
         </div>
-        <div class="indicator">
-          <ng-icon name="lucideTruck" size="16" class="indicator-icon"></ng-icon>
-          <span>Entrega Express</span>
+        <div class="flex flex-col items-center gap-3 bg-dark-surface border-2 border-black p-5 rounded-2xl shadow-cartoon">
+          <div class="rounded-full bg-secondary/10 border border-secondary/20 p-3 text-secondary">
+            <ng-icon name="lucideTruck" size="24"></ng-icon>
+          </div>
+          <span class="text-sm font-bold font-fun text-white">Entrega no Sofá</span>
         </div>
-        <div class="indicator">
-          <ng-icon name="heroShieldCheck" size="16" class="indicator-icon"></ng-icon>
-          <span>Pagamento Seguro</span>
+        <div class="flex flex-col items-center gap-3 bg-dark-surface border-2 border-black p-5 rounded-2xl shadow-cartoon">
+          <div class="rounded-full bg-accent/10 border border-accent/20 p-3 text-accent">
+            <ng-icon name="heroShieldCheck" size="24"></ng-icon>
+          </div>
+          <span class="text-sm font-bold font-fun text-white">Checkout Seguro</span>
         </div>
-        <div class="indicator">
-          <ng-icon name="heroArrowPath" size="16" class="indicator-icon"></ng-icon>
-          <span>Devolução Fácil</span>
+        <div class="flex flex-col items-center gap-3 bg-dark-surface border-2 border-black p-5 rounded-2xl shadow-cartoon font-bold">
+          <div class="rounded-full bg-primary/10 border border-primary/20 p-3 text-primary">
+            <ng-icon name="heroArrowPath" size="24"></ng-icon>
+          </div>
+          <span class="text-sm font-bold font-fun text-white">Garantia Moe</span>
         </div>
       </div>
     </div>

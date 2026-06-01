@@ -1,57 +1,75 @@
-<header class="header" [class.header-scrolled]="isScrolled()">
-  <div class="header-container">
+<header 
+  class="fixed inset-x-0 top-0 z-[1000] w-full box-border transition-all duration-300 ease-in-out backdrop-blur-md"
+  [class]="isScrolled() ? 'bg-dark-bg/95 border-b-2 border-primary shadow-neon-yellow' : 'bg-dark-bg/80 border-b border-white/5'"
+>
+  <div class="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-2 px-4 py-2 min-h-[56px] sm:gap-4 sm:px-6 sm:py-3 sm:min-h-[64px] lg:gap-8 lg:px-8 lg:py-4 lg:min-h-[80px]">
+    
     <!-- Logo -->
-    <div class="header-logo">
-      <a routerLink="/home" class="logo-link">
-        <span class="logo-text">Adega do Pai</span>
+    <div class="shrink-0">
+      <a routerLink="/home" class="transition-all duration-300 hover:scale-105 inline-block">
+        <span class="font-fun text-base sm:text-lg lg:text-2xl font-extrabold tracking-wider text-primary drop-shadow-[0_2px_8px_rgba(254,217,15,0.5)]">
+          🍻 Adega do Pai
+        </span>
       </a>
     </div>
 
     <!-- Barra de busca -->
-    <div class="header-search">
-      <div class="search-container">
-        <ng-icon name="heroMagnifyingGlass" size="18" class="search-icon"></ng-icon>
+    <div class="hidden md:block flex-1 max-w-[250px] lg:max-w-[400px]">
+      <div class="relative flex items-center">
+        <ng-icon name="heroMagnifyingGlass" size="18" class="absolute left-4 text-primary/70 z-10"></ng-icon>
         <input
           type="text"
           placeholder="Buscar bebidas..."
-          class="search-input"
+          class="w-full rounded-full border-2 border-white/10 bg-dark-surface/50 py-2.5 pl-12 pr-4 text-white text-sm backdrop-blur-md transition-all duration-300 placeholder-white/40 focus:border-primary focus:bg-dark-surface focus:shadow-neon-yellow focus:outline-none focus:scale-[1.02]"
         >
       </div>
     </div>
 
     <!-- Ações do usuário -->
-    <div class="header-actions">
-      <button class="action-btn explore-btn" routerLink="/products">
-        <ng-icon name="heroBuildingStorefront" size="16" class="btn-icon"></ng-icon>
-        <span>Explorar Bebidas</span>
+    <div class="flex items-center shrink-0 gap-1 sm:gap-2 lg:gap-4">
+      
+      <!-- Classe inline reaproveitável via Tailwind para os botões do header -->
+      @let btnClass = "group relative flex shrink-0 items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full border-2 border-primary/40 bg-primary/5 px-[8px] py-[6px] text-[11px] font-bold text-primary backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:bg-primary/20 hover:shadow-neon-yellow active:translate-y-0 sm:px-3 sm:py-1.5 sm:text-xs lg:px-5 lg:py-2.5 lg:text-sm";
+      @let glowClass = "absolute -left-full top-0 h-full w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-all duration-500 group-hover:left-full";
+
+      <button [class]="btnClass" routerLink="/products">
+        <div [class]="glowClass"></div>
+        <ng-icon name="heroBuildingStorefront" size="16" class="shrink-0"></ng-icon>
+        <span class="hidden lg:inline font-fun">Cardápio</span>
       </button>
 
       @if (isAuthenticated()) {
-        <div class="user-menu">
-          <button class="action-btn" routerLink="/account/profile">
-            <ng-icon name="heroUser" size="16" class="btn-icon"></ng-icon>
-            <span>{{ (currentUser()?.name ?? 'Conta').split(' ')[0] }}</span>
+        <div class="flex items-center gap-1 sm:gap-2">
+          <button [class]="btnClass" routerLink="/account/profile">
+            <div [class]="glowClass"></div>
+            <ng-icon name="heroUser" size="16" class="shrink-0"></ng-icon>
+            <span class="hidden lg:inline font-fun">{{ (currentUser()?.name ?? 'Conta').split(' ')[0] }}</span>
           </button>
+          
           @if (currentUser()?.role === 'admin') {
-            <button class="action-btn admin-btn" routerLink="/admin">
-              <span>Admin</span>
+            <button class="group relative flex shrink-0 items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full border-2 border-secondary bg-secondary/10 px-[8px] py-[6px] text-[11px] font-bold text-secondary backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary/20 hover:shadow-neon-red active:translate-y-0 sm:px-3 sm:py-1.5 sm:text-xs lg:px-5 lg:py-2.5 lg:text-sm" routerLink="/admin">
+              <div class="absolute -left-full top-0 h-full w-full bg-gradient-to-r from-transparent via-secondary/20 to-transparent transition-all duration-500 group-hover:left-full"></div>
+              <span class="hidden lg:inline font-fun">Console 7G</span>
             </button>
           }
-          <button class="action-btn logout-btn" (click)="logout()">
-            <span>Sair</span>
+          
+          <button [class]="btnClass" (click)="logout()">
+             <div [class]="glowClass"></div>
+            <span class="hidden lg:inline font-fun">Sair</span>
           </button>
         </div>
       } @else {
-        <button class="action-btn" routerLink="/auth/login">
-          <ng-icon name="heroUser" size="16" class="btn-icon"></ng-icon>
-          <span>Entrar</span>
+        <button [class]="btnClass" routerLink="/auth/login">
+           <div [class]="glowClass"></div>
+          <ng-icon name="heroUser" size="16" class="shrink-0"></ng-icon>
+          <span class="hidden lg:inline font-fun">Entrar</span>
         </button>
       }
 
-      <button class="action-btn cart-btn" routerLink="/cart">
-        <ng-icon name="heroShoppingBag" size="20" class="cart-icon"></ng-icon>
+      <button class="relative flex shrink-0 items-center justify-center gap-2 rounded-full border-2 border-accent bg-accent text-white font-fun font-bold transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-neon-pink h-[36px] w-[36px] sm:h-[40px] sm:w-[40px] lg:h-auto lg:w-auto lg:px-4 lg:py-2.5" routerLink="/cart">
+        <ng-icon name="heroShoppingBag" size="20" class="leading-none shrink-0"></ng-icon>
         @if (cartCount() > 0) {
-          <span class="cart-count">{{ cartCount() }}</span>
+          <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-black bg-primary text-[0.65rem] font-extrabold text-black shadow-lg lg:static lg:h-[20px] lg:w-[20px] lg:border-none lg:bg-black lg:text-accent lg:-translate-y-0">{{ cartCount() }}</span>
         }
       </button>
     </div>
