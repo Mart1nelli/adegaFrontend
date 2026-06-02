@@ -1,15 +1,19 @@
-import { inject, Injectable, signal } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable, tap } from "rxjs";
-import { AuthResponse, ChangePasswordRequest, LoginRequest, RegisterRequest, User } from "../models/auth.models";
-import { ApiService } from "./api.service";
+import { inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
+import {
+  AuthResponse,
+  ChangePasswordRequest,
+  LoginRequest,
+  RegisterRequest,
+  User,
+} from '../models/auth.models';
+import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class AuthService {
-
   private apiService = inject(ApiService);
   private router = inject(Router);
 
@@ -21,20 +25,20 @@ export class AuthService {
 
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.apiService.login(loginData).pipe(
-      tap(response => {
+      tap((response) => {
         this.setAuthData(response);
         this.router.navigate(['/']);
-      })
+      }),
     );
   }
 
   register(registerData: RegisterRequest): Observable<AuthResponse> {
     return this.apiService.register(registerData).pipe(
-      tap(response => {
+      tap((response) => {
         this.setAuthData(response);
         this.router.navigate(['/']);
-      })
-    )
+      }),
+    );
   }
 
   logout(): void {
@@ -44,19 +48,19 @@ export class AuthService {
 
   loadUserProfile(): Observable<User> {
     return this.apiService.getProfile().pipe(
-      tap(user => {
+      tap((user) => {
         this._currentUser.set(user);
         this._isAuthenticated.set(true);
-      })
-    )
+      }),
+    );
   }
 
-  refreshToken(): Observable<{ access_token: string }> {
+  refreshToken(): Observable<{ accessToken: string }> {
     const refresh_token = localStorage.getItem('refresh_token');
     return this.apiService.refreshToken(refresh_token ?? '').pipe(
-      tap(response => {
-        localStorage.setItem('access_token', response.access_token);
-      })
+      tap((response) => {
+        localStorage.setItem('access_token', response.accessToken);
+      }),
     );
   }
 
@@ -65,9 +69,9 @@ export class AuthService {
   }
 
   private setAuthData(response: AuthResponse): void {
-    localStorage.setItem('access_token', response.access_token);
-    if (response.refresh_token) {
-      localStorage.setItem('refresh_token', response.refresh_token);
+    localStorage.setItem('access_token', response.accessToken);
+    if (response.refreshToken) {
+      localStorage.setItem('refresh_token', response.refreshToken);
     }
     this._currentUser.set(response.user);
     this._isAuthenticated.set(true);
@@ -85,7 +89,7 @@ export class AuthService {
     const token = localStorage.getItem('access_token');
     if (token) {
       this.loadUserProfile().subscribe({
-        error: () => this.clearAuthData()
+        error: () => this.clearAuthData(),
       });
     }
   }

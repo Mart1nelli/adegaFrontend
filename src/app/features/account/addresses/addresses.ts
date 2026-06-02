@@ -5,17 +5,18 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroHome, heroMapPin, heroPencil, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { Address, CreateAddressRequest } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-addresses',
   imports: [CommonModule, FormsModule, NgIconComponent],
   templateUrl: './addresses.html',
-  providers: [provideIcons({ heroPlus, heroTrash, heroPencil, heroMapPin, heroHome })]
+  providers: [provideIcons({ heroPlus, heroTrash, heroPencil, heroMapPin, heroHome })],
 })
 export class Addresses implements OnInit {
-
   private apiService = inject(ApiService);
+  private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
 
   addresses = signal<Address[]>([]);
@@ -32,7 +33,7 @@ export class Addresses implements OnInit {
     state: '',
     zipCode: '',
     country: 'Brasil',
-    isDefault: false
+    isDefault: false,
   };
 
   ngOnInit() {
@@ -40,8 +41,11 @@ export class Addresses implements OnInit {
   }
 
   loadAddresses() {
+    const userId = this.authService.currentUser()?.id;
+    if (!userId) return;
+
     this.isLoading.set(true);
-    this.apiService.getMyAddresses().subscribe({
+    this.apiService.getMyAddresses(userId).subscribe({
       next: (addresses) => {
         this.addresses.set(addresses);
         this.isLoading.set(false);
@@ -49,13 +53,23 @@ export class Addresses implements OnInit {
       error: () => {
         this.notificationService.showError('Erro ao carregar endereços.');
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
   openCreateForm() {
     this.editingAddress.set(null);
-    this.formData = { street: '', number: '', complement: '', neighborhood: '', city: '', state: '', zipCode: '', country: 'Brasil', isDefault: false };
+    this.formData = {
+      street: '',
+      number: '',
+      complement: '',
+      neighborhood: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: 'Brasil',
+      isDefault: false,
+    };
     this.showForm.set(true);
   }
 
@@ -70,7 +84,7 @@ export class Addresses implements OnInit {
       state: address.state,
       zipCode: address.zipCode,
       country: address.country ?? 'Brasil',
-      isDefault: address.isDefault ?? false
+      isDefault: address.isDefault ?? false,
     };
     this.showForm.set(true);
   }
@@ -81,6 +95,9 @@ export class Addresses implements OnInit {
   }
 
   saveAddress() {
+    const userId = this.authService.currentUser()?.id;
+    if (!userId) return;
+
     const editing = this.editingAddress();
     if (editing) {
       this.apiService.updateAddress(editing.id, this.formData).subscribe({
@@ -89,16 +106,16 @@ export class Addresses implements OnInit {
           this.loadAddresses();
           this.closeForm();
         },
-        error: () => this.notificationService.showError('Erro ao atualizar endereço.')
+        error: () => this.notificationService.showError('Erro ao atualizar endereço.'),
       });
     } else {
-      this.apiService.createAddress(this.formData).subscribe({
+      this.apiService.createAddress(userId, this.formData).subscribe({
         next: () => {
           this.notificationService.showSuccess('Endereço criado!');
           this.loadAddresses();
           this.closeForm();
         },
-        error: () => this.notificationService.showError('Erro ao criar endereço.')
+        error: () => this.notificationService.showError('Erro ao criar endereço.'),
       });
     }
   }
@@ -110,7 +127,7 @@ export class Addresses implements OnInit {
         this.notificationService.showSuccess('Endereço excluído!');
         this.loadAddresses();
       },
-      error: () => this.notificationService.showError('Erro ao excluir endereço.')
+      error: () => this.notificationService.showError('Erro ao excluir endereço.'),
     });
   }
 }

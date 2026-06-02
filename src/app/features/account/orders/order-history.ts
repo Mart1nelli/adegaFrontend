@@ -3,15 +3,17 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Order } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-order-history',
   imports: [CommonModule, RouterLink],
-  templateUrl: './order-history.html'
+  templateUrl: './order-history.html',
 })
 export class OrderHistory implements OnInit {
   private apiService = inject(ApiService);
+  private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
 
   orders = signal<Order[]>([]);
@@ -23,8 +25,11 @@ export class OrderHistory implements OnInit {
   }
 
   loadOrders() {
+    const userId = this.authService.currentUser()?.id;
+    if (!userId) return;
+
     this.isLoading.set(true);
-    this.apiService.getMyOrders().subscribe({
+    this.apiService.getMyOrders(userId).subscribe({
       next: (orders) => {
         this.orders.set(orders);
         this.isLoading.set(false);
@@ -32,7 +37,7 @@ export class OrderHistory implements OnInit {
       error: () => {
         this.notificationService.showError('Erro ao carregar pedidos.');
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -47,7 +52,7 @@ export class OrderHistory implements OnInit {
       PROCESSING: 'Processando',
       SHIPPED: 'Enviado',
       DELIVERED: 'Entregue',
-      CANCELLED: 'Cancelado'
+      CANCELLED: 'Cancelado',
     };
     return map[status] ?? status;
   }
@@ -59,7 +64,7 @@ export class OrderHistory implements OnInit {
       PROCESSING: 'badge-info',
       SHIPPED: 'badge-primary',
       DELIVERED: 'badge-success',
-      CANCELLED: 'badge-danger'
+      CANCELLED: 'badge-danger',
     };
     return map[status] ?? 'badge-secondary';
   }

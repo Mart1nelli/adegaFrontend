@@ -60,7 +60,7 @@
             }}</span>
           </button>
 
-          @if (currentUser()?.role === 'admin') {
+          @if (currentUser()?.role === 'ADMIN') {
             <button
               class="group relative flex shrink-0 items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full border-2 border-secondary bg-secondary/10 px-2 py-1.5text-[11px] font-bold text-secondary backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary/20 hover:shadow-neon-red active:translate-y-0 sm:px-3 sm:py-1.5 sm:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
               routerLink="/admin"
@@ -68,7 +68,7 @@
               <div
                 class="absolute -left-full top-0 h-full w-full bg-linear-to-r from-transparent via-secondary/20 to-transparent transition-all duration-500 group-hover:left-full"
               ></div>
-              <span class="hidden lg:inline font-fun">Console 7G</span>
+              <span class="hidden lg:inline font-fun">Admin</span>
             </button>
           }
 

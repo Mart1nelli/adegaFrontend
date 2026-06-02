@@ -14,7 +14,8 @@ export const adminGuard = () => {
 
   // Verifica se é admin
   const user = authService.currentUser();
-  if (user && user.role === 'admin') {
+
+  if (user && user.role === 'ADMIN') {
     return true; // Permite acesso
   }
 

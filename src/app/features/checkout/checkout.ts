@@ -49,8 +49,11 @@ export class Checkout implements OnInit {
   }
 
   loadAddresses() {
+    const user = this.currentUser;
+    if (!user) return;
+
     this.isLoading.set(true);
-    this.apiService.getMyAddresses().subscribe({
+    this.apiService.getMyAddresses(user.id).subscribe({
       next: (addresses) => {
         this.addresses.set(addresses);
         const def = addresses.find((a) => a.isDefault);
@@ -88,7 +91,7 @@ export class Checkout implements OnInit {
       items,
     };
 
-    this.apiService.createOrder(body).subscribe({
+    this.apiService.createOrder(user.id, body).subscribe({
       next: (order) => {
         this.orderId.set(order.id);
         this.cartService.clearCart();

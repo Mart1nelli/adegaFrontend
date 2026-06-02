@@ -1,35 +1,58 @@
 <div class="space-y-6">
-
   <!-- Header -->
   <div>
-    <h1 class="text-2xl font-black text-[#FED90F] font-[Fredoka]">Usuários</h1>
+    <h1 class="text-2xl font-black text-primary font-[Fredoka]">Usuários</h1>
     <p class="text-white/40 text-sm mt-0.5">Gerencie todos os usuários cadastrados</p>
   </div>
 
   <!-- Loading -->
   @if (isLoading()) {
     <div class="flex items-center justify-center py-16">
-      <div class="w-8 h-8 rounded-full border-2 border-[#FED90F]/20 border-t-[#FED90F] animate-spin"></div>
+      <div
+        class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"
+      ></div>
     </div>
   } @else {
-    <div class="bg-[#141418] border border-[#FED90F]/10 rounded-2xl overflow-hidden">
+    <div class="bg-dark-surface border border-primary/10 rounded-2xl overflow-hidden">
       <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-[#FED90F]/10">
-            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">ID</th>
-            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Nome</th>
-            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">E-mail</th>
-            <th class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Perfil</th>
-            <th class="text-right px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider">Ações</th>
+          <tr class="border-b border-primary/10">
+            <th
+              class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider"
+            >
+              ID
+            </th>
+            <th
+              class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider"
+            >
+              Nome
+            </th>
+            <th
+              class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider"
+            >
+              E-mail
+            </th>
+            <th
+              class="text-left px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider"
+            >
+              Perfil
+            </th>
+            <th
+              class="text-right px-5 py-3.5 text-white/40 text-xs font-semibold uppercase tracking-wider"
+            >
+              Ações
+            </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/[0.04]">
+        <tbody class="divide-y divide-white/4">
           @for (user of users(); track user.id) {
-            <tr class="hover:bg-white/[0.02] transition-colors">
+            <tr class="hover:bg-white/2 transition-colors">
               <td class="px-5 py-3.5 text-white/40 font-mono text-xs">{{ user.id }}</td>
               <td class="px-5 py-3.5">
                 <div class="flex items-center gap-3">
-                  <div class="w-7 h-7 rounded-full bg-[#FED90F]/15 border border-[#FED90F]/25 flex items-center justify-center text-[#FED90F] text-xs font-bold flex-shrink-0">
+                  <div
+                    class="w-7 h-7 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-primary text-xs font-bold flex-shrink-0"
+                  >
                     {{ user.name.charAt(0).toUpperCase() }}
                   </div>
                   <span class="text-white font-medium">{{ user.name }}</span>
@@ -37,20 +60,29 @@
               </td>
               <td class="px-5 py-3.5 text-white/60">{{ user.email }}</td>
               <td class="px-5 py-3.5">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                  [class]="user.role === 'admin'
-                    ? 'bg-[#FED90F]/15 text-[#FED90F] border border-[#FED90F]/25'
-                    : 'bg-white/5 text-white/40 border border-white/10'">
-                  {{ user.role === 'admin' ? '⭐ Admin' : 'Usuário' }}
+                <span
+                  class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                  [class]="
+                    user.role === 'ADMIN'
+                      ? 'bg-primary/15 text-primary border border-primary/25'
+                      : 'bg-white/5 text-white/40 border border-white/10'
+                  "
+                >
+                  {{ user.role === 'ADMIN' ? '⭐ Admin' : 'Usuário' }}
                 </span>
               </td>
               <td class="px-5 py-3.5">
                 <div class="flex justify-end">
                   <button
                     [disabled]="user.id === currentUserId"
-                    [title]="user.id === currentUserId ? 'Não é possível excluir a própria conta' : 'Excluir'"
+                    [title]="
+                      user.id === currentUserId
+                        ? 'Não é possível excluir a própria conta'
+                        : 'Excluir'
+                    "
                     (click)="deleteUser(user)"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A22] border border-white/5 text-white/40 hover:text-[#DC2626] hover:border-[#DC2626]/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm">
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-dark-panel border border-white/5 text-white/40 hover:text-secondary hover:border-secondary/30 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm"
+                  >
                     🗑️
                   </button>
                 </div>
