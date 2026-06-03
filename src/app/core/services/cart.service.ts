@@ -76,7 +76,7 @@ export class CartService {
 
       const cartItem = this._backendCart()?.cartItems?.find((i) => i.productId === productId);
       if (cartItem) {
-        this.apiService.deleteCartItem(userId, cartItem.id).subscribe({
+        this.apiService.deleteCartItem(userId, cartItem.id!).subscribe({
           next: () => this._refreshCart(),
         });
       }
@@ -98,7 +98,7 @@ export class CartService {
 
       const cartItem = this._backendCart()?.cartItems?.find((i) => i.productId === productId);
       if (cartItem) {
-        this.apiService.updateCartItem(userId, cartItem.id, quantity).subscribe({
+        this.apiService.updateCartItem(userId, cartItem.id!, quantity).subscribe({
           next: () => this._refreshCart(),
         });
       }
@@ -119,7 +119,7 @@ export class CartService {
       const backendItems = this._backendCart()?.cartItems ?? [];
       if (backendItems.length === 0) return;
 
-      forkJoin(backendItems.map((i) => this.apiService.deleteCartItem(userId, i.id))).subscribe({
+      forkJoin(backendItems.map((i) => this.apiService.deleteCartItem(userId, i.id!))).subscribe({
         next: () => this._refreshCart(),
       });
     } else {
@@ -133,7 +133,10 @@ export class CartService {
   }
 
   getOrderItems(): { productId: number; quantity: number }[] {
-    return this.cartItems().map((i) => ({ productId: i.product.id, quantity: i.quantity }));
+    return this.cartItems().map((i) => ({
+      productId: i.product.id!,
+      quantity: i.quantity,
+    }));
   }
 
   // ---- Private helpers ----
@@ -161,7 +164,7 @@ export class CartService {
     if (localItems.length === 0) return;
 
     const requests = localItems.map((item) =>
-      this.apiService.addCartItem(userId, { productId: item.product.id, quantity: item.quantity }),
+      this.apiService.addCartItem(userId, { productId: item.product.id!, quantity: item.quantity }),
     );
 
     forkJoin(requests).subscribe({
@@ -189,12 +192,12 @@ export class CartService {
     const existingItem = this._backendCart()?.cartItems?.find((i) => i.productId === product.id);
     if (existingItem) {
       this.apiService
-        .updateCartItem(userId, existingItem.id, existingItem.quantity + quantity)
+        .updateCartItem(userId, existingItem.id!, existingItem.quantity + quantity)
         .subscribe({
           next: () => this._refreshCart(),
         });
     } else {
-      this.apiService.addCartItem(userId, { productId: product.id, quantity }).subscribe({
+      this.apiService.addCartItem(userId, { productId: product.id!, quantity }).subscribe({
         next: () => this._refreshCart(),
       });
     }

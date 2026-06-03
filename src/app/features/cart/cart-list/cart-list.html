@@ -97,7 +97,7 @@
 
                 <button
                   class="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-black bg-secondary hover:bg-secondary-hover text-white transition-all shadow-[2px_2px_0px_#000000]"
-                  (click)="removeItem(item.product.id)"
+                  (click)="removeItem(item.product.id!)"
                   aria-label="Remover item"
                 >
                   <ng-icon name="heroTrash" size="14"></ng-icon>

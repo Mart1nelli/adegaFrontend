@@ -12,9 +12,12 @@ import {
 import {
   Address,
   Cart,
+  CartItem,
+  Category,
   CreateAddressRequest,
   CreateOrderRequest,
   Order,
+  PaginatedProducts,
   PaymentMethod,
   Product,
   ProductFilters,
@@ -28,7 +31,6 @@ export class ApiService {
   private apiUrl = environment.apiUrl;
 
   // --- AUTH ---
-
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, loginData);
   }
@@ -38,8 +40,6 @@ export class ApiService {
   }
 
   getProfile(): Observable<User> {
-    // Nota: Como o AuthController do Spring não tem a rota de perfil descrita ainda,
-    // o padrão é buscar pelo id do usuário logado na rota de users. Ajuste se necessário.
     return this.http.get<User>(`${this.apiUrl}/users/me`);
   }
 
@@ -55,19 +55,20 @@ export class ApiService {
   }
 
   // --- PRODUCTS ---
-
-  // Nota: Ajuste a tipagem de retorno de PaginatedProducts para Product[] se o seu frontend
-  // não for usar paginação via banco, já que o Spring está retornando List<ProductResponse> simples.
-  getProducts(filters?: ProductFilters): Observable<any> {
+  getProducts(filters: ProductFilters): Observable<PaginatedProducts> {
     let params = new HttpParams();
+
+    // Itera sobre as chaves da interface ProductFilters
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
-        if (value !== null && value !== undefined && value !== '') {
+        if (value !== undefined && value !== null) {
           params = params.set(key, value.toString());
         }
       });
     }
-    return this.http.get<any>(`${this.apiUrl}/products`, { params });
+
+    // Certifique-se de que a URL base termine em /products
+    return this.http.get<PaginatedProducts>(`${this.apiUrl}/products`, { params });
   }
 
   getProduct(id: number): Observable<Product> {
@@ -75,18 +76,15 @@ export class ApiService {
   }
 
   // --- USER ---
-
   getUser(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`);
   }
 
   updateUser(id: number, data: Partial<User>): Observable<User> {
-    // Trocado de PATCH para PUT conforme definido no seu UserController
     return this.http.put<User>(`${this.apiUrl}/users/${id}`, data);
   }
 
-  // --- ADDRESSES (Mapeado com foco no userId conforme AddressController) ---
-
+  // --- ADDRESSES
   getMyAddresses(userId: number): Observable<Address[]> {
     return this.http.get<Address[]>(`${this.apiUrl}/addresses/user/${userId}`);
   }
@@ -103,19 +101,16 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/addresses/${id}`);
   }
 
-  // --- CART (Refatorado completamente para bater nas rotas /user/{userId} do Spring) ---
-
+  // --- CART
   getCart(userId: number): Observable<Cart> {
     return this.http.get<Cart>(`${this.apiUrl}/carts/user/${userId}`);
   }
 
-  addCartItem(userId: number, data: any): Observable<Cart> {
-    // No seu CartController, addItem espera o AddToCartRequest e retorna a CartResponse atualizada
-    return this.http.post<Cart>(`${this.apiUrl}/carts/user/${userId}/items`, data);
+  addCartItem(userId: number, data: { productId: number; quantity: number }): Observable<CartItem> {
+    return this.http.post<CartItem>(`${this.apiUrl}/cart/${userId}/items`, data);
   }
 
   updateCartItem(userId: number, cartItemId: number, quantity: number): Observable<Cart> {
-    // Usa @RequestParam para quantidade: /user/{userId}/items/{cartItemId}?quantity=X
     const params = new HttpParams().set('quantity', quantity.toString());
     return this.http.put<Cart>(`${this.apiUrl}/carts/user/${userId}/items/${cartItemId}`, null, {
       params,
@@ -131,7 +126,6 @@ export class ApiService {
   }
 
   // --- ORDERS ---
-
   createOrder(userId: number, data: CreateOrderRequest): Observable<Order> {
     return this.http.post<Order>(`${this.apiUrl}/orders/user/${userId}`, data);
   }
@@ -141,25 +135,21 @@ export class ApiService {
   }
 
   getOrder(userId: number, orderId: number): Observable<Order> {
-    // O seu Spring exige @RequestParam Long userId na busca por ID
     const params = new HttpParams().set('userId', userId.toString());
     return this.http.get<Order>(`${this.apiUrl}/orders/${orderId}`, { params });
   }
 
   // --- PAYMENT METHODS ---
-
   getPaymentMethods(): Observable<PaymentMethod[]> {
-    // Caso ainda não tenha um controller dedicado, mantemos mapeado para a futura implementação
     return this.http.get<PaymentMethod[]>(`${this.apiUrl}/payment-methods`);
   }
 
   // --- ADMIN: Products ---
-
-  createProduct(data: any): Observable<Product> {
+  createProduct(data: Product): Observable<Product> {
     return this.http.post<Product>(`${this.apiUrl}/products`, data);
   }
 
-  updateProduct(id: number, data: any): Observable<Product> {
+  updateProduct(id: number, data: Product): Observable<Product> {
     return this.http.put<Product>(`${this.apiUrl}/products/${id}`, data);
   }
 
@@ -168,7 +158,6 @@ export class ApiService {
   }
 
   // --- ADMIN: Users ---
-
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
@@ -178,21 +167,29 @@ export class ApiService {
   }
 
   // --- ADMIN: Orders ---
-
   getAllOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/orders`);
   }
 
   updateOrderStatus(id: number, status: string): Observable<Order> {
-    // Atualizado para usar @RequestParam conforme o método updateStatus do OrderController
     const params = new HttpParams().set('status', status);
     return this.http.put<Order>(`${this.apiUrl}/orders/${id}/status`, null, { params });
   }
 
   // --- CATEGORIES ---
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+  }
 
-  getCategories(): Observable<any[]> {
-    // Corrigido de /category para /categories de acordo com o CategoryController
-    return this.http.get<any[]>(`${this.apiUrl}/categories`);
+  createCategory(data: Category): Observable<Category> {
+    return this.http.post<Category>(`${this.apiUrl}/categories`, data);
+  }
+
+  updateCategory(id: number, data: Category): Observable<Category> {
+    return this.http.put<Category>(`${this.apiUrl}/categories/${id}`, data);
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/categories/${id}`);
   }
 }

@@ -1,5 +1,5 @@
 export interface Product {
-  id: number;
+  id?: number;
   name: string;
   description?: string;
   price: number;
@@ -16,7 +16,7 @@ export interface Product {
 }
 
 export interface Category {
-  id: number;
+  id?: number;
   name: string;
   description?: string;
   createdAt?: string;
@@ -43,12 +43,12 @@ export interface Review {
 }
 
 export interface ProductFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
   categoryId?: number;
   minPrice?: number;
   maxPrice?: number;
-  search?: string;
-  page?: number;
-  limit?: number;
 }
 
 export interface PaginatedProducts {
@@ -88,7 +88,7 @@ export interface CreateAddressRequest {
 }
 
 export interface CartItem {
-  id: number;
+  id?: number;
   cartId: number;
   productId: number;
   product: Product;

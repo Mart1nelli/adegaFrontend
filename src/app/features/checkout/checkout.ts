@@ -81,7 +81,7 @@ export class Checkout implements OnInit {
     this.isPlacing.set(true);
 
     const items = this.cartItems.map((item) => ({
-      productId: item.product.id,
+      productId: item.product.id!,
       quantity: item.quantity,
     }));
 

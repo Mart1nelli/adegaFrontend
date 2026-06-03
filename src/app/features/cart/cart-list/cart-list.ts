@@ -32,14 +32,14 @@ export class CartList {
 
   // Método para aumentar quantidade
   increaseQuantity(item: CartItemView) {
-    this.cartService.updateQuantity(item.product.id, item.quantity + 1);
+    this.cartService.updateQuantity(item.product.id!, item.quantity + 1);
     this.notificationService.showSuccess('Quantidade atualizada!');
   }
 
   // Método para diminuir quantidade
   decreaseQuantity(item: CartItemView) {
     if (item.quantity > 1) {
-      this.cartService.updateQuantity(item.product.id, item.quantity - 1);
+      this.cartService.updateQuantity(item.product.id!, item.quantity - 1);
       this.notificationService.showSuccess('Quantidade atualizada!');
     }
   }

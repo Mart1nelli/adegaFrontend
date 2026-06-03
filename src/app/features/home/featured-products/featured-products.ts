@@ -39,7 +39,7 @@ export class FeaturedProducts implements OnInit {
   private loadFeaturedProducts() {
     this.isLoading.set(true);
 
-    this.apiService.getProducts({ limit: 6 }).subscribe({
+    this.apiService.getProducts({ page: 0, limit: 6 }).subscribe({
       next: (response) => {
         this.featuredProducts.set(response.data || []);
         this.isLoading.set(false);

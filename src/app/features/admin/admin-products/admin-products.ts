@@ -48,8 +48,12 @@ export class AdminProducts implements OnInit {
 
   loadProducts() {
     this.isLoading.set(true);
+
     this.apiService
-      .getProducts({ page: this.page(), limit: 15, search: this.searchText })
+      .getProducts({
+        page: this.page(),
+        limit: 15,
+      })
       .subscribe({
         next: (data: PaginatedProducts) => {
           this.products.set(data.data);
@@ -90,20 +94,21 @@ export class AdminProducts implements OnInit {
   save() {
     this.isSaving.set(true);
 
-    // Criamos um novo objeto contendo tudo do form, mas omitindo explicitamente o ID na tipagem
-    const productData: Omit<ProductForm, 'id'> = {
+    // Tratamento dos valores nulos para satisfazer o tipo 'number' do backend
+    const productData = {
       name: this.form.name,
       description: this.form.description,
-      price: this.form.price,
-      stock: this.form.stock,
-      categoryId: this.form.categoryId,
+      price: this.form.price ?? 0,
+      stock: this.form.stock ?? 0,
+      categoryId: this.form.categoryId ?? null,
       imageUrl: this.form.imageUrl,
     };
 
+    // Usamos 'as any' ou garantimos a compatibilidade com a interface Product
     const req =
       this.isEditing() && this.form.id
-        ? this.apiService.updateProduct(this.form.id, productData)
-        : this.apiService.createProduct(productData);
+        ? this.apiService.updateProduct(this.form.id, productData as Product)
+        : this.apiService.createProduct(productData as Product);
 
     req.subscribe({
       next: () => {
@@ -123,7 +128,7 @@ export class AdminProducts implements OnInit {
 
   delete(product: Product) {
     if (!confirm(`Excluir "${product.name}"?`)) return;
-    this.apiService.deleteProduct(product.id).subscribe({
+    this.apiService.deleteProduct(product.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Produto excluído.');
         this.loadProducts();
