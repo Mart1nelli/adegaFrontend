@@ -43,11 +43,8 @@ export class ApiService {
     return this.http.get<User>(`${this.apiUrl}/users/me`);
   }
 
-  // O Spring espera uma String crua/Body Text para o refreshToken
   refreshToken(refreshToken: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, refreshToken, {
-      headers: { 'Content-Type': 'text/plain' },
-    });
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, { refreshToken });
   }
 
   changePassword(data: ChangePasswordRequest): Observable<{ message: string }> {

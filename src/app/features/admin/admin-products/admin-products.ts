@@ -49,9 +49,12 @@ export class AdminProducts implements OnInit {
   loadProducts() {
     this.isLoading.set(true);
 
+    // O Spring espera que a página 0 seja a primeira
+    const pageIndex = this.page() - 1;
+
     this.apiService
       .getProducts({
-        page: this.page(),
+        page: pageIndex, // Ajustado para 0-based
         limit: 15,
       })
       .subscribe({
@@ -60,7 +63,8 @@ export class AdminProducts implements OnInit {
           this.totalPages.set(data.totalPages);
           this.isLoading.set(false);
         },
-        error: () => {
+        error: (err) => {
+          console.error('Erro ao buscar produtos:', err);
           this.isLoading.set(false);
         },
       });
@@ -102,6 +106,7 @@ export class AdminProducts implements OnInit {
       stock: this.form.stock ?? 0,
       categoryId: this.form.categoryId ?? null,
       imageUrl: this.form.imageUrl,
+      isActive: true,
     };
 
     // Usamos 'as any' ou garantimos a compatibilidade com a interface Product

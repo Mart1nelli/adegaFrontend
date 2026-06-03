@@ -4,10 +4,9 @@
       <h1 class="text-primary text-2xl font-black font-[Fredoka]">Categorias</h1>
       <p class="text-white/40 text-sm mt-0.5">Gerencie todas as categorias</p>
     </div>
-
     <button
       (click)="openCreate()"
-      class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-dark-bg font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] active:scale-[0.98]"
+      class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-dark-bg font-bold px-4 py-2.5 rounded-xl text-sm transition-all"
     >
       + Nova Categoria
     </button>
@@ -21,26 +20,30 @@
     </div>
   } @else if (categories().length === 0) {
     <div class="bg-dark-surface border border-primary/10 rounded-2xl p-12 text-center">
-      <div class="text-4xl mb-3">📋</div>
       <p class="text-white/40 text-sm">Nenhuma categoria encontrada.</p>
     </div>
   } @else {
-    <div class="bg-dark-surface border border-white/5 rounded-2xl overflow-hidden">
-      <table class="w-full text-left border-collapse">
+    <div class="bg-dark-surface border border-primary/10 rounded-2xl overflow-hidden">
+      <table class="w-full text-sm">
         <thead>
-          <tr class="border-b border-white/5 text-white/50 text-xs uppercase tracking-wider">
-            <th class="p-4">Nome</th>
-            <th class="p-4">Descrição</th>
-            <th class="p-4 text-right">Ações</th>
+          <tr class="border-b border-primary/10 text-white/40 text-xs uppercase tracking-wider">
+            <th class="px-5 py-3.5 text-left">Nome</th>
+            <th class="px-5 py-3.5 text-left">Descrição</th>
+            <th class="px-5 py-3.5 text-right">Ações</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-white/4">
           @for (cat of categories(); track cat.id) {
-            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-              <td class="p-4 text-white font-medium">{{ cat.name }}</td>
-              <td class="p-4 text-white/60">{{ cat.description }}</td>
-              <td class="p-4 text-right">
-                <button class="text-primary hover:text-primary/80 transition-colors">Editar</button>
+            <tr class="hover:bg-white/2 transition-colors">
+              <td class="px-5 py-3.5 text-white font-medium">{{ cat.name }}</td>
+              <td class="px-5 py-3.5 text-white/60">{{ cat.description || '—' }}</td>
+              <td class="px-5 py-3.5 text-right">
+                <button (click)="openEdit(cat)" class="mr-3 text-primary hover:text-primary-hover">
+                  ✏️
+                </button>
+                <button (click)="confirmDelete(cat)" class="text-red-400 hover:text-red-300">
+                  🗑️
+                </button>
               </td>
             </tr>
           }
@@ -49,3 +52,78 @@
     </div>
   }
 </div>
+
+@if (showModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    (click)="showModal.set(false)"
+  >
+    <div
+      class="bg-dark-surface border border-primary/20 rounded-2xl w-full max-w-md p-6"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-white font-bold text-lg mb-4">
+        {{ isEditing() ? 'Editar' : 'Nova' }} Categoria
+      </h2>
+
+      <form (ngSubmit)="save()" class="space-y-4">
+        <div>
+          <label class="text-white/60 text-sm block mb-1">Nome</label>
+          <input
+            [(ngModel)]="form.name"
+            name="name"
+            required
+            type="text"
+            class="w-full bg-dark-surface border border-primary/15 rounded-xl px-4 py-3 text-white focus:border-primary outline-none transition-all"
+          />
+        </div>
+        <div>
+          <label class="text-white/60 text-sm block mb-1">Descrição</label>
+          <textarea
+            [(ngModel)]="form.description"
+            name="description"
+            rows="3"
+            class="w-full bg-dark-surface border border-primary/15 rounded-xl px-4 py-3 text-white focus:border-primary outline-none transition-all"
+          ></textarea>
+        </div>
+        <button
+          [disabled]="isSaving()"
+          type="submit"
+          class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 text-dark-bg py-3 rounded-xl font-bold transition-all"
+        >
+          {{ isSaving() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </form>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div
+      class="bg-dark-surface border border-red-500/30 rounded-2xl w-full max-w-sm p-6 shadow-2xl"
+    >
+      <h2 class="text-white font-bold text-lg mb-2">Excluir Categoria?</h2>
+      <p class="text-white/60 text-sm mb-6">
+        Tem certeza que deseja excluir "<strong>{{ categoryToDelete()?.name }}</strong
+        >"? Esta ação não poderá ser desfeita.
+      </p>
+      <div class="flex gap-3">
+        <button
+          (click)="showDeleteModal.set(false)"
+          type="button"
+          class="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 font-medium hover:bg-white/5"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="executeDelete()"
+          type="button"
+          class="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold"
+        >
+          Confirmar Exclusão
+        </button>
+      </div>
+    </div>
+  </div>
+}

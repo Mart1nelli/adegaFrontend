@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import {
   AuthResponse,
   ChangePasswordRequest,
@@ -85,13 +85,19 @@ export class AuthService {
   }
 
   /** Call on app startup to restore auth state from localStorage. */
-  initAuth(): void {
+  initAuth(): Observable<User | null> {
     const token = localStorage.getItem('access_token');
-    if (token) {
-      this.loadUserProfile().subscribe({
-        error: () => this.clearAuthData(),
-      });
+    if (!token) {
+      return of(null); // Retorna um observable vazio se não houver token
     }
+
+    // Retorne o observable para que o inicializador espere a resposta
+    return this.loadUserProfile().pipe(
+      catchError(() => {
+        this.clearAuthData();
+        return of(null);
+      }),
+    );
   }
 
   /** @deprecated use initAuth() instead */
