@@ -44,7 +44,6 @@ body {
   background-color: var(--color-dark-bg);
   color: var(--color-text-primary);
   min-height: 100vh;
-  padding-top: 80px;
   overflow-x: hidden;
 }
 

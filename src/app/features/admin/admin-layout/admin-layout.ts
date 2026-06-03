@@ -57,6 +57,15 @@ import { AuthService } from '../../../core/services/auth.service';
         >
           <span class="text-base">📦</span> Produtos
         </a>
+
+        <a
+          routerLink="/admin/categories"
+          routerLinkActive="bg-primary/15 border-primary/35 text-primary font-bold"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-transparent text-white/50 text-sm font-medium transition-all hover:bg-primary/8 hover:text-primary hover:border-primary/15"
+        >
+          <span class="text-base">🏷️</span> Categorias
+        </a>
+
         <a
           routerLink="/admin/users"
           routerLinkActive="bg-primary/15 border-primary/35 text-primary font-bold"
@@ -82,7 +91,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </aside>
 
       <!-- Main Content -->
-      <main class="flex-1 overflow-y-auto bg-dark-bg p-6">
+      <main class="flex-1 overflow-y-auto bg-dark-bg px-6 pb-6 pt-4">
         <router-outlet></router-outlet>
       </main>
     </div>

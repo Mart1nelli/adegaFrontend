@@ -1,0 +1,51 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-primary text-2xl font-black font-[Fredoka]">Categorias</h1>
+      <p class="text-white/40 text-sm mt-0.5">Gerencie todas as categorias</p>
+    </div>
+
+    <button
+      (click)="openCreate()"
+      class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-dark-bg font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] active:scale-[0.98]"
+    >
+      + Nova Categoria
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-16">
+      <div
+        class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"
+      ></div>
+    </div>
+  } @else if (categories().length === 0) {
+    <div class="bg-dark-surface border border-primary/10 rounded-2xl p-12 text-center">
+      <div class="text-4xl mb-3">📋</div>
+      <p class="text-white/40 text-sm">Nenhuma categoria encontrada.</p>
+    </div>
+  } @else {
+    <div class="bg-dark-surface border border-white/5 rounded-2xl overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-white/5 text-white/50 text-xs uppercase tracking-wider">
+            <th class="p-4">Nome</th>
+            <th class="p-4">Descrição</th>
+            <th class="p-4 text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of categories(); track cat.id) {
+            <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+              <td class="p-4 text-white font-medium">{{ cat.name }}</td>
+              <td class="p-4 text-white/60">{{ cat.description }}</td>
+              <td class="p-4 text-right">
+                <button class="text-primary hover:text-primary/80 transition-colors">Editar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
