@@ -3,8 +3,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroLockClosed, heroUser } from '@ng-icons/heroicons/outline';
+import { lucideUser2 } from '@ng-icons/lucide';
 import { ChangePasswordRequest } from '../../../core/models/auth.models';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,9 +13,10 @@ import { NotificationService } from '../../../core/services/notification.service
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './profile.html',
-  providers: [provideIcons({ heroUser, heroLockClosed })],
+  providers: [provideIcons({ heroUser, heroLockClosed, lucideUser2 })],
 })
 export class Profile implements OnInit {
   private apiService = inject(ApiService);

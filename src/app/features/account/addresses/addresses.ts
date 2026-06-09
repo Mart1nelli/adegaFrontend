@@ -3,6 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroHome, heroMapPin, heroPencil, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { lucidePencil, lucideTrash2, lucideX } from '@ng-icons/lucide';
 import { Address, CreateAddressRequest } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +13,18 @@ import { NotificationService } from '../../../core/services/notification.service
   selector: 'app-addresses',
   imports: [CommonModule, FormsModule, NgIconComponent],
   templateUrl: './addresses.html',
-  providers: [provideIcons({ heroPlus, heroTrash, heroPencil, heroMapPin, heroHome })],
+  providers: [
+    provideIcons({
+      heroPlus,
+      heroTrash,
+      heroPencil,
+      heroMapPin,
+      heroHome,
+      lucideX,
+      lucideTrash2,
+      lucidePencil,
+    }),
+  ],
 })
 export class Addresses implements OnInit {
   private apiService = inject(ApiService);

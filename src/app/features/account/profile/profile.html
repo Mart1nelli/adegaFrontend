@@ -1,167 +1,163 @@
-<div class="min-h-screen bg-[#0B0B0D] px-4 py-10">
-  <div class="max-w-2xl mx-auto space-y-6">
+<div class="min-h-screen bg-[#050505] text-white px-4 py-16 relative overflow-hidden">
+  <div class="absolute inset-0 z-0">
     <div
-      class="bg-[#141418] border border-[#FED90F]/15 rounded-2xl p-6 flex items-center justify-between"
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]"
+    ></div>
+  </div>
+
+  <div class="max-w-2xl mx-auto space-y-8 relative z-10">
+    <div
+      class="bg-[#0A0A0B]/80 backdrop-blur-md border border-white/5 rounded-2xl p-8 flex items-center justify-between"
     >
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-6">
         <div
-          class="w-14 h-14 rounded-2xl bg-[#FED90F]/10 border border-[#FED90F]/20 flex items-center justify-center text-2xl"
+          class="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-3xl"
         >
-          👤
+          <ng-icon name="lucideUser2" size="40"></ng-icon>
         </div>
         <div>
-          <h1 class="text-xl font-black text-[#FED90F] font-[Fredoka]">Minha Conta</h1>
-          <p class="text-white/40 text-sm">Olá, {{ user?.name ?? 'Usuário' }}</p>
+          <h1 class="text-2xl font-bold tracking-tight text-white">Minha Conta</h1>
+          <p class="text-gray-400 text-sm mt-1">
+            Olá, <span class="text-primary">{{ user?.name ?? 'Usuário' }}</span>
+          </p>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-2">
+    <div class="grid grid-cols-3 gap-2 bg-[#0A0A0B]/50 p-1.5 rounded-xl border border-white/5">
       <a
         routerLink="/account/profile"
-        class="text-center py-2 text-xs font-bold text-[#FED90F] bg-[#FED90F]/10 rounded-lg border border-[#FED90F]/30"
+        class="text-center py-2.5 text-xs font-bold text-black bg-primary rounded-lg shadow-lg"
         >Perfil</a
       >
       <a
         routerLink="/account/addresses"
-        class="text-center py-2 text-xs font-semibold text-white/40 hover:text-white/80 transition-colors"
+        class="text-center py-2.5 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
         >Endereços</a
       >
       <a
         routerLink="/account/orders"
-        class="text-center py-2 text-xs font-semibold text-white/40 hover:text-white/80 transition-colors"
+        class="text-center py-2.5 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
         >Pedidos</a
       >
     </div>
 
-    <div class="bg-[#141418] border border-[#FED90F]/15 rounded-2xl overflow-hidden">
-      <div class="flex border-b border-[#FED90F]/10">
+    <div
+      class="bg-[#0A0A0B]/80 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden shadow-2xl"
+    >
+      <div class="flex border-b border-white/5">
         <button
           (click)="activeTab.set('profile')"
           [class]="
             activeTab() === 'profile'
-              ? 'flex-1 py-4 text-xs font-bold text-[#FED90F] border-b-2 border-[#FED90F]'
-              : 'flex-1 py-4 text-xs font-medium text-white/40 hover:bg-white/5'
+              ? 'flex-1 py-4 text-[10px] font-bold text-primary border-b-2 border-primary uppercase tracking-widest'
+              : 'flex-1 py-4 text-[10px] font-medium text-gray-500 hover:bg-white/5 uppercase tracking-widest transition-all'
           "
         >
-          DADOS PESSOAIS
+          Dados Pessoais
         </button>
         <button
           (click)="activeTab.set('password')"
           [class]="
             activeTab() === 'password'
-              ? 'flex-1 py-4 text-xs font-bold text-[#FED90F] border-b-2 border-[#FED90F]'
-              : 'flex-1 py-4 text-xs font-medium text-white/40 hover:bg-white/5'
+              ? 'flex-1 py-4 text-[10px] font-bold text-primary border-b-2 border-primary uppercase tracking-widest'
+              : 'flex-1 py-4 text-[10px] font-medium text-gray-500 hover:bg-white/5 uppercase tracking-widest transition-all'
           "
         >
-          ALTERAR SENHA
+          Alterar Senha
         </button>
       </div>
 
       <div class="p-8">
         @if (activeTab() === 'profile') {
-          <form (ngSubmit)="saveProfile()" class="space-y-5">
+          <form (ngSubmit)="saveProfile()" class="space-y-6">
             <div>
               <label
-                for="name-input"
-                class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                 >Nome Completo</label
               >
               <input
-                id="name-input"
                 [(ngModel)]="profileForm.name"
                 name="name"
-                class="w-full bg-[#0B0B0D] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:border-[#FED90F]/50 outline-none transition-all"
+                class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
               />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
-                  for="email-input"
-                  class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >E-mail</label
                 >
                 <input
-                  id="email-input"
                   [value]="user?.email ?? ''"
                   disabled
-                  class="w-full bg-[#0B0B0D]/50 border border-white/5 rounded-xl px-4 py-3 text-white/30 text-sm cursor-not-allowed"
+                  class="w-full bg-black/20 border border-white/5 rounded-lg px-4 py-3 text-gray-600 text-sm cursor-not-allowed"
                 />
               </div>
               <div>
                 <label
-                  for="phone-input"
-                  class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Telefone</label
                 >
                 <input
-                  id="phone-input"
                   [(ngModel)]="profileForm.phone"
                   name="phone"
-                  class="w-full bg-[#0B0B0D] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:border-[#FED90F]/50 outline-none transition-all"
+                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              class="w-full bg-[#FED90F] text-[#0B0B0D] font-bold py-3 rounded-xl mt-4 hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] transition-all"
+              class="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(254,217,15,0.2)]"
             >
               Salvar Alterações
             </button>
           </form>
-        }
-
-        @if (activeTab() === 'password') {
-          <form (ngSubmit)="savePassword()" class="space-y-5">
+        } @else {
+          <form (ngSubmit)="savePassword()" class="space-y-6">
             <div>
               <label
-                for="curr-pass"
-                class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                 >Senha Atual</label
               >
               <input
-                id="curr-pass"
                 type="password"
                 [(ngModel)]="passwordForm.currentPassword"
                 name="curr"
-                class="w-full bg-[#0B0B0D] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:border-[#FED90F]/50 outline-none transition-all"
+                class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
-                  for="new-pass"
-                  class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Nova Senha</label
                 >
                 <input
-                  id="new-pass"
                   type="password"
                   [(ngModel)]="passwordForm.newPassword"
                   name="new"
-                  class="w-full bg-[#0B0B0D] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:border-[#FED90F]/50 outline-none transition-all"
+                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
               <div>
                 <label
-                  for="conf-pass"
-                  class="block text-[10px] font-bold text-white/40 uppercase mb-2"
+                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Confirmar</label
                 >
                 <input
-                  id="conf-pass"
                   type="password"
                   [(ngModel)]="confirmPassword"
                   name="conf"
-                  class="w-full bg-[#0B0B0D] border border-white/5 rounded-xl px-4 py-3 text-white text-sm focus:border-[#FED90F]/50 outline-none transition-all"
+                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
             </div>
             <button
               type="submit"
-              class="w-full bg-[#FED90F] text-[#0B0B0D] font-bold py-3 rounded-xl mt-4 hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] transition-all"
+              class="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(254,217,15,0.2)]"
             >
               Atualizar Senha
             </button>

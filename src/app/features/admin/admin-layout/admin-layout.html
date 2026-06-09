@@ -6,7 +6,7 @@
       <div
         class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-base"
       >
-        🍺
+        <ng-icon name="lucideBeer" size="14"></ng-icon>
       </div>
       <span class="text-white font-bold text-sm tracking-tight">Adega do Pai</span>
       <span
@@ -38,7 +38,7 @@
         [routerLinkActiveOptions]="{ exact: false }"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent text-white/40 text-sm hover:text-white hover:bg-white/5 transition-all"
       >
-        <span class="text-base" aria-hidden="true">{{ item.icon }}</span>
+        <ng-icon [name]="item.icon" size="18" class="text-base"></ng-icon>
         {{ item.label }}
       </a>
     }
@@ -48,7 +48,8 @@
         routerLink="/home"
         class="flex items-center gap-2 px-3 text-white/20 text-xs hover:text-primary transition-colors"
       >
-        ← Voltar à loja
+        <ng-icon name="lucideArrowLeft" size="14"></ng-icon>
+        Voltar à loja
       </a>
     </div>
   </aside>

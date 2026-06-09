@@ -17,53 +17,37 @@
           class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
         ></div>
       </div>
-    } @else if (addresses().length === 0) {
-      <div class="card p-12 text-center border-dashed border-gray-800">
-        <div class="text-4xl mb-4 opacity-50">📍</div>
-        <h2 class="font-bold mb-2">Nenhum endereço cadastrado</h2>
-        <p class="text-gray-400 text-sm mb-6">Adicione um local de entrega para continuar.</p>
-        <button (click)="openCreateForm()" class="btn-primary">Adicionar Endereço</button>
-      </div>
     } @else {
       <div class="grid gap-4">
         @for (address of addresses(); track address.id) {
-          <div
-            class="card p-5 flex items-start justify-between gap-4 border"
-            [class]="address.isDefault ? 'border-primary' : 'border-gray-900'"
-          >
-            <div class="flex items-start gap-4">
-              <div
-                class="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center text-gray-500"
-              >
-                <ng-icon name="heroHome" size="20"></ng-icon>
-              </div>
-              <div>
-                @if (address.isDefault) {
-                  <span
-                    class="text-[10px] font-bold text-primary uppercase tracking-wider block mb-1"
-                    >Padrão</span
-                  >
-                }
-                <p class="font-bold">{{ address.street }}, {{ address.number }}</p>
-                <p class="text-gray-400 text-sm">
-                  {{ address.neighborhood }} — {{ address.city }}/{{ address.state }}
-                </p>
-                <p class="text-gray-500 text-xs">{{ address.zipCode }}</p>
-              </div>
+          <div class="card p-5 flex items-center justify-between gap-6 border border-gray-900">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-bold text-white text-base">
+                {{ address.street }}, {{ address.number }}
+              </p>
+              <p class="text-gray-400 text-sm">
+                {{ address.neighborhood }} — {{ address.city }}/{{ address.state }}
+              </p>
+              <p class="text-gray-500 text-xs font-mono mt-1">{{ address.zipCode }}</p>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 shrink-0">
               <button
+                type="button"
                 (click)="openEditForm(address)"
-                class="p-2 text-gray-500 hover:text-white transition-colors"
+                class="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+                aria-label="Editar"
               >
-                <ng-icon name="heroPencil" size="16"></ng-icon>
+                <ng-icon name="lucidePencil" size="16"></ng-icon>
               </button>
+
               <button
+                type="button"
                 (click)="deleteAddress(address.id)"
-                class="p-2 text-gray-500 hover:text-red-500 transition-colors"
+                class="p-2 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                aria-label="Excluir"
               >
-                <ng-icon name="heroTrash" size="16"></ng-icon>
+                <ng-icon name="lucideTrash2" size="16"></ng-icon>
               </button>
             </div>
           </div>
@@ -77,66 +61,84 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
     (click)="closeForm()"
-    (keydown.escape)="closeForm()"
-    role="button"
-    tabindex="0"
-    aria-label="Fechar modal"
   >
-    <div
-      class="card w-full max-w-lg p-0 overflow-hidden"
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div class="card w-full max-w-lg p-0 overflow-hidden" (click)="$event.stopPropagation()">
       <div class="p-6 border-b border-gray-900 flex justify-between items-center">
         <h2 class="font-bold">{{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
-        <button
-          type="button"
-          (click)="closeForm()"
-          class="text-gray-500 hover:text-white"
-          aria-label="Fechar"
-        >
+        <button type="button" (click)="closeForm()" class="text-gray-500 hover:text-white">
           ✕
         </button>
       </div>
 
       <form class="p-6 space-y-4" (ngSubmit)="saveAddress()">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-2 space-y-1">
-            <label for="street" class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
+        <div class="grid grid-cols-4 gap-4">
+          <div class="col-span-3 space-y-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
             <input
-              id="street"
               [(ngModel)]="formData.street"
               name="street"
-              class="input-field"
+              class="input-field w-full"
               required
             />
           </div>
+          <div class="col-span-1 space-y-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">Nº</label>
+            <input [(ngModel)]="formData.number" name="number" class="input-field w-full" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1">
-            <label for="number" class="text-xs font-bold text-gray-500 uppercase">Número</label>
-            <input id="number" [(ngModel)]="formData.number" name="number" class="input-field" />
+            <label class="text-xs font-bold text-gray-500 uppercase">Complemento</label>
+            <input [(ngModel)]="formData.complement" name="complement" class="input-field w-full" />
           </div>
           <div class="space-y-1">
-            <label for="complement" class="text-xs font-bold text-gray-500 uppercase"
-              >Complemento</label
-            >
+            <label class="text-xs font-bold text-gray-500 uppercase">Bairro *</label>
             <input
-              id="complement"
-              [(ngModel)]="formData.complement"
-              name="complement"
-              class="input-field"
+              [(ngModel)]="formData.neighborhood"
+              name="neighborhood"
+              class="input-field w-full"
+              required
             />
           </div>
         </div>
 
-        <label class="flex items-center gap-2 cursor-pointer">
+        <div class="grid grid-cols-4 gap-4">
+          <div class="col-span-2 space-y-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">CEP *</label>
+            <input
+              [(ngModel)]="formData.zipCode"
+              name="zipCode"
+              placeholder="00000-000"
+              class="input-field w-full"
+              required
+            />
+          </div>
+          <div class="col-span-1 space-y-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">Cidade *</label>
+            <input [(ngModel)]="formData.city" name="city" class="input-field w-full" required />
+          </div>
+          <div class="col-span-1 space-y-1">
+            <label class="text-xs font-bold text-gray-500 uppercase">UF *</label>
+            <input
+              [(ngModel)]="formData.state"
+              name="state"
+              maxlength="2"
+              placeholder="SP"
+              class="input-field w-full"
+              required
+            />
+          </div>
+        </div>
+
+        <label class="flex items-center gap-2 cursor-pointer pt-2">
           <input
             type="checkbox"
             [(ngModel)]="formData.isDefault"
             name="isDefault"
             class="accent-primary"
           />
-          <span class="text-sm">Definir como padrão</span>
+          <span class="text-sm">Definir como endereço padrão</span>
         </label>
 
         <button type="submit" class="btn-primary w-full py-3 mt-4">Salvar Endereço</button>

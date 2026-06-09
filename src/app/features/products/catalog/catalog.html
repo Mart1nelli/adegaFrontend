@@ -1,6 +1,6 @@
 <app-header></app-header>
 
-<div class="min-h-screen bg-[#050505] text-white pt-32 pb-16 px-4 md:px-8 max-w-[1400px] mx-auto">
+<div class="min-h-screen bg-bg text-white pt-32 pb-16 px-4 md:px-8 max-w-350 mx-auto">
   <div class="mb-12 border-b border-gray-900 pb-8">
     <p class="text-primary text-xs uppercase tracking-widest font-semibold mb-2">
       Catálogo Premium
@@ -69,32 +69,37 @@
         </div>
 
         <div>
-          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"
-            >Faixa de Preço (R$)</span
+          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-6"
+            >Faixa de Preço</span
           >
-          <div class="flex items-center gap-3 mt-4">
+
+          <div class="relative w-full h-1 bg-gray-800 rounded-full">
+            <div
+              class="absolute top-0 h-1 bg-primary rounded-full"
+              [style.width.%]="getPricePercent()"
+            ></div>
+
             <input
-              type="number"
-              formControlName="minPrice"
-              placeholder="Mín."
-              class="w-full bg-[#111] border border-gray-800 rounded-lg p-2.5 text-sm focus:border-primary outline-none"
+              type="range"
+              [min]="0"
+              [max]="maxLimit"
+              formControlName="priceRange"
+              class="absolute -top-1.5 left-0 w-full h-4 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-primary"
             />
-            <span class="text-gray-600">—</span>
-            <input
-              type="number"
-              formControlName="maxPrice"
-              placeholder="Máx."
-              class="w-full bg-[#111] border border-gray-800 rounded-lg p-2.5 text-sm focus:border-primary outline-none"
-            />
+          </div>
+
+          <div class="flex justify-between mt-6 text-xs text-gray-400 font-mono">
+            <span>R$ 0</span>
+            <span>R$ {{ filterForm.value.priceRange }}</span>
           </div>
         </div>
 
         <button
           type="button"
           (click)="clearFilters()"
-          class="w-full py-3 mt-2 border border-gray-900 rounded-xl hover:border-gray-700 transition-all text-sm font-bold uppercase tracking-wider text-gray-400 hover:text-white"
+          class="w-full py-3 mt-2 border border-gray-900 rounded-xl hover:border-gray-700 transition-all text-sm font-bold uppercase tracking-wider text-gray-400 hover:text-white flex items-center justify-center gap-2"
         >
-          Limpar Filtros
+          <ng-icon name="heroXMark" size="16"></ng-icon> Limpar Filtros
         </button>
       </form>
     </aside>
