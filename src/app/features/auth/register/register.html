@@ -1,159 +1,106 @@
-<div class="min-h-screen bg-dark-bg flex items-center justify-center px-4 py-12">
-  <!-- Background glow -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div
-      class="absolute top-1/4 left-1/2 -translate-x-1/2 w-150 h-150 rounded-full bg-primary/5 blur-[120px]"
-    ></div>
-    <div
-      class="absolute bottom-1/4 right-1/4 w-75 h-75 rounded-full bg-secondary/5 blur-[80px]"
-    ></div>
-  </div>
-
-  <div class="relative w-full max-w-md">
-    <!-- Logo / Header -->
+<div class="min-h-screen bg-bg text-white flex items-center justify-center p-4">
+  <div class="card w-full max-w-md p-8">
     <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-4"
-      >
-        <span class="text-3xl">🍺</span>
-      </div>
-      <h1 class="text-3xl font-black text-primary font-[Fredoka]">Adega do Pai</h1>
-      <p class="text-white/40 text-sm mt-1">Crie sua conta e aproveite!</p>
+      <div class="text-4xl mb-4">🥂</div>
+      <h1 class="text-2xl font-bold tracking-tight">Criar Conta</h1>
+      <p class="text-gray-400 text-sm mt-2">Junte-se à nossa adega exclusiva</p>
     </div>
 
-    <!-- Card -->
-    <div
-      class="bg-dark-surface border border-primary/15 rounded-2xl p-8 shadow-[0_0_60px_rgba(254,217,15,0.06)]"
-    >
-      <h2 class="text-white font-bold text-xl mb-6">Criar conta</h2>
-
-      <form (ngSubmit)="onSubmit()" class="space-y-4">
-        <!-- Nome -->
-        <div class="space-y-1.5">
-          <label for="name" class="text-white/60 text-sm font-medium">Nome completo</label>
-          <div class="relative">
-            <ng-icon
-              name="heroUser"
-              size="16"
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
-            >
-            </ng-icon>
-            <input
-              id="name"
-              type="text"
-              [(ngModel)]="registerData().name"
-              name="name"
-              placeholder="Seu nome completo"
-              required
-              class="w-full bg-dark-panel border border-primary/15 rounded-xl pl-9 pr-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="space-y-1.5">
-          <label for="email" class="text-white/60 text-sm font-medium">E-mail</label>
-          <div class="relative">
-            <ng-icon
-              name="heroEnvelope"
-              size="16"
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
-            >
-            </ng-icon>
-            <input
-              id="email"
-              type="email"
-              [(ngModel)]="registerData().email"
-              name="email"
-              placeholder="seu@email.com"
-              required
-              class="w-full bg-dark-panel border border-primary/15 rounded-xl pl-9 pr-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        <!-- Senha -->
-        <div class="space-y-1.5">
-          <label for="password" class="text-white/60 text-sm font-medium">Senha</label>
-          <div class="relative">
-            <ng-icon
-              name="heroLockClosed"
-              size="16"
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
-            >
-            </ng-icon>
-            <input
-              id="password"
-              type="password"
-              [(ngModel)]="registerData().password"
-              name="password"
-              placeholder="Crie uma senha forte"
-              required
-              class="w-full bg-dark-panel border border-primary/15 rounded-xl pl-9 pr-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        <!-- Telefone -->
-        <div class="space-y-1.5">
-          <label for="phone" class="text-white/60 text-sm font-medium"
-            >Telefone <span class="text-white/30">(opcional)</span></label
-          >
-          <div class="relative">
-            <ng-icon
-              name="heroDevicePhoneMobile"
-              size="16"
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
-            >
-            </ng-icon>
-            <input
-              id="phone"
-              type="tel"
-              [(ngModel)]="registerData().phone"
-              name="phone"
-              placeholder="(11) 99999-9999"
-              class="w-full bg-dark-panel border border-primary/15 rounded-xl pl-9 pr-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200"
-            />
-          </div>
-        </div>
-
-        <!-- Error -->
-        @if (errorMessage()) {
-          <div
-            class="bg-secondary/10 border border-secondary/30 rounded-xl px-4 py-3 text-secondary text-sm"
-          >
-            ⚠️ {{ errorMessage() }}
-          </div>
-        }
-
-        <!-- Botão -->
-        <button
-          type="submit"
-          [disabled]="isLoading()"
-          class="w-full bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-dark-bg font-bold py-3.5 rounded-xl transition-all duration-200 hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] active:scale-[0.98] text-sm mt-2"
+    <form (ngSubmit)="onSubmit()" class="space-y-5">
+      <div class="flex flex-col gap-2">
+        <label for="reg-name" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+          >Nome completo</label
         >
-          @if (isLoading()) {
-            <span class="flex items-center justify-center gap-2">
-              <span
-                class="w-4 h-4 rounded-full border-2 border-dark-bg/30 border-t-dark-bg animate-spin"
-              ></span>
-              Cadastrando...
-            </span>
-          } @else {
-            Criar conta grátis
-          }
-        </button>
-      </form>
+        <div class="relative flex items-center">
+          <ng-icon name="heroUser" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <input
+            id="reg-name"
+            type="text"
+            [(ngModel)]="registerData().name"
+            name="name"
+            placeholder="Como podemos te chamar?"
+            class="input-field pl-10"
+            required
+          />
+        </div>
+      </div>
 
-      <!-- Link login -->
-      <p class="text-center text-white/40 text-sm mt-6">
+      <div class="flex flex-col gap-2">
+        <label for="reg-email" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+          >E-mail</label
+        >
+        <div class="relative flex items-center">
+          <ng-icon name="heroEnvelope" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <input
+            id="reg-email"
+            type="email"
+            [(ngModel)]="registerData().email"
+            name="email"
+            placeholder="seu@email.com"
+            class="input-field pl-10"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="reg-password" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+          >Senha</label
+        >
+        <div class="relative flex items-center">
+          <ng-icon name="heroLockClosed" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <input
+            id="reg-password"
+            type="password"
+            [(ngModel)]="registerData().password"
+            name="password"
+            placeholder="••••••••"
+            class="input-field pl-10"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="reg-phone" class="text-xs font-bold uppercase text-gray-500 tracking-wider">
+          Telefone <span class="text-gray-700 font-normal">(opcional)</span>
+        </label>
+        <div class="relative flex items-center">
+          <ng-icon
+            name="heroDevicePhoneMobile"
+            size="18"
+            class="absolute left-3 text-gray-500"
+          ></ng-icon>
+          <input
+            id="reg-phone"
+            type="tel"
+            [(ngModel)]="registerData().phone"
+            name="phone"
+            placeholder="(11) 99999-9999"
+            class="input-field pl-10"
+          />
+        </div>
+      </div>
+
+      @if (errorMessage()) {
+        <div
+          class="bg-red-950/30 border border-red-900 text-red-400 text-xs p-3 rounded-lg text-center"
+        >
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <button type="submit" [disabled]="isLoading()" class="btn-primary w-full py-3.5 mt-2">
+        {{ isLoading() ? 'Criando conta...' : 'Criar conta grátis' }}
+      </button>
+    </form>
+
+    <div class="text-center mt-8 border-t border-gray-900 pt-6">
+      <p class="text-sm text-gray-500">
         Já tem conta?
-        <a
-          routerLink="/auth/login"
-          class="text-primary font-semibold hover:text-primary-hover transition-colors ml-1"
+        <a routerLink="/auth/login" class="text-primary font-bold hover:underline ml-1"
+          >Fazer login</a
         >
-          Fazer login
-        </a>
       </p>
     </div>
   </div>

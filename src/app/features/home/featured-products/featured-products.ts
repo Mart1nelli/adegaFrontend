@@ -31,6 +31,7 @@ export class FeaturedProducts implements OnInit {
 
   featuredProducts = signal<Product[]>([]);
   isLoading = signal(false);
+  activeCategory = signal('Todas');
 
   ngOnInit() {
     this.loadFeaturedProducts();

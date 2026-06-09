@@ -1,13 +1,9 @@
+// ... imports ...
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import {
-  heroBuildingStorefront,
-  heroMagnifyingGlass,
-  heroShoppingBag,
-  heroUser,
-} from '@ng-icons/heroicons/outline';
+import { heroMagnifyingGlass, heroShoppingBag, heroUser } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -16,7 +12,11 @@ import { CartService } from '../../../core/services/cart.service';
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './header.html',
   providers: [
-    provideIcons({ heroShoppingBag, heroBuildingStorefront, heroUser, heroMagnifyingGlass }),
+    provideIcons({
+      heroShoppingBag,
+      heroMagnifyingGlass,
+      heroUser,
+    }),
   ],
 })
 export class Header {
@@ -24,7 +24,6 @@ export class Header {
   private cartService = inject(CartService);
 
   isScrolled = signal(false);
-
   readonly isAuthenticated = this.authService.isAuthenticated;
   readonly currentUser = this.authService.currentUser;
   readonly cartCount = this.cartService.totalItems;
@@ -35,6 +34,6 @@ export class Header {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled.set(window.scrollY > 50);
+    this.isScrolled.set(window.scrollY > 20);
   }
 }

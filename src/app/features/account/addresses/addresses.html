@@ -1,176 +1,145 @@
-<div class="min-h-screen bg-[#0B0B0D] px-4 py-10">
-  <div class="max-w-2xl mx-auto space-y-6">
-
-    <!-- Header -->
+<div class="min-h-screen bg-bg text-white px-4 py-10">
+  <div class="max-w-3xl mx-auto space-y-8">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-black text-[#FED90F] font-[Fredoka]">Meus Endereços</h1>
-        <p class="text-white/40 text-sm mt-0.5">Gerencie seus endereços de entrega</p>
+        <h1 class="text-2xl font-bold tracking-tight">Meus Endereços</h1>
+        <p class="text-gray-400 text-sm mt-1">Gerencie onde seus pedidos serão entregues</p>
       </div>
-      <button (click)="openCreateForm()"
-        class="flex items-center gap-2 bg-[#FED90F] hover:bg-[#E5C20D] text-[#0B0B0D] font-bold px-4 py-2.5 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)] active:scale-[0.98]">
+      <button (click)="openCreateForm()" class="btn-primary flex items-center gap-2">
         <ng-icon name="heroPlus" size="16"></ng-icon>
         Novo Endereço
       </button>
     </div>
 
-    <!-- Loading -->
     @if (isLoading()) {
       <div class="flex items-center justify-center py-16">
-        <div class="w-8 h-8 rounded-full border-2 border-[#FED90F]/20 border-t-[#FED90F] animate-spin"></div>
+        <div
+          class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
+        ></div>
       </div>
-    }
-
-    <!-- Empty State -->
-    @if (!isLoading() && addresses().length === 0) {
-      <div class="bg-[#141418] border border-[#FED90F]/10 rounded-2xl p-12 text-center">
-        <div class="text-5xl mb-4">📍</div>
-        <h2 class="text-white font-bold text-lg mb-2">Nenhum endereço cadastrado</h2>
-        <p class="text-white/40 text-sm mb-6">Adicione um endereço para poder fazer pedidos.</p>
-        <button (click)="openCreateForm()"
-          class="inline-flex items-center gap-2 bg-[#FED90F] hover:bg-[#E5C20D] text-[#0B0B0D] font-bold px-5 py-3 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)]">
-          <ng-icon name="heroPlus" size="16"></ng-icon>
-          Adicionar Endereço
-        </button>
+    } @else if (addresses().length === 0) {
+      <div class="card p-12 text-center border-dashed border-gray-800">
+        <div class="text-4xl mb-4 opacity-50">📍</div>
+        <h2 class="font-bold mb-2">Nenhum endereço cadastrado</h2>
+        <p class="text-gray-400 text-sm mb-6">Adicione um local de entrega para continuar.</p>
+        <button (click)="openCreateForm()" class="btn-primary">Adicionar Endereço</button>
       </div>
-    }
-
-    <!-- Addresses List -->
-    <div class="space-y-3">
-      @for (address of addresses(); track address.id) {
-        <div class="bg-[#141418] border rounded-2xl p-5 transition-all"
-             [class]="address.isDefault ? 'border-[#FED90F]/30' : 'border-[#FED90F]/10 hover:border-[#FED90F]/20'">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex items-start gap-3">
-              <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
-                   [class]="address.isDefault ? 'bg-[#FED90F]/15 text-[#FED90F]' : 'bg-white/5 text-white/30'">
+    } @else {
+      <div class="grid gap-4">
+        @for (address of addresses(); track address.id) {
+          <div
+            class="card p-5 flex items-start justify-between gap-4 border"
+            [class]="address.isDefault ? 'border-primary' : 'border-gray-900'"
+          >
+            <div class="flex items-start gap-4">
+              <div
+                class="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center text-gray-500"
+              >
                 <ng-icon name="heroHome" size="20"></ng-icon>
               </div>
               <div>
                 @if (address.isDefault) {
-                  <span class="inline-flex items-center gap-1 bg-[#FED90F]/10 border border-[#FED90F]/25 text-[#FED90F] text-xs font-bold px-2.5 py-0.5 rounded-full mb-1">
-                    ⭐ Padrão
-                  </span>
+                  <span
+                    class="text-[10px] font-bold text-primary uppercase tracking-wider block mb-1"
+                    >Padrão</span
+                  >
                 }
-                <p class="text-white font-semibold text-sm">{{ address.street }}{{ address.number ? ', ' + address.number : '' }}</p>
-                @if (address.complement) {
-                  <p class="text-white/50 text-xs">{{ address.complement }}</p>
-                }
-                @if (address.neighborhood) {
-                  <p class="text-white/50 text-xs">{{ address.neighborhood }}</p>
-                }
-                <p class="text-white/50 text-xs">{{ address.city }}, {{ address.state }} — {{ address.zipCode }}</p>
-                @if (address.country) {
-                  <p class="text-white/30 text-xs">{{ address.country }}</p>
-                }
+                <p class="font-bold">{{ address.street }}, {{ address.number }}</p>
+                <p class="text-gray-400 text-sm">
+                  {{ address.neighborhood }} — {{ address.city }}/{{ address.state }}
+                </p>
+                <p class="text-gray-500 text-xs">{{ address.zipCode }}</p>
               </div>
             </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <button (click)="openEditForm(address)" title="Editar"
-                class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A22] border border-white/5 text-white/40 hover:text-[#FED90F] hover:border-[#FED90F]/30 transition-all">
-                <ng-icon name="heroPencil" size="14"></ng-icon>
+
+            <div class="flex items-center gap-2">
+              <button
+                (click)="openEditForm(address)"
+                class="p-2 text-gray-500 hover:text-white transition-colors"
+              >
+                <ng-icon name="heroPencil" size="16"></ng-icon>
               </button>
-              <button (click)="deleteAddress(address.id)" title="Excluir"
-                class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A22] border border-white/5 text-white/40 hover:text-[#DC2626] hover:border-[#DC2626]/30 transition-all">
-                <ng-icon name="heroTrash" size="14"></ng-icon>
+              <button
+                (click)="deleteAddress(address.id)"
+                class="p-2 text-gray-500 hover:text-red-500 transition-colors"
+              >
+                <ng-icon name="heroTrash" size="16"></ng-icon>
               </button>
             </div>
           </div>
-        </div>
-      }
-    </div>
-
+        }
+      </div>
+    }
   </div>
 </div>
 
-<!-- Modal -->
 @if (showForm()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-       (click)="closeForm()">
-    <div class="bg-[#141418] border border-[#FED90F]/20 rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
-         (click)="$event.stopPropagation()">
-
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between p-6 border-b border-[#FED90F]/10">
-        <h2 class="text-white font-bold text-lg">
-          {{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}
-        </h2>
-        <button (click)="closeForm()"
-          class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all text-sm">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+    (click)="closeForm()"
+    (keydown.escape)="closeForm()"
+    role="button"
+    tabindex="0"
+    aria-label="Fechar modal"
+  >
+    <div
+      class="card w-full max-w-lg p-0 overflow-hidden"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="p-6 border-b border-gray-900 flex justify-between items-center">
+        <h2 class="font-bold">{{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
+        <button
+          type="button"
+          (click)="closeForm()"
+          class="text-gray-500 hover:text-white"
+          aria-label="Fechar"
+        >
           ✕
         </button>
       </div>
 
-      <!-- Form -->
       <form class="p-6 space-y-4" (ngSubmit)="saveAddress()">
-
-        <div class="space-y-1.5">
-          <label for="street" class="text-white/60 text-sm font-medium">Rua / Avenida *</label>
-          <input id="street" type="text" [(ngModel)]="formData.street" name="street" required placeholder="Ex: Rua das Flores"
-            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1.5">
-            <label for="addr-number" class="text-white/60 text-sm font-medium">Número</label>
-            <input id="addr-number" type="text" [(ngModel)]="formData.number" name="number" placeholder="123"
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2 space-y-1">
+            <label for="street" class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
+            <input
+              id="street"
+              [(ngModel)]="formData.street"
+              name="street"
+              class="input-field"
+              required
+            />
           </div>
-          <div class="space-y-1.5">
-            <label for="complement" class="text-white/60 text-sm font-medium">Complemento</label>
-            <input id="complement" type="text" [(ngModel)]="formData.complement" name="complement" placeholder="Apto 4"
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
+          <div class="space-y-1">
+            <label for="number" class="text-xs font-bold text-gray-500 uppercase">Número</label>
+            <input id="number" [(ngModel)]="formData.number" name="number" class="input-field" />
           </div>
-        </div>
-
-        <div class="space-y-1.5">
-          <label for="neighborhood" class="text-white/60 text-sm font-medium">Bairro</label>
-          <input id="neighborhood" type="text" [(ngModel)]="formData.neighborhood" name="neighborhood" placeholder="Centro"
-            class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1.5">
-            <label for="city" class="text-white/60 text-sm font-medium">Cidade *</label>
-            <input id="city" type="text" [(ngModel)]="formData.city" name="city" required
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
-          </div>
-          <div class="space-y-1.5">
-            <label for="state" class="text-white/60 text-sm font-medium">Estado *</label>
-            <input id="state" type="text" [(ngModel)]="formData.state" name="state" required maxlength="2" placeholder="SP"
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
+          <div class="space-y-1">
+            <label for="complement" class="text-xs font-bold text-gray-500 uppercase"
+              >Complemento</label
+            >
+            <input
+              id="complement"
+              [(ngModel)]="formData.complement"
+              name="complement"
+              class="input-field"
+            />
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1.5">
-            <label for="zipCode" class="text-white/60 text-sm font-medium">CEP *</label>
-            <input id="zipCode" type="text" [(ngModel)]="formData.zipCode" name="zipCode" required placeholder="00000-000"
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
-          </div>
-          <div class="space-y-1.5">
-            <label for="country" class="text-white/60 text-sm font-medium">País</label>
-            <input id="country" type="text" [(ngModel)]="formData.country" name="country"
-              class="w-full bg-[#1A1A22] border border-[#FED90F]/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#FED90F]/50 transition-all" />
-          </div>
-        </div>
-
-        <label class="flex items-center gap-3 cursor-pointer group">
-          <input type="checkbox" [(ngModel)]="formData.isDefault" name="isDefault"
-            class="w-4 h-4 rounded accent-[#FED90F]" />
-          <span class="text-white/60 text-sm group-hover:text-white/80 transition-colors">Definir como endereço padrão</span>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            [(ngModel)]="formData.isDefault"
+            name="isDefault"
+            class="accent-primary"
+          />
+          <span class="text-sm">Definir como padrão</span>
         </label>
 
-        <div class="flex gap-3 pt-2">
-          <button type="button" (click)="closeForm()"
-            class="flex-1 py-3 rounded-xl border border-white/10 text-white/60 text-sm font-medium hover:border-white/20 hover:text-white/80 transition-all">
-            Cancelar
-          </button>
-          <button type="submit"
-            class="flex-1 bg-[#FED90F] hover:bg-[#E5C20D] text-[#0B0B0D] font-bold py-3 rounded-xl text-sm transition-all hover:shadow-[0_0_20px_rgba(254,217,15,0.3)]">
-            Salvar
-          </button>
-        </div>
+        <button type="submit" class="btn-primary w-full py-3 mt-4">Salvar Endereço</button>
       </form>
     </div>
   </div>

@@ -1,47 +1,66 @@
 <div class="space-y-6">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-primary text-2xl font-black font-[Fredoka]">Categorias</h1>
-      <p class="text-white/40 text-sm mt-0.5">Gerencie todas as categorias</p>
+      <h1 class="text-2xl font-black text-white font-[Fredoka] tracking-tight">Categorias</h1>
+      <p class="text-white/40 text-sm mt-0.5">Gerencie as categorias do catálogo</p>
     </div>
     <button
+      type="button"
       (click)="openCreate()"
-      class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-dark-bg font-bold px-4 py-2.5 rounded-xl text-sm transition-all"
+      class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-black font-bold px-4 py-2.5 rounded-xl text-sm transition-all active:scale-[0.98]"
     >
       + Nova Categoria
     </button>
   </div>
 
   @if (isLoading()) {
-    <div class="flex items-center justify-center py-16">
+    <div class="flex items-center justify-center py-20">
       <div
         class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"
       ></div>
     </div>
   } @else if (categories().length === 0) {
-    <div class="bg-dark-surface border border-primary/10 rounded-2xl p-12 text-center">
-      <p class="text-white/40 text-sm">Nenhuma categoria encontrada.</p>
+    <div class="bg-[#0A0A0B] border border-white/5 rounded-2xl p-12 text-center text-white/30">
+      Nenhuma categoria encontrada.
     </div>
   } @else {
-    <div class="bg-dark-surface border border-primary/10 rounded-2xl overflow-hidden">
-      <table class="w-full text-sm">
+    <div class="bg-[#0A0A0B] border border-white/5 rounded-2xl overflow-hidden">
+      <table class="w-full text-left">
         <thead>
-          <tr class="border-b border-primary/10 text-white/40 text-xs uppercase tracking-wider">
-            <th class="px-5 py-3.5 text-left">Nome</th>
-            <th class="px-5 py-3.5 text-left">Descrição</th>
-            <th class="px-5 py-3.5 text-right">Ações</th>
+          <tr class="border-b border-white/5">
+            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+              Nome
+            </th>
+            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+              Descrição
+            </th>
+            <th
+              class="px-6 py-4 text-right text-[10px] font-bold text-white/30 uppercase tracking-widest"
+            >
+              Ações
+            </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/4">
+        <tbody class="divide-y divide-white/5">
           @for (cat of categories(); track cat.id) {
             <tr class="hover:bg-white/2 transition-colors">
-              <td class="px-5 py-3.5 text-white font-medium">{{ cat.name }}</td>
-              <td class="px-5 py-3.5 text-white/60">{{ cat.description || '—' }}</td>
-              <td class="px-5 py-3.5 text-right">
-                <button (click)="openEdit(cat)" class="mr-3 text-primary hover:text-primary-hover">
+              <td class="px-6 py-4 text-sm font-medium text-white">{{ cat.name }}</td>
+              <td class="px-6 py-4 text-sm text-white/50">{{ cat.description || '—' }}</td>
+              <td class="px-6 py-4 text-right flex justify-end gap-2">
+                <button
+                  type="button"
+                  (click)="openEdit(cat)"
+                  class="p-2 text-white/30 hover:text-white transition-colors"
+                  aria-label="Editar"
+                >
                   ✏️
                 </button>
-                <button (click)="confirmDelete(cat)" class="text-red-400 hover:text-red-300">
+                <button
+                  type="button"
+                  (click)="confirmDelete(cat)"
+                  class="p-2 text-white/30 hover:text-red-400 transition-colors"
+                  aria-label="Excluir"
+                >
                   🗑️
                 </button>
               </td>
@@ -55,75 +74,62 @@
 
 @if (showModal()) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-    (click)="showModal.set(false)"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+    role="presentation"
   >
+    <button
+      type="button"
+      class="absolute inset-0 w-full h-full cursor-default border-0 bg-transparent p-0"
+      (click)="showModal.set(false)"
+      (keydown.escape)="showModal.set(false)"
+      aria-label="Fechar modal"
+    ></button>
+
     <div
-      class="bg-dark-surface border border-primary/20 rounded-2xl w-full max-w-md p-6"
-      (click)="$event.stopPropagation()"
+      class="bg-[#0A0A0B] border border-white/10 rounded-2xl w-full max-w-md p-6 relative z-10"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
-      <h2 class="text-white font-bold text-lg mb-4">
+      <h2 id="modal-title" class="text-white font-bold text-lg mb-4">
         {{ isEditing() ? 'Editar' : 'Nova' }} Categoria
       </h2>
 
       <form (ngSubmit)="save()" class="space-y-4">
         <div>
-          <label class="text-white/60 text-sm block mb-1">Nome</label>
+          <label for="prodName" class="text-[10px] font-bold uppercase text-white/40 mb-1 block"
+            >Nome</label
+          >
           <input
+            id="prodName"
             [(ngModel)]="form.name"
             name="name"
             required
-            type="text"
-            class="w-full bg-dark-surface border border-primary/15 rounded-xl px-4 py-3 text-white focus:border-primary outline-none transition-all"
+            class="w-full bg-bg border border-white/5 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-primary transition-all"
           />
         </div>
+
         <div>
-          <label class="text-white/60 text-sm block mb-1">Descrição</label>
+          <label for="prodDesc" class="text-[10px] font-bold uppercase text-white/40 mb-1 block"
+            >Descrição</label
+          >
           <textarea
+            id="prodDesc"
             [(ngModel)]="form.description"
             name="description"
             rows="3"
-            class="w-full bg-dark-surface border border-primary/15 rounded-xl px-4 py-3 text-white focus:border-primary outline-none transition-all"
+            class="w-full bg-bg border border-white/5 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-primary transition-all"
           ></textarea>
         </div>
+
         <button
-          [disabled]="isSaving()"
           type="submit"
-          class="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 text-dark-bg py-3 rounded-xl font-bold transition-all"
+          [disabled]="isSaving()"
+          class="w-full bg-primary text-black font-bold py-3 rounded-xl text-sm mt-4 hover:shadow-[0_0_20px_rgba(254,217,15,0.2)] transition-all disabled:opacity-50"
         >
-          {{ isSaving() ? 'Salvando...' : 'Salvar' }}
+          {{ isSaving() ? 'Salvando...' : 'Salvar Alterações' }}
         </button>
       </form>
-    </div>
-  </div>
-}
-
-@if (showDeleteModal()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-    <div
-      class="bg-dark-surface border border-red-500/30 rounded-2xl w-full max-w-sm p-6 shadow-2xl"
-    >
-      <h2 class="text-white font-bold text-lg mb-2">Excluir Categoria?</h2>
-      <p class="text-white/60 text-sm mb-6">
-        Tem certeza que deseja excluir "<strong>{{ categoryToDelete()?.name }}</strong
-        >"? Esta ação não poderá ser desfeita.
-      </p>
-      <div class="flex gap-3">
-        <button
-          (click)="showDeleteModal.set(false)"
-          type="button"
-          class="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 font-medium hover:bg-white/5"
-        >
-          Cancelar
-        </button>
-        <button
-          (click)="executeDelete()"
-          type="button"
-          class="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold"
-        >
-          Confirmar Exclusão
-        </button>
-      </div>
     </div>
   </div>
 }

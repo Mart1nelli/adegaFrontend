@@ -1,309 +1,123 @@
-<div class="min-h-screen bg-dark-bg text-white pt-28 pb-16 px-4 md:px-8 relative overflow-hidden">
-  <!-- Background Radioactive Effects -->
-  <div class="absolute inset-0 pointer-events-none z-0">
-    <div
-      class="absolute top-[30%] right-[-5%] w-62.5 h-62.5 rounded-full bg-primary/5 blur-[80px] nuclear-glow-pulse"
-    ></div>
-    <div
-      class="absolute bottom-[20%] left-[-5%] w-62.5 h-62.5 rounded-full bg-accent/5 blur-[80px] nuclear-glow-pulse"
-    ></div>
-  </div>
+<div class="min-h-screen bg-bg text-white pt-32 pb-16 px-4 md:px-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-white text-center mb-12 tracking-tight">Finalizar Pedido</h1>
 
-  <div class="max-w-200 mx-auto relative z-10">
-    <h1
-      class="font-fun text-3xl md:text-4xl font-black text-primary drop-shadow-[2px_2px_0px_#000000] tracking-wider uppercase text-center mb-10"
-    >
-      Finalizar Pedido
-    </h1>
-
-    <!-- Step Indicator -->
-    <div class="flex items-center justify-center gap-2 sm:gap-4 mb-10 max-w-150 mx-auto">
-      <!-- Step 1 -->
-      <div class="flex flex-col items-center gap-1.5 flex-1">
-        <div
-          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black font-fun font-bold text-sm shadow-[2px_2px_0px_#000]"
-          [class]="
-            step() === 'address'
-              ? 'bg-primary text-black shadow-neon-yellow'
-              : 'bg-green-500 text-white'
-          "
-        >
-          1
+    <div class="flex items-center justify-center gap-4 mb-12">
+      @for (s of ['address', 'review', 'done']; track s; let i = $index) {
+        <div class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 flex items-center justify-center rounded-full border text-sm font-bold transition-all"
+            [class]="
+              step() === s
+                ? 'border-primary bg-primary/10 text-primary'
+                : step() === 'done' || (s !== 'done' && step() === 'done')
+                  ? 'border-primary bg-primary text-black'
+                  : 'border-gray-800 text-gray-600'
+            "
+          >
+            {{ i + 1 }}
+          </div>
+          <span
+            class="text-xs font-semibold uppercase tracking-widest"
+            [class]="step() === s ? 'text-white' : 'text-gray-600'"
+          >
+            {{ s === 'address' ? 'Endereço' : s === 'review' ? 'Revisão' : 'Confirmação' }}
+          </span>
         </div>
-        <span
-          class="text-[10px] sm:text-xs font-bold font-fun uppercase tracking-wider text-gray-400"
-          [class.text-primary]="step() === 'address'"
-          [class.text-green-400]="step() === 'review' || step() === 'done'"
-          >Endereço</span
-        >
-      </div>
-
-      <div class="h-1 bg-black flex-1 -mt-5 border-t border-b border-black"></div>
-
-      <!-- Step 2 -->
-      <div class="flex flex-col items-center gap-1.5 flex-1">
-        <div
-          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black font-fun font-bold text-sm shadow-[2px_2px_0px_#000]"
-          [class]="
-            step() === 'review'
-              ? 'bg-primary text-black shadow-neon-yellow'
-              : step() === 'done'
-                ? 'bg-green-500 text-white'
-                : 'bg-dark-panel text-gray-500'
-          "
-        >
-          2
-        </div>
-        <span
-          class="text-[10px] sm:text-xs font-bold font-fun uppercase tracking-wider text-gray-400"
-          [class.text-primary]="step() === 'review'"
-          [class.text-green-400]="step() === 'done'"
-          >Revisão</span
-        >
-      </div>
-
-      <div class="h-1 bg-black flex-1 -mt-5 border-t border-b border-black"></div>
-
-      <!-- Step 3 -->
-      <div class="flex flex-col items-center gap-1.5 flex-1">
-        <div
-          class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-black font-fun font-bold text-sm shadow-[2px_2px_0px_#000]"
-          [class]="
-            step() === 'done'
-              ? 'bg-green-500 text-white shadow-neon-pink'
-              : 'bg-dark-panel text-gray-500'
-          "
-        >
-          3
-        </div>
-        <span
-          class="text-[10px] sm:text-xs font-bold font-fun uppercase tracking-wider text-gray-400"
-          [class.text-green-400]="step() === 'done'"
-          >Confirmado</span
-        >
-      </div>
+        @if (i < 2) {
+          <div class="w-10 h-px bg-gray-800"></div>
+        }
+      }
     </div>
 
-    <!-- Step 1: Address -->
     @if (step() === 'address') {
-      <div class="bg-dark-surface border-2 border-black p-6 md:p-8 rounded-2xl shadow-cartoon">
-        <h2 class="font-fun text-xl font-black text-white uppercase tracking-wider mb-6">
-          Selecione o Endereço de Entrega
-        </h2>
+      <div class="card p-8">
+        <h2 class="text-lg font-bold mb-6">Endereço de Entrega</h2>
 
         @if (isLoading()) {
-          <div class="flex flex-col items-center justify-center py-10">
-            <div
-              class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin shadow-neon-yellow mb-4"
-            ></div>
-            <p class="text-sm font-fun text-primary">Carregando seus endereços...</p>
-          </div>
-        } @else if (addresses().length === 0) {
-          <div class="text-center py-8">
-            <p class="text-gray-400 text-sm mb-6">Nenhum endereço cadastrado.</p>
-            <a routerLink="/account/addresses" class="btn-homer-primary no-underline text-xs"
-              >Cadastrar Endereço</a
-            >
-          </div>
+          <div class="py-10 text-center text-primary">Carregando endereços...</div>
         } @else {
-          <div class="flex flex-col gap-4 mb-8">
+          <div class="grid gap-4">
             @for (addr of addresses(); track addr.id) {
               <label
-                class="flex items-start gap-4 p-4 border-2 border-black rounded-xl bg-dark-panel cursor-pointer transition-all hover:border-primary/50 relative"
-                [class.border-primary]="selectedAddressId() === addr.id"
-                [class.shadow-[3px_3px_0px_#000000]!]="selectedAddressId() === addr.id"
-                [class.shadow-neon-yellow]="selectedAddressId() === addr.id"
+                class="p-4 rounded-xl border transition-all cursor-pointer"
+                [class]="
+                  selectedAddressId() === addr.id
+                    ? 'border-primary bg-primary/5'
+                    : 'border-gray-900 bg-[#0A0A0A] hover:border-gray-700'
+                "
               >
-                <input
-                  type="radio"
-                  [value]="addr.id"
-                  [checked]="selectedAddressId() === addr.id"
-                  (change)="selectedAddressId.set(addr.id)"
-                  class="mt-1 accent-primary"
-                />
-                <div class="flex-1 min-w-0 text-sm">
-                  <p class="font-bold text-white mb-1">{{ addr.street }}, {{ addr.number }}</p>
-                  @if (addr.complement) {
-                    <p class="text-xs text-gray-400 mb-0.5">{{ addr.complement }}</p>
-                  }
-                  <p class="text-xs text-gray-400 mb-0.5">
-                    {{ addr.neighborhood }} — {{ addr.city }}/{{ addr.state }}
-                  </p>
-                  <p class="text-xs text-gray-400 mb-1">CEP: {{ addr.zipCode }}</p>
-                  @if (addr.isDefault) {
-                    <span
-                      class="inline-block bg-primary/10 border border-primary/30 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
-                    >
-                      Padrão
-                    </span>
-                  }
+                <div class="flex gap-4">
+                  <input
+                    type="radio"
+                    [value]="addr.id"
+                    [checked]="selectedAddressId() === addr.id"
+                    (change)="selectedAddressId.set(addr.id)"
+                    class="accent-primary mt-1"
+                  />
+                  <div>
+                    <p class="font-bold text-sm">{{ addr.street }}, {{ addr.number }}</p>
+                    <p class="text-xs text-gray-400">
+                      {{ addr.neighborhood }} — {{ addr.city }}/{{ addr.state }}
+                    </p>
+                  </div>
                 </div>
               </label>
             }
           </div>
-          <div
-            class="flex flex-wrap gap-4 justify-between items-center border-t border-white/5 pt-6"
-          >
-            <a
-              routerLink="/account/addresses"
-              class="btn-homer-outline py-2.5 px-6 text-xs no-underline"
-              >Gerenciar Endereços</a
-            >
-            <button
-              class="btn-homer-primary py-2.5 px-8 text-xs font-fun font-bold uppercase tracking-wider shadow-neon-yellow"
-              (click)="goToReview()"
-            >
-              Continuar
-            </button>
+          <div class="flex justify-end mt-8">
+            <button class="btn-primary" (click)="goToReview()">Continuar</button>
           </div>
         }
       </div>
     }
 
-    <!-- Step 2: Review -->
     @if (step() === 'review') {
-      <div class="bg-dark-surface border-2 border-black p-6 md:p-8 rounded-2xl shadow-cartoon">
-        <h2 class="font-fun text-xl font-black text-white uppercase tracking-wider mb-6">
-          Revisão do Pedido
-        </h2>
-
-        <div
-          class="mb-8 p-4 bg-dark-panel border-2 border-black rounded-xl shadow-[3px_3px_0px_#000000]"
-        >
-          <h3 class="font-fun text-sm font-bold text-primary uppercase tracking-wider mb-3">
-            Endereço de Entrega
-          </h3>
-          @if (selectedAddress) {
-            <div class="text-sm leading-relaxed text-gray-300">
-              <p class="font-bold text-white">
-                {{ selectedAddress.street }}, {{ selectedAddress.number }}
-              </p>
-              <p>
-                {{ selectedAddress.neighborhood }} — {{ selectedAddress.city }}/{{
-                  selectedAddress.state
-                }}
-              </p>
-              <p>CEP: {{ selectedAddress.zipCode }}</p>
-            </div>
-          }
+      <div class="card p-8">
+        <h2 class="text-lg font-bold mb-6">Revisão do Pedido</h2>
+        <div class="bg-[#0A0A0A] p-4 rounded-lg border border-gray-900 mb-6 text-sm">
+          <p class="text-gray-400 mb-1">Entregar em:</p>
+          <p class="font-bold">{{ selectedAddress?.street }}, {{ selectedAddress?.number }}</p>
         </div>
 
-        <div class="mb-8">
-          <h3 class="font-fun text-sm font-bold text-primary uppercase tracking-wider mb-4">
-            Itens Selecionados
-          </h3>
-
-          <div
-            class="border-2 border-black rounded-xl overflow-hidden shadow-[3px_3px_0px_#000000]"
-          >
-            <table class="w-full text-left border-collapse text-xs sm:text-sm">
-              <thead>
-                <tr class="bg-primary/5 border-b-2 border-black">
-                  <th class="p-3 font-bold font-fun text-primary uppercase tracking-wider">
-                    Produto
-                  </th>
-                  <th
-                    class="p-3 font-bold font-fun text-primary uppercase tracking-wider text-center"
-                  >
-                    Qtd
-                  </th>
-                  <th
-                    class="p-3 font-bold font-fun text-primary uppercase tracking-wider text-right"
-                  >
-                    Preço
-                  </th>
-                  <th
-                    class="p-3 font-bold font-fun text-primary uppercase tracking-wider text-right"
-                  >
-                    Subtotal
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5 bg-dark-panel">
-                @for (item of cartItems; track item.product.id) {
-                  <tr class="hover:bg-white/5">
-                    <td class="p-3 text-white font-medium">{{ item.product.name }}</td>
-                    <td class="p-3 text-center text-gray-300 font-fun font-bold">
-                      {{ item.quantity }}
-                    </td>
-                    <td class="p-3 text-right text-gray-300 font-medium">
-                      R$ {{ item.product.price | number: '1.2-2' }}
-                    </td>
-                    <td class="p-3 text-right text-primary font-bold">
-                      R$ {{ item.product.price * item.quantity | number: '1.2-2' }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-              <tfoot>
-                <tr class="bg-primary/10 border-t-2 border-black font-fun">
-                  <td colspan="3" class="p-4 text-left font-bold text-white uppercase text-xs">
-                    Total Geral
-                  </td>
-                  <td
-                    class="p-4 text-right font-black text-primary text-base drop-shadow-[1px_1px_0px_#000]"
-                  >
-                    R$ {{ cartTotal | number: '1.2-2' }}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+        <div class="border border-gray-900 rounded-lg overflow-hidden mb-6">
+          <table class="w-full text-sm">
+            <tr class="bg-[#0A0A0A] text-gray-400">
+              <th class="p-3 text-left">Produto</th>
+              <th class="p-3 text-right">Subtotal</th>
+            </tr>
+            @for (item of cartItems; track item.product.id) {
+              <tr class="border-t border-gray-900">
+                <td class="p-3">{{ item.product.name }} (x{{ item.quantity }})</td>
+                <td class="p-3 text-right text-primary">
+                  R$ {{ item.product.price * item.quantity | number: '1.2-2' }}
+                </td>
+              </tr>
+            }
+          </table>
         </div>
 
-        <div class="flex justify-between items-center border-t border-white/5 pt-6">
-          <button class="btn-homer-outline py-2.5 px-6 text-xs" (click)="step.set('address')">
+        <div class="flex justify-between items-center">
+          <button class="text-gray-400 hover:text-white" (click)="step.set('address')">
             Voltar
           </button>
-          <button
-            class="btn-homer-primary py-2.5 px-8 text-xs font-fun font-bold uppercase tracking-wider shadow-neon-yellow"
-            [disabled]="isPlacing()"
-            (click)="placeOrder()"
-          >
-            @if (isPlacing()) {
-              Processando...
-            } @else {
-              Confirmar Pedido
-            }
+          <button class="btn-primary" (click)="placeOrder()" [disabled]="isPlacing()">
+            {{ isPlacing() ? 'Processando...' : 'Confirmar Pedido' }}
           </button>
         </div>
       </div>
     }
 
-    <!-- Step 3: Done -->
     @if (step() === 'done') {
-      <div
-        class="bg-dark-surface border-2 border-black p-8 rounded-2xl shadow-cartoon text-center py-12 max-w-137.5 mx-auto"
-      >
+      <div class="card p-12 text-center">
         <div
-          class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-3xl mx-auto mb-6 shadow-neon-yellow border-2 border-black"
+          class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl"
         >
           ✓
         </div>
-        <h2
-          class="font-fun text-2xl md:text-3xl font-black text-primary uppercase drop-shadow-[1px_1px_0_#000] mb-3"
-        >
-          Pedido Confirmado!
-        </h2>
-        <p class="text-sm text-gray-300 mb-1.5">
-          Seu pedido <strong class="text-white">#{{ orderId() }}</strong> foi registrado com
-          sucesso.
-        </p>
-        <p class="text-xs text-gray-400 mb-8 max-w-xs mx-auto">
-          "Woohoo! Suas bebidas já estão a caminho. O Homer está orgulhoso da sua escolha!"
-        </p>
-        <div class="flex flex-wrap gap-4 justify-center">
-          <a
-            routerLink="/account/orders"
-            class="btn-homer-primary py-2.5 px-6 text-xs no-underline font-fun font-bold"
-            >Ver Meus Pedidos</a
-          >
-          <a
-            routerLink="/products"
-            class="btn-homer-outline py-2.5 px-6 text-xs no-underline font-fun font-bold"
-            >Continuar Comprando</a
-          >
-        </div>
+        <h2 class="text-2xl font-bold mb-2">Pedido Confirmado!</h2>
+        <p class="text-gray-400 mb-8">Seu pedido #{{ orderId() }} foi registrado.</p>
+        <a routerLink="/products" class="btn-primary">Continuar Comprando</a>
       </div>
     }
   </div>

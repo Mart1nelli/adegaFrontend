@@ -1,100 +1,82 @@
 <header
-  class="fixed inset-x-0 top-0 z-1000 w-full box-border transition-all duration-300 ease-in-out backdrop-blur-md"
-  [class]="
-    isScrolled()
-      ? 'bg-dark-bg/95 border-b-2 border-primary shadow-neon-yellow'
-      : 'bg-dark-bg/80 border-b border-white/5'
-  "
+  class="fixed inset-x-0 top-0 z-50 w-full transition-all duration-500 backdrop-blur-xl border-b border-gray-900"
+  [class]="isScrolled() ? 'bg-[#050505]/95 py-3' : 'bg-transparent py-5'"
 >
-  <div
-    class="mx-auto flex w-full max-w-300 items-center justify-between gap-2 px-4 py-2 min-h-14 sm:gap-4 sm:px-6 sm:py-3 sm:min-h-16 lg:gap-8 lg:px-8 lg:py-4 lg:min-h-20"
-  >
-    <!-- Logo -->
-    <div class="shrink-0">
-      <a routerLink="/home" class="transition-all duration-300 hover:scale-105 inline-block">
-        <span
-          class="font-fun text-base sm:text-lg lg:text-2xl font-extrabold tracking-wider text-primary drop-shadow-[0_2px_8px_rgba(254,217,15,0.5)]"
-        >
-          🍻 Adega do Pai
-        </span>
-      </a>
-    </div>
+  <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6">
+    <a routerLink="/home" class="flex items-center gap-2">
+      <span class="text-xl font-bold tracking-tighter text-white"
+        >ADEGA <span class="text-primary">DO PAI</span></span
+      >
+    </a>
 
-    <!-- Barra de busca -->
-    <div class="hidden md:block flex-1 max-w-62.5 lg:max-w-100">
-      <div class="relative flex items-center">
+    <div class="hidden md:flex flex-1 max-w-sm mx-8">
+      <div class="relative w-full">
         <ng-icon
           name="heroMagnifyingGlass"
-          size="18"
-          class="absolute left-4 text-primary/70 z-10"
+          size="16"
+          class="absolute left-3 top-3 text-gray-600"
         ></ng-icon>
         <input
           type="text"
-          placeholder="Buscar bebidas..."
-          class="w-full rounded-full border-2 border-white/10 bg-dark-surface/50 py-2.5 pl-12 pr-4 text-white text-sm backdrop-blur-md transition-all duration-300 placeholder-white/40 focus:border-primary focus:bg-dark-surface focus:shadow-neon-yellow focus:outline-none focus:scale-[1.02]"
+          placeholder="Buscar rótulo..."
+          class="w-full bg-[#0A0A0A] border border-gray-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-700 focus:border-primary outline-none transition-all"
         />
       </div>
     </div>
 
-    <!-- Ações do usuário -->
-    <div class="flex items-center shrink-0 gap-1 sm:gap-2 lg:gap-4">
-      <!-- Classe inline reaproveitável via Tailwind para os botões do header -->
-      @let btnClass =
-        'group relative flex shrink-0 items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full border-2 border-primary/40 bg-primary/5 px-[8px] py-[6px] text-[11px] font-bold text-primary backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:bg-primary/20 hover:shadow-neon-yellow active:translate-y-0 sm:px-3 sm:py-1.5 sm:text-xs lg:px-5 lg:py-2.5 lg:text-sm';
-      @let glowClass =
-        'absolute -left-full top-0 h-full w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-all duration-500 group-hover:left-full';
-
-      <button [class]="btnClass" routerLink="/products">
-        <div [class]="glowClass"></div>
-        <ng-icon name="heroBuildingStorefront" size="16" class="shrink-0"></ng-icon>
-        <span class="hidden lg:inline font-fun">Cardápio</span>
-      </button>
+    <div class="flex items-center gap-6">
+      <a
+        routerLink="/products"
+        class="text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+      >
+        Catálogo
+      </a>
 
       @if (isAuthenticated()) {
-        <div class="flex items-center gap-1 sm:gap-2">
-          <button [class]="btnClass" routerLink="/account/profile">
-            <div [class]="glowClass"></div>
-            <ng-icon name="heroUser" size="16" class="shrink-0"></ng-icon>
-            <span class="hidden lg:inline font-fun">{{
-              (currentUser()?.name ?? 'Conta').split(' ')[0]
-            }}</span>
-          </button>
+        <a
+          routerLink="/account/profile"
+          class="flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+        >
+          <ng-icon name="heroUser" size="16"></ng-icon>
+          {{ (currentUser()?.name ?? 'Conta').split(' ')[0] }}
+        </a>
 
-          @if (currentUser()?.role === 'ADMIN') {
-            <button
-              class="group relative flex shrink-0 items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full border-2 border-secondary bg-secondary/10 px-2 py-1.5text-[11px] font-bold text-secondary backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary/20 hover:shadow-neon-red active:translate-y-0 sm:px-3 sm:py-1.5 sm:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
-              routerLink="/admin"
-            >
-              <div
-                class="absolute -left-full top-0 h-full w-full bg-linear-to-r from-transparent via-secondary/20 to-transparent transition-all duration-500 group-hover:left-full"
-              ></div>
-              <span class="hidden lg:inline font-fun">Admin</span>
-            </button>
-          }
+        @if (currentUser()?.role === 'ADMIN') {
+          <a
+            routerLink="/admin"
+            class="text-sm font-semibold text-secondary hover:text-red-400 transition-colors"
+          >
+            Admin
+          </a>
+        }
 
-          <button [class]="btnClass" (click)="logout()">
-            <div [class]="glowClass"></div>
-            <span class="hidden lg:inline font-fun">Sair</span>
-          </button>
-        </div>
-      } @else {
-        <button [class]="btnClass" routerLink="/auth/login">
-          <div [class]="glowClass"></div>
-          <ng-icon name="heroUser" size="16" class="shrink-0"></ng-icon>
-          <span class="hidden lg:inline font-fun">Entrar</span>
+        <button
+          (click)="logout()"
+          class="text-sm font-semibold text-gray-500 hover:text-white transition-colors"
+        >
+          Sair
         </button>
+      } @else {
+        <a
+          routerLink="/auth/login"
+          class="flex items-center gap-2 text-sm font-semibold text-white hover:text-primary transition-colors"
+        >
+          <ng-icon name="heroUser" size="16"></ng-icon>
+          Entrar
+        </a>
       }
 
       <button
-        class="relative flex shrink-0 items-center justify-center gap-2 rounded-full border-2 border-accent bg-accent text-white font-fun font-bold transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-neon-pink h-9 w-9 sm:h-10 sm:w-10 lg:h-auto lg:w-auto lg:px-4 lg:py-2.5"
         routerLink="/cart"
+        class="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#0A0A0A] border border-gray-800 text-white transition-all hover:border-primary hover:text-primary"
       >
-        <ng-icon name="heroShoppingBag" size="20" class="leading-none shrink-0"></ng-icon>
+        <ng-icon name="heroShoppingBag" size="20"></ng-icon>
         @if (cartCount() > 0) {
           <span
-            class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-black bg-primary text-[0.65rem] font-extrabold text-black shadow-lg lg:static lg:h-5 lg:w-5 lg:border-none lg:bg-black lg:text-accent lg:translate-y-0"
-            >{{ cartCount() }}</span
+            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-black"
           >
+            {{ cartCount() }}
+          </span>
         }
       </button>
     </div>

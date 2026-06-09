@@ -17,6 +17,7 @@ interface ProductForm {
 
 @Component({
   selector: 'app-admin-products',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-products.html',
 })
@@ -24,6 +25,7 @@ export class AdminProducts implements OnInit {
   private apiService = inject(ApiService);
   private notificationService = inject(NotificationService);
 
+  // Estados
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   isLoading = signal(true);
@@ -31,43 +33,47 @@ export class AdminProducts implements OnInit {
   isSaving = signal(false);
   isEditing = signal(false);
 
+  // Paginação e Busca
   page = signal(1);
   totalPages = signal(1);
   searchText = '';
 
+  // Formulário
   form: ProductForm = this.emptyForm();
 
   ngOnInit() {
     this.loadProducts();
-    this.apiService.getCategories().subscribe((cats) => this.categories.set(cats));
+    this.apiService.getCategories().subscribe({
+      next: (cats) => this.categories.set(cats),
+    });
   }
 
-  emptyForm(): ProductForm {
-    return { name: '', description: '', price: null, stock: null, categoryId: null, imageUrl: '' };
+  private emptyForm(): ProductForm {
+    return {
+      name: '',
+      description: '',
+      price: null,
+      stock: null,
+      categoryId: null,
+      imageUrl: '',
+    };
   }
 
   loadProducts() {
     this.isLoading.set(true);
-
-    // O Spring espera que a página 0 seja a primeira
     const pageIndex = this.page() - 1;
 
-    this.apiService
-      .getProducts({
-        page: pageIndex, // Ajustado para 0-based
-        limit: 15,
-      })
-      .subscribe({
-        next: (data: PaginatedProducts) => {
-          this.products.set(data.data);
-          this.totalPages.set(data.totalPages);
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          console.error('Erro ao buscar produtos:', err);
-          this.isLoading.set(false);
-        },
-      });
+    this.apiService.getProducts({ page: pageIndex, limit: 15, search: this.searchText }).subscribe({
+      next: (data: PaginatedProducts) => {
+        this.products.set(data.data);
+        this.totalPages.set(data.totalPages);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.notificationService.showError('Erro ao carregar produtos.');
+        this.isLoading.set(false);
+      },
+    });
   }
 
   search() {
@@ -95,25 +101,23 @@ export class AdminProducts implements OnInit {
     this.showModal.set(true);
   }
 
+  private mapToProduct(form: ProductForm): Product {
+    return {
+      ...form,
+      price: form.price ?? 0,
+      stock: form.stock ?? 0,
+      isActive: true,
+    } as Product;
+  }
+
   save() {
     this.isSaving.set(true);
+    const productData = this.mapToProduct(this.form);
 
-    // Tratamento dos valores nulos para satisfazer o tipo 'number' do backend
-    const productData = {
-      name: this.form.name,
-      description: this.form.description,
-      price: this.form.price ?? 0,
-      stock: this.form.stock ?? 0,
-      categoryId: this.form.categoryId ?? null,
-      imageUrl: this.form.imageUrl,
-      isActive: true,
-    };
-
-    // Usamos 'as any' ou garantimos a compatibilidade com a interface Product
     const req =
       this.isEditing() && this.form.id
-        ? this.apiService.updateProduct(this.form.id, productData as Product)
-        : this.apiService.createProduct(productData as Product);
+        ? this.apiService.updateProduct(this.form.id, productData)
+        : this.apiService.createProduct(productData);
 
     req.subscribe({
       next: () => {
@@ -132,10 +136,11 @@ export class AdminProducts implements OnInit {
   }
 
   delete(product: Product) {
-    if (!confirm(`Excluir "${product.name}"?`)) return;
+    if (!confirm(`Tem certeza que deseja excluir "${product.name}"?`)) return;
+
     this.apiService.deleteProduct(product.id!).subscribe({
       next: () => {
-        this.notificationService.showSuccess('Produto excluído.');
+        this.notificationService.showSuccess('Produto excluído com sucesso.');
         this.loadProducts();
       },
       error: () => this.notificationService.showError('Erro ao excluir produto.'),
@@ -148,6 +153,7 @@ export class AdminProducts implements OnInit {
       this.loadProducts();
     }
   }
+
   nextPage() {
     if (this.page() < this.totalPages()) {
       this.page.update((p) => p + 1);

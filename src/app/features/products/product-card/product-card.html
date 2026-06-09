@@ -1,123 +1,52 @@
-<div class="homer-card group flex h-full flex-col relative">
-  <!-- Product Image Section -->
-  <div
-    class="relative w-full h-55 overflow-hidden bg-linear-to-br from-dark-panel to-dark-bg border-b-2 border-black"
-  >
+<div
+  class="group flex h-full flex-col overflow-hidden rounded-2xl bg-[#0A0A0A] border border-gray-900 transition-all hover:border-gray-700"
+>
+  <div class="relative w-full h-56 overflow-hidden bg-gray-900">
     <img
       [src]="product().imageUrl || '/assets/images/placeholder.png'"
       [alt]="product().name"
       loading="lazy"
-      class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
     />
 
-    <!-- Theme Glow Overlay -->
-    <div
-      class="absolute inset-0 bg-linear-to-br from-primary/10 via-secondary/5 to-accent/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-    ></div>
-
-    <!-- Badges -->
-    <div class="absolute right-3 top-3 z-2">
+    <div class="absolute right-3 top-3">
       @if (product().stock === 0) {
         <span
-          class="inline-flex items-center gap-1 rounded-full border border-black bg-secondary px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-[2px_2px_0px_#000000]"
+          class="px-3 py-1 rounded-full bg-red-900/20 text-red-400 text-[10px] font-bold uppercase tracking-widest border border-red-900/50"
+          >Esgotado</span
         >
-          Esgotado
-        </span>
       } @else if (product().stock < 10) {
         <span
-          class="inline-flex animate-pulse items-center gap-1 rounded-full border border-black bg-primary px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-black shadow-[2px_2px_0px_#000000]"
+          class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20"
+          >Poucas unidades</span
         >
-          Últimas unidades
-        </span>
-      } @else {
-        <span
-          class="inline-flex items-center gap-1 rounded-full border border-black bg-green-500 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-[2px_2px_0px_#000000]"
-        >
-          Disponível
-        </span>
       }
-    </div>
-
-    <!-- Quick Actions -->
-    <div
-      class="absolute bottom-3 right-3 z-2 translate-y-2.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
-    >
-      <button
-        class="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-primary text-black transition-all duration-150 hover:bg-white hover:scale-110 active:scale-95 shadow-[2px_2px_0px_#000000]"
-        (click)="onViewDetails()"
-        aria-label="Ver detalhes do produto"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      </button>
     </div>
   </div>
 
-  <!-- Product Info Section -->
-  <div class="flex flex-1 flex-col gap-3 p-5 bg-dark-surface">
-    <!-- Category Badge -->
+  <div class="flex flex-1 flex-col gap-3 p-6">
     @if (product().category) {
-      <div
-        class="self-start inline-flex items-center gap-1 rounded border border-black/40 bg-accent/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent"
-      >
-        <ng-icon name="heroTag" size="10"></ng-icon>
-        {{ getCategoryName() }}
-      </div>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">{{
+        getCategoryName()
+      }}</span>
     }
 
-    <!-- Product Name -->
-    <h3 class="m-0">
-      <button
-        (click)="onViewDetails()"
-        class="w-full text-left font-fun font-bold text-base leading-tight text-white transition-colors hover:text-primary bg-transparent border-none p-0 cursor-pointer"
-        type="button"
-      >
-        {{ product().name }}
-      </button>
+    <h3 class="font-bold text-lg text-white leading-tight">
+      {{ product().name }}
     </h3>
 
-    <!-- Product Description -->
-    <p class="m-0 line-clamp-2 text-xs leading-relaxed text-gray-400">
+    <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed">
       {{ product().description }}
     </p>
 
-    <!-- Price Section -->
-    <div class="mt-auto pt-2">
-      <div class="flex items-baseline justify-between gap-2 border-t border-white/5 pt-3">
-        <span class="text-lg font-fun font-black text-primary">
-          R$ {{ product().price | number: '1.2-2' }}
-        </span>
-        <span class="text-[10px] text-gray-500 font-medium font-fun">
-          {{ product().stock > 0 ? product().stock + ' un' : 'Sem estoque' }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="mt-1">
+    <div class="mt-auto pt-4 flex items-center justify-between">
+      <span class="text-xl font-bold text-white">R$ {{ product().price | number: '1.2-2' }}</span>
       <button
-        class="w-full text-xs py-2 px-4 justify-center"
-        [class]="product().stock === 0 ? 'btn-homer-secondary opacity-50' : 'btn-homer-primary'"
-        [disabled]="product().stock === 0"
         (click)="onAddToCart()"
+        [disabled]="product().stock === 0"
+        class="p-3 rounded-full bg-gray-900 border border-gray-800 text-primary transition-all hover:bg-primary hover:text-black disabled:opacity-50"
       >
-        @if (product().stock > 0) {
-          <span class="flex items-center justify-center gap-2">
-            <ng-icon name="heroShoppingBag" size="14"></ng-icon>
-            Adicionar
-          </span>
-        } @else {
-          <span class="flex items-center justify-center gap-2"> Esgotado </span>
-        }
+        <ng-icon name="heroShoppingBag" size="18"></ng-icon>
       </button>
     </div>
   </div>

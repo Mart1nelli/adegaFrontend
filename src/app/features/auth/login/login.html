@@ -1,99 +1,63 @@
-<div
-  class="min-h-[calc(100vh-80px)] bg-dark-bg text-white flex items-center justify-center p-4 relative overflow-hidden"
->
-  <!-- Background Radioactive Effects -->
-  <div class="absolute inset-0 pointer-events-none z-0">
-    <div
-      class="absolute top-[30%] left-[20%] w-75 h-75 rounded-full bg-primary/5 blur-[100px] nuclear-glow-pulse"
-    ></div>
-    <div
-      class="absolute bottom-[30%] right-[20%] w-75 h-75 rounded-full bg-secondary/5 blur-[100px] nuclear-glow-pulse"
-    ></div>
-  </div>
-
-  <div
-    class="bg-dark-surface border-2 border-black p-6 md:p-8 rounded-2xl shadow-cartoon max-w-105 w-full relative z-10"
-  >
-    <div class="text-center mb-6">
-      <div class="text-4xl mb-2">🍺</div>
-      <h1
-        class="font-fun text-2xl sm:text-3xl font-black text-primary drop-shadow-[2px_2px_0px_#000000] tracking-wider uppercase m-0"
-      >
-        Entrar na Adega
-      </h1>
-      <p class="text-gray-400 text-xs mt-1">Conecte-se para reabastecer seu estoque</p>
+<div class="min-h-screen bg-bg text-white flex items-center justify-center p-4">
+  <div class="card w-full max-w-sm p-8">
+    <div class="text-center mb-8">
+      <div class="text-4xl mb-4">🍷</div>
+      <h1 class="text-2xl font-bold tracking-tight">Entrar na Adega</h1>
+      <p class="text-gray-400 text-sm mt-2">Bem-vindo de volta</p>
     </div>
 
     <form (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
-      <div class="flex flex-col gap-1.5">
-        <label for="email" class="text-xs font-bold font-fun text-primary uppercase tracking-wider"
+      <div class="flex flex-col gap-2">
+        <label for="email" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
           >Email</label
         >
         <div class="relative flex items-center">
-          <ng-icon
-            name="heroEnvelope"
-            size="18"
-            class="absolute left-4 text-primary/70 z-10"
-          ></ng-icon>
+          <ng-icon name="heroEnvelope" size="18" class="absolute left-3 text-gray-500"></ng-icon>
           <input
-            type="email"
             id="email"
+            type="email"
             [(ngModel)]="loginData().email"
             name="email"
-            placeholder="seu@email.com"
+            placeholder="nome@exemplo.com"
+            class="input-field pl-10"
             required
-            class="w-full pl-12 pr-4 py-2.5 bg-dark-panel border-2 border-black rounded-xl text-sm text-white placeholder-gray-500 focus:border-primary focus:shadow-neon-yellow focus:outline-none transition-all"
           />
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label
-          for="password"
-          class="text-xs font-bold font-fun text-primary uppercase tracking-wider"
+      <div class="flex flex-col gap-2">
+        <label for="password" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
           >Senha</label
         >
         <div class="relative flex items-center">
-          <ng-icon
-            name="heroLockClosed"
-            size="18"
-            class="absolute left-4 text-primary/70 z-10"
-          ></ng-icon>
+          <ng-icon name="heroLockClosed" size="18" class="absolute left-3 text-gray-500"></ng-icon>
           <input
-            type="password"
             id="password"
+            type="password"
             [(ngModel)]="loginData().password"
             name="password"
-            placeholder="Digite sua senha"
+            placeholder="••••••••"
+            class="input-field pl-10"
             required
-            class="w-full pl-12 pr-4 py-2.5 bg-dark-panel border-2 border-black rounded-xl text-sm text-white placeholder-gray-500 focus:border-primary focus:shadow-neon-yellow focus:outline-none transition-all"
           />
         </div>
       </div>
 
       @if (errorMessage()) {
         <div
-          class="bg-secondary/15 border border-secondary text-secondary font-bold text-xs p-3 rounded-lg text-center font-fun"
+          class="bg-red-950/30 border border-red-900 text-red-400 text-xs p-3 rounded-lg text-center"
         >
           {{ errorMessage() }}
         </div>
       }
 
-      <button
-        type="submit"
-        [disabled]="isLoading()"
-        class="btn-homer-primary w-full py-3 mt-2 shadow-neon-yellow"
-      >
-        @if (isLoading()) {
-          <span>Conectando...</span>
-        } @else {
-          <span>Entrar</span>
-        }
+      <button type="submit" [disabled]="isLoading()" class="btn-primary w-full py-3 mt-2">
+        {{ isLoading() ? 'Autenticando...' : 'Entrar' }}
       </button>
     </form>
 
-    <div class="text-center mt-6 border-t border-white/5 pt-5">
-      <p class="text-xs text-gray-400 m-0">
+    <div class="text-center mt-8 border-t border-gray-900 pt-6">
+      <p class="text-sm text-gray-500">
         Não tem uma conta?
         <a routerLink="/auth/register" class="text-primary font-bold hover:underline ml-1"
           >Cadastre-se</a

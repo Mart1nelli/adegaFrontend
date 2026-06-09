@@ -15,17 +15,13 @@ export class AdminCategories implements OnInit {
   private apiService = inject(ApiService);
   private notificationService = inject(NotificationService);
 
-  // Estados da UI
   categories = signal<Category[]>([]);
   isLoading = signal(true);
   isSaving = signal(false);
-
-  // Estados dos Modais
   showModal = signal(false);
   showDeleteModal = signal(false);
   isEditing = signal(false);
 
-  // Dados de controle
   categoryToDelete = signal<Category | null>(null);
   form = { id: null as number | null, name: '', description: '' };
 
@@ -40,11 +36,13 @@ export class AdminCategories implements OnInit {
         this.categories.set(data);
         this.isLoading.set(false);
       },
-      error: () => this.isLoading.set(false),
+      error: () => {
+        this.notificationService.showError('Erro ao carregar categorias.');
+        this.isLoading.set(false);
+      },
     });
   }
 
-  // --- Ações de Edição/Criação ---
   openCreate() {
     this.form = { id: null, name: '', description: '' };
     this.isEditing.set(false);
@@ -59,7 +57,7 @@ export class AdminCategories implements OnInit {
 
   save() {
     this.isSaving.set(true);
-    const data = { name: this.form.name, description: this.form.description } as Category;
+    const data: Category = { name: this.form.name, description: this.form.description };
 
     const request$ =
       this.isEditing() && this.form.id
@@ -70,45 +68,32 @@ export class AdminCategories implements OnInit {
       .subscribe({
         next: () => {
           this.notificationService.showSuccess(
-            `Categoria ${this.isEditing() ? 'atualizada' : 'criada'} com sucesso!`,
+            `Categoria ${this.isEditing() ? 'atualizada' : 'criada'}!`,
           );
-          this.closeModals();
+          this.showModal.set(false);
           this.loadCategories();
         },
-        error: () => this.notificationService.showError('Erro ao salvar categoria.'),
+        error: () => this.notificationService.showError('Erro ao salvar.'),
       })
       .add(() => this.isSaving.set(false));
   }
 
-  // --- Ações de Exclusão ---
   confirmDelete(cat: Category) {
     this.categoryToDelete.set(cat);
     this.showDeleteModal.set(true);
   }
 
-  executeDelete(event?: Event) {
-    event?.preventDefault(); // Impede que o formulário/navegador tente "submeter" ou "navegar"
-    event?.stopPropagation(); // Impede que o clique suba para elementos pais (como divs com @click)
-
+  executeDelete() {
     const cat = this.categoryToDelete();
     if (!cat?.id) return;
 
     this.apiService.deleteCategory(cat.id).subscribe({
       next: () => {
         this.notificationService.showSuccess('Categoria excluída!');
-        this.closeModals();
+        this.showDeleteModal.set(false);
         this.loadCategories();
       },
-      error: (err) => {
-        console.error(err); // Veja o erro real aqui no console
-        this.notificationService.showError('Erro ao excluir.');
-      },
+      error: () => this.notificationService.showError('Erro ao excluir.'),
     });
-  }
-
-  private closeModals() {
-    this.showModal.set(false);
-    this.showDeleteModal.set(false);
-    this.categoryToDelete.set(null);
   }
 }
