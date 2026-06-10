@@ -1,51 +1,53 @@
-<app-header></app-header>
-
-<div class="min-h-screen bg-bg text-white pt-32 pb-16 px-4 md:px-8 max-w-350 mx-auto">
-  <div class="mb-12 border-b border-gray-900 pb-8">
-    <p class="text-primary text-xs uppercase tracking-widest font-semibold mb-2">
+<div class="min-h-screen bg-bg text-text-main pt-32 pb-16 px-4 md:px-8 max-w-[1400px] mx-auto">
+  <div class="mb-12 border-b border-border pb-8">
+    <p class="text-primary text-[10px] uppercase tracking-widest font-bold mb-2">
       Catálogo Premium
     </p>
-    <h1 class="text-4xl lg:text-5xl font-bold text-white mb-2">Coleção Completa</h1>
-    <p class="text-gray-400">{{ totalItems() }} rótulos disponíveis para sua escolha.</p>
+    <h1 class="text-4xl lg:text-5xl font-black text-text-main mb-2 tracking-tight">
+      Coleção Completa
+    </h1>
+    <p class="text-text-muted">{{ totalItems() }} rótulos disponíveis para sua escolha.</p>
   </div>
 
   <div class="flex flex-col lg:flex-row gap-12 items-start">
-    <aside class="w-full lg:w-72 shrink-0 bg-[#0A0A0A] p-8 rounded-2xl border border-gray-900">
-      <h3 class="font-bold text-lg mb-8 flex items-center gap-2 text-white">
+    <aside class="w-full lg:w-72 shrink-0 card p-8 border border-border">
+      <h3 class="font-bold text-lg mb-8 flex items-center gap-2">
         <ng-icon name="heroAdjustmentsHorizontal" class="text-primary"></ng-icon> Filtros
       </h3>
 
       <form [formGroup]="filterForm" class="flex flex-col gap-8">
         <div>
-          <label for="search" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"
+          <label
+            for="search"
+            class="text-[10px] font-bold text-text-muted uppercase tracking-widest"
             >Buscar</label
           >
           <div class="relative mt-3">
             <ng-icon
               name="heroMagnifyingGlass"
-              class="absolute left-3 top-3 text-gray-600"
+              class="absolute left-3 top-3 text-text-dim"
             ></ng-icon>
             <input
               id="search"
               formControlName="search"
               placeholder="Buscar rótulo..."
-              class="w-full pl-10 pr-4 py-3 bg-[#111] border border-gray-800 rounded-xl text-sm focus:border-primary outline-none transition-all placeholder:text-gray-700"
+              class="w-full pl-10 pr-4 py-3 bg-surface border border-border rounded-xl text-sm focus:border-primary outline-none transition-all placeholder:text-text-dim"
             />
           </div>
         </div>
 
         <div>
-          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"
+          <span class="text-[10px] font-bold text-text-muted uppercase tracking-widest"
             >Categoria</span
           >
-          <div class="flex flex-col gap-2 mt-4">
+          <div class="flex flex-col gap-1 mt-4">
             <button
               type="button"
               (click)="filterForm.patchValue({ categoryId: null })"
               [class]="
                 filterForm.value.categoryId === null
-                  ? 'bg-primary text-black'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-dim hover:text-text-main'
               "
               class="text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold"
             >
@@ -57,8 +59,8 @@
                 (click)="filterForm.patchValue({ categoryId: cat.id })"
                 [class]="
                   filterForm.value.categoryId === cat.id
-                    ? 'bg-primary text-black'
-                    : 'text-gray-400 hover:text-white'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-text-dim hover:text-text-main'
                 "
                 class="text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold"
               >
@@ -69,26 +71,23 @@
         </div>
 
         <div>
-          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-6"
+          <span class="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-6"
             >Faixa de Preço</span
           >
-
-          <div class="relative w-full h-1 bg-gray-800 rounded-full">
+          <div class="relative w-full h-1 bg-border rounded-full">
             <div
               class="absolute top-0 h-1 bg-primary rounded-full"
               [style.width.%]="getPricePercent()"
             ></div>
-
             <input
               type="range"
               [min]="0"
               [max]="maxLimit"
               formControlName="priceRange"
-              class="absolute -top-1.5 left-0 w-full h-4 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-primary"
+              class="absolute -top-1.5 left-0 w-full h-4 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-bg"
             />
           </div>
-
-          <div class="flex justify-between mt-6 text-xs text-gray-400 font-mono">
+          <div class="flex justify-between mt-6 text-xs text-text-muted font-mono">
             <span>R$ 0</span>
             <span>R$ {{ filterForm.value.priceRange }}</span>
           </div>
@@ -97,7 +96,7 @@
         <button
           type="button"
           (click)="clearFilters()"
-          class="w-full py-3 mt-2 border border-gray-900 rounded-xl hover:border-gray-700 transition-all text-sm font-bold uppercase tracking-wider text-gray-400 hover:text-white flex items-center justify-center gap-2"
+          class="w-full py-3 mt-2 border border-border rounded-xl hover:border-text-dim transition-all text-sm font-bold uppercase tracking-wider text-text-muted hover:text-text-main flex items-center justify-center gap-2"
         >
           <ng-icon name="heroXMark" size="16"></ng-icon> Limpar Filtros
         </button>
@@ -120,7 +119,7 @@
             ></app-product-card>
           } @empty {
             <div
-              class="col-span-full py-20 text-center text-gray-500 border border-dashed border-gray-900 rounded-2xl"
+              class="col-span-full py-20 text-center text-text-muted border border-dashed border-border rounded-2xl"
             >
               Nenhum rótulo encontrado com esses critérios.
             </div>

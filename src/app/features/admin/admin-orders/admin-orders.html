@@ -1,8 +1,8 @@
 <div class="space-y-6">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-black text-white font-[Fredoka] tracking-tight">Pedidos</h1>
-      <p class="text-white/40 text-sm mt-0.5">Gerencie o fluxo de pedidos da adega</p>
+      <h1 class="text-2xl font-black tracking-tight">Pedidos</h1>
+      <p class="text-text-muted text-sm mt-0.5">Gerencie o fluxo de pedidos da adega</p>
     </div>
   </div>
 
@@ -13,50 +13,48 @@
       ></div>
     </div>
   } @else if (orders().length === 0) {
-    <div class="bg-[#0A0A0B] border border-white/5 rounded-2xl p-12 text-center text-white/30">
-      Nenhum pedido registrado no momento.
-    </div>
+    <div class="card p-12 text-center text-text-dim">Nenhum pedido registrado no momento.</div>
   } @else {
-    <div class="bg-[#0A0A0B] border border-white/5 rounded-2xl overflow-hidden">
+    <div class="card overflow-hidden p-0">
       <table class="w-full text-left">
         <thead>
-          <tr class="border-b border-white/5">
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+          <tr class="border-b border-border-soft">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Pedido
             </th>
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Cliente
             </th>
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Data
             </th>
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Total
             </th>
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Status
             </th>
-            <th class="px-6 py-4 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+            <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
               Ação
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/5">
+        <tbody class="divide-y divide-border-soft">
           @for (order of orders(); track order.id) {
-            <tr class="hover:bg-white/[0.02] transition-colors">
-              <td class="px-6 py-4 text-xs font-mono text-primary font-bold">#{{ order.id }}</td>
-              <td class="px-6 py-4 text-sm text-white">{{ order.user?.name ?? '—' }}</td>
-              <td class="px-6 py-4 text-xs text-white/40">
+            <tr class="hover:bg-surface transition-colors">
+              <td class="px-6 py-4 text-xs font-mono font-bold text-primary">#{{ order.id }}</td>
+              <td class="px-6 py-4 text-sm font-medium">{{ order.user?.name ?? '—' }}</td>
+              <td class="px-6 py-4 text-xs text-text-muted">
                 {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}
               </td>
-              <td class="px-6 py-4 text-sm font-semibold text-white">
+              <td class="px-6 py-4 text-sm font-semibold">
                 {{ order.totalAmount | currency: 'BRL' }}
               </td>
               <td class="px-6 py-4">
                 <span
                   [class]="
                     statusClass(order.status) +
-                    ' text-[10px] font-bold px-2 py-1 rounded border uppercase'
+                    ' text-[10px] font-bold px-2 py-1 rounded-full uppercase'
                   "
                 >
                   {{ statusLabel(order.status) }}
@@ -65,7 +63,7 @@
               <td class="px-6 py-4">
                 <select
                   (change)="updateStatus(order, $event)"
-                  class="bg-[#161618] border border-white/5 rounded-lg px-3 py-1.5 text-white/70 text-xs focus:border-primary/50 outline-none transition-all cursor-pointer"
+                  class="bg-bg border border-border rounded-lg px-3 py-1.5 text-text-muted text-xs focus:border-primary outline-none transition-all cursor-pointer"
                   aria-label="Alterar status do pedido"
                 >
                   @for (opt of statusOptions; track opt) {

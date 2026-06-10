@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-bg text-white px-4 py-10">
+<div class="min-h-screen bg-bg text-text-main px-4 py-10">
   <div class="max-w-3xl mx-auto space-y-8">
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold tracking-tight">Meus Endereços</h1>
-        <p class="text-gray-400 text-sm mt-1">Gerencie onde seus pedidos serão entregues</p>
+        <p class="text-text-muted text-sm mt-1">Gerencie onde seus pedidos serão entregues</p>
       </div>
       <button (click)="openCreateForm()" class="btn-primary flex items-center gap-2">
         <ng-icon name="heroPlus" size="16"></ng-icon>
@@ -14,28 +14,28 @@
     @if (isLoading()) {
       <div class="flex items-center justify-center py-16">
         <div
-          class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
+          class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"
         ></div>
       </div>
     } @else {
       <div class="grid gap-4">
         @for (address of addresses(); track address.id) {
-          <div class="card p-5 flex items-center justify-between gap-6 border border-gray-900">
+          <div
+            class="card p-5 flex items-center justify-between gap-6 border-border-soft hover:border-primary transition-all"
+          >
             <div class="flex flex-col gap-0.5">
-              <p class="font-bold text-white text-base">
-                {{ address.street }}, {{ address.number }}
-              </p>
-              <p class="text-gray-400 text-sm">
+              <p class="font-bold text-base">{{ address.street }}, {{ address.number }}</p>
+              <p class="text-text-muted text-sm">
                 {{ address.neighborhood }} — {{ address.city }}/{{ address.state }}
               </p>
-              <p class="text-gray-500 text-xs font-mono mt-1">{{ address.zipCode }}</p>
+              <p class="text-text-dim text-xs font-mono mt-1">{{ address.zipCode }}</p>
             </div>
 
             <div class="flex items-center gap-1 shrink-0">
               <button
                 type="button"
                 (click)="openEditForm(address)"
-                class="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+                class="p-2 rounded-lg text-text-muted hover:text-text-main hover:bg-border transition-all"
                 aria-label="Editar"
               >
                 <ng-icon name="lucidePencil" size="16"></ng-icon>
@@ -44,7 +44,7 @@
               <button
                 type="button"
                 (click)="deleteAddress(address.id)"
-                class="p-2 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                class="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
                 aria-label="Excluir"
               >
                 <ng-icon name="lucideTrash2" size="16"></ng-icon>
@@ -61,8 +61,6 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
     (click)="closeForm()"
-    (keydown.enter)="closeForm()"
-    (keydown.escape)="closeForm()"
     role="button"
     tabindex="0"
     aria-label="Fechar formulário"
@@ -73,12 +71,12 @@
       (click)="$event.stopPropagation()"
       role="presentation"
     >
-      <div class="p-6 border-b border-gray-900 flex justify-between items-center">
+      <div class="p-6 border-b border-border-soft flex justify-between items-center">
         <h2 class="font-bold">{{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
         <button
           type="button"
           (click)="closeForm()"
-          class="text-gray-500 hover:text-white"
+          class="text-text-muted hover:text-text-main"
           aria-label="Fechar"
         >
           ✕
@@ -88,47 +86,40 @@
       <form class="p-6 space-y-4" (ngSubmit)="saveAddress()">
         <div class="grid grid-cols-4 gap-4">
           <div class="col-span-3 space-y-1">
-            <label for="street" class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
+            <label for="Rua" class="text-xs font-bold text-text-muted uppercase">Rua *</label>
             <input
-              id="street"
+              id="Rua"
               [(ngModel)]="formData.street"
               name="street"
-              class="input-field w-full"
+              class="input-field"
               required
             />
           </div>
           <div class="col-span-1 space-y-1">
-            <label for="number" class="text-xs font-bold text-gray-500 uppercase">Nº</label>
-            <input
-              id="number"
-              [(ngModel)]="formData.number"
-              name="number"
-              class="input-field w-full"
-            />
+            <label for="Numero" class="text-xs font-bold text-text-muted uppercase">Nº</label>
+            <input id="Numero" [(ngModel)]="formData.number" name="number" class="input-field" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1">
-            <label for="complement" class="text-xs font-bold text-gray-500 uppercase"
+            <label for="complemento" class="text-xs font-bold text-text-muted uppercase"
               >Complemento</label
             >
             <input
-              id="complement"
+              id="complemento"
               [(ngModel)]="formData.complement"
               name="complement"
-              class="input-field w-full"
+              class="input-field"
             />
           </div>
           <div class="space-y-1">
-            <label for="neighborhood" class="text-xs font-bold text-gray-500 uppercase"
-              >Bairro *</label
-            >
+            <label for="bairro" class="text-xs font-bold text-text-muted uppercase">Bairro *</label>
             <input
-              id="neighborhood"
+              id="bairro"
               [(ngModel)]="formData.neighborhood"
               name="neighborhood"
-              class="input-field w-full"
+              class="input-field"
               required
             />
           </div>
@@ -136,35 +127,35 @@
 
         <div class="grid grid-cols-4 gap-4">
           <div class="col-span-2 space-y-1">
-            <label for="zipCode" class="text-xs font-bold text-gray-500 uppercase">CEP *</label>
+            <label for="Cep" class="text-xs font-bold text-text-muted uppercase">CEP *</label>
             <input
-              id="zipCode"
+              id="Cep"
               [(ngModel)]="formData.zipCode"
               name="zipCode"
               placeholder="00000-000"
-              class="input-field w-full"
+              class="input-field"
               required
             />
           </div>
           <div class="col-span-1 space-y-1">
-            <label for="city" class="text-xs font-bold text-gray-500 uppercase">Cidade *</label>
+            <label for="Cidade" class="text-xs font-bold text-text-muted uppercase">Cidade *</label>
             <input
-              id="city"
+              id="Cidade"
               [(ngModel)]="formData.city"
               name="city"
-              class="input-field w-full"
+              class="input-field"
               required
             />
           </div>
           <div class="col-span-1 space-y-1">
-            <label for="state" class="text-xs font-bold text-gray-500 uppercase">UF *</label>
+            <label for="UF" class="text-xs font-bold text-text-muted uppercase">UF *</label>
             <input
-              id="state"
+              id="UF"
               [(ngModel)]="formData.state"
               name="state"
               maxlength="2"
               placeholder="SP"
-              class="input-field w-full"
+              class="input-field"
               required
             />
           </div>

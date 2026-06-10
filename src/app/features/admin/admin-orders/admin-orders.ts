@@ -86,6 +86,6 @@ export class AdminOrders implements OnInit {
       DELIVERED: 'bg-green-500/10 text-green-400 border-green-500/20',
       CANCELLED: 'bg-red-500/10 text-red-400 border-red-500/20',
     };
-    return map[status] ?? 'bg-white/5 text-white border-white/10';
+    return map[status] ?? 'border-border-soft text-white border-white/10';
   }
 }

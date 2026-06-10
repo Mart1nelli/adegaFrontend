@@ -1,8 +1,8 @@
 <section
-  class="relative flex flex-col justify-center min-h-[calc(100vh-80px)] overflow-hidden text-white"
+  class="relative flex flex-col justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-bg text-text-main"
   #heroSection
 >
-  <div class="absolute inset-0 z-[-1] bg-[#050505]">
+  <div class="absolute inset-0 z-0">
     <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px]"></div>
     <div
       class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px]"
@@ -14,45 +14,41 @@
   >
     <div class="lg:col-span-7 flex flex-col justify-center pt-16">
       <div
-        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-widest text-primary self-center lg:self-start"
+        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-6 text-[10px] font-bold uppercase tracking-widest text-primary self-center lg:self-start"
       >
         <ng-icon name="lucideBeer" size="16"></ng-icon>
         <span>Bebidas selecionadas a dedo</span>
       </div>
 
       <h1 class="mb-6">
-        <span class="block text-3xl lg:text-5xl font-bold mb-4 tracking-tight">Adega do Pai</span>
-        <span class="text-lg lg:text-xl text-gray-400 font-light max-w-lg mx-auto lg:mx-0">
+        <span class="block text-4xl lg:text-6xl font-black mb-4 tracking-tight">Adega do Pai</span>
+        <span class="text-lg lg:text-xl text-text-muted font-light max-w-lg mx-auto lg:mx-0">
           Uma curadoria exclusiva de bebidas selecionadas para o seu momento. Elegância e sabor em
           cada rótulo.
         </span>
       </h1>
 
       <div class="flex flex-wrap gap-4 mb-10 justify-center lg:justify-start">
-        <a
-          routerLink="/products"
-          class="btn-primary no-underline px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity"
+        <a routerLink="/products" class="btn-primary px-8 py-3 rounded-lg font-bold"
+          >Explorar Catálogo</a
         >
-          Explorar Catálogo
-        </a>
         <a
           routerLink="/auth/login"
-          class="px-8 py-3 rounded-lg border border-gray-800 hover:border-primary transition-all text-gray-300 hover:text-white no-underline"
+          class="px-8 py-3 rounded-lg border border-border hover:border-primary transition-all text-text-muted hover:text-text-main"
+          >Fazer Login</a
         >
-          Fazer Login
-        </a>
       </div>
 
-      <div class="flex gap-8 justify-center lg:justify-start border-t border-gray-900 pt-8">
+      <div class="flex gap-8 justify-center lg:justify-start border-t border-border pt-8">
         <div>
           <div class="text-2xl font-bold text-primary">200+</div>
-          <div class="text-[10px] uppercase tracking-widest text-gray-500">
+          <div class="text-[10px] uppercase tracking-widest text-text-muted">
             Rótulos Selecionados
           </div>
         </div>
         <div>
           <div class="text-2xl font-bold text-primary">15+</div>
-          <div class="text-[10px] uppercase tracking-widest text-gray-500">Categorias</div>
+          <div class="text-[10px] uppercase tracking-widest text-text-muted">Categorias</div>
         </div>
       </div>
     </div>
@@ -62,13 +58,22 @@
         class="w-80 h-80 rounded-full border border-primary/10 flex items-center justify-center animate-spin-slow"
       >
         <svg viewBox="0 0 200 200" class="w-64 h-64 opacity-60">
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD700" stroke-width="1" />
+          <circle
+            cx="100"
+            cy="100"
+            r="80"
+            fill="none"
+            stroke="currentColor"
+            class="text-primary"
+            stroke-width="1"
+          />
           <circle
             cx="100"
             cy="100"
             r="40"
             fill="none"
-            stroke="#FFD700"
+            stroke="currentColor"
+            class="text-primary"
             stroke-width="1"
             stroke-dasharray="10 5"
           />
@@ -78,14 +83,12 @@
   </div>
 
   <div
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer text-gray-500 hover:text-primary transition-all duration-300"
+    class="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer text-text-muted hover:text-primary transition-all duration-300"
     [class.opacity-0]="isScrollIndicatorHidden"
     [class.pointer-events-none]="isScrollIndicatorHidden"
     (click)="scrollToNextSection()"
-    (keydown.enter)="scrollToNextSection()"
-    (keydown.space)="scrollToNextSection()"
-    tabindex="0"
     role="button"
+    tabindex="0"
     aria-label="Rolar para a próxima seção"
   >
     <ng-icon name="lucideChevronDown" size="24"></ng-icon>

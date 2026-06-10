@@ -1,19 +1,19 @@
-<section class="py-20 lg:py-32 bg-[#050505] text-white">
+<section class="py-20 lg:py-32 bg-bg text-text-main">
   <div class="container mx-auto px-4 max-w-7xl">
     <div class="mb-16">
       <span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] block mb-2"
         >Categorias</span
       >
-      <h2 class="text-4xl lg:text-5xl font-bold mb-8">O que vai descer hoje?</h2>
+      <h2 class="text-4xl lg:text-5xl font-black mb-8 tracking-tight">O que vai descer hoje?</h2>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 w-full">
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
         @for (cat of categories(); track cat) {
           <button
             (click)="onCategoryClick(cat)"
             [class]="
               activeCategory() === cat
-                ? 'border-primary bg-transparent text-white'
-                : 'border-gray-800 bg-[#0A0A0A] text-white hover:border-primary'
+                ? 'border-primary bg-primary text-black'
+                : 'border-border bg-surface text-text-muted hover:border-primary'
             "
             class="px-4 py-5 rounded-xl font-bold transition-all duration-300 border-2 text-sm flex items-center justify-center w-full"
           >
@@ -28,12 +28,12 @@
         <span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] block mb-2"
           >Em destaque</span
         >
-        <h2 class="text-4xl lg:text-5xl font-bold">Os queridinhos</h2>
+        <h2 class="text-4xl lg:text-5xl font-black tracking-tight">Os queridinhos</h2>
       </div>
 
       <a
         routerLink="/products"
-        class="text-primary font-semibold hover:underline flex items-center gap-2 text-base"
+        class="text-primary font-semibold hover:underline flex items-center gap-2"
       >
         Ver todos <ng-icon name="lucideChevronRight" size="18"></ng-icon>
       </a>
@@ -58,34 +58,38 @@
       }
     </div>
 
-    <div class="mt-24 border-t border-gray-900 pt-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
+    <div class="mt-24 border-t border-border pt-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-surface border border-border text-primary">
           <ng-icon name="lucideAward" size="20"></ng-icon>
         </div>
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Garantia</span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted"
+          >Garantia</span
+        >
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-surface border border-border text-primary">
           <ng-icon name="lucideTruck" size="20"></ng-icon>
         </div>
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400"
+        <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted"
           >Entrega Express</span
         >
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-surface border border-border text-primary">
           <ng-icon name="heroShieldCheck" size="20"></ng-icon>
         </div>
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400"
+        <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted"
           >Checkout Seguro</span
         >
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-surface border border-border text-primary">
           <ng-icon name="heroArrowPath" size="20"></ng-icon>
         </div>
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Qualidade</span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted"
+          >Qualidade</span
+        >
       </div>
     </div>
   </div>

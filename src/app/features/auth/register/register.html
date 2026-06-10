@@ -1,18 +1,20 @@
-<div class="min-h-screen bg-bg text-white flex items-center justify-center p-4">
+<div class="min-h-screen bg-bg text-text-main flex items-center justify-center p-4">
   <div class="card w-full max-w-md p-8">
     <div class="text-center mb-8">
       <div class="text-4xl mb-4">🥂</div>
-      <h1 class="text-2xl font-bold tracking-tight">Criar Conta</h1>
-      <p class="text-gray-400 text-sm mt-2">Junte-se à nossa adega exclusiva</p>
+      <h1 class="text-2xl font-black tracking-tight">Criar Conta</h1>
+      <p class="text-text-muted text-sm mt-2">Junte-se à nossa adega exclusiva</p>
     </div>
 
     <form (ngSubmit)="onSubmit()" class="space-y-5">
       <div class="flex flex-col gap-2">
-        <label for="reg-name" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+        <label
+          for="reg-name"
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest"
           >Nome completo</label
         >
         <div class="relative flex items-center">
-          <ng-icon name="heroUser" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <ng-icon name="heroUser" size="18" class="absolute left-3 text-text-muted"></ng-icon>
           <input
             id="reg-name"
             type="text"
@@ -26,11 +28,13 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="reg-email" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+        <label
+          for="reg-email"
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest"
           >E-mail</label
         >
         <div class="relative flex items-center">
-          <ng-icon name="heroEnvelope" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <ng-icon name="heroEnvelope" size="18" class="absolute left-3 text-text-muted"></ng-icon>
           <input
             id="reg-email"
             type="email"
@@ -44,11 +48,17 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="reg-password" class="text-xs font-bold uppercase text-gray-500 tracking-wider"
+        <label
+          for="reg-password"
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest"
           >Senha</label
         >
         <div class="relative flex items-center">
-          <ng-icon name="heroLockClosed" size="18" class="absolute left-3 text-gray-500"></ng-icon>
+          <ng-icon
+            name="heroLockClosed"
+            size="18"
+            class="absolute left-3 text-text-muted"
+          ></ng-icon>
           <input
             id="reg-password"
             type="password"
@@ -62,14 +72,17 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="reg-phone" class="text-xs font-bold uppercase text-gray-500 tracking-wider">
-          Telefone <span class="text-gray-700 font-normal">(opcional)</span>
+        <label
+          for="reg-phone"
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest"
+        >
+          Telefone <span class="text-text-dim font-normal normal-case">(opcional)</span>
         </label>
         <div class="relative flex items-center">
           <ng-icon
             name="heroDevicePhoneMobile"
             size="18"
-            class="absolute left-3 text-gray-500"
+            class="absolute left-3 text-text-muted"
           ></ng-icon>
           <input
             id="reg-phone"
@@ -84,7 +97,7 @@
 
       @if (errorMessage()) {
         <div
-          class="bg-red-950/30 border border-red-900 text-red-400 text-xs p-3 rounded-lg text-center"
+          class="bg-danger/10 border border-danger text-danger text-xs p-3 rounded-lg text-center"
         >
           {{ errorMessage() }}
         </div>
@@ -95,8 +108,8 @@
       </button>
     </form>
 
-    <div class="text-center mt-8 border-t border-gray-900 pt-6">
-      <p class="text-sm text-gray-500">
+    <div class="text-center mt-8 border-t border-border pt-6">
+      <p class="text-sm text-text-muted">
         Já tem conta?
         <a routerLink="/auth/login" class="text-primary font-bold hover:underline ml-1"
           >Fazer login</a

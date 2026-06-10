@@ -1,12 +1,12 @@
 <header
-  class="fixed inset-x-0 top-0 z-50 w-full transition-all duration-500 backdrop-blur-xl border-b border-gray-900"
-  [class]="isScrolled() ? 'bg-[#050505]/95 py-3' : 'bg-transparent py-5'"
+  class="fixed inset-x-0 top-0 z-50 w-full transition-all duration-500 backdrop-blur-xl border-b border-border"
+  [class]="isScrolled() ? 'bg-bg/95 py-3' : 'bg-transparent py-5'"
 >
   <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6">
     <a routerLink="/home" class="flex items-center gap-2">
-      <span class="text-xl font-bold tracking-tighter text-white"
-        >ADEGA <span class="text-primary">DO PAI</span></span
-      >
+      <span class="text-xl font-black tracking-tighter text-text-main">
+        ADEGA <span class="text-primary">DO PAI</span>
+      </span>
     </a>
 
     <div class="hidden md:flex flex-1 max-w-sm mx-8">
@@ -14,20 +14,32 @@
         <ng-icon
           name="heroMagnifyingGlass"
           size="16"
-          class="absolute left-3 top-3 text-gray-600"
+          class="absolute left-3 top-3 text-text-dim"
         ></ng-icon>
         <input
           type="text"
           placeholder="Buscar rótulo..."
-          class="w-full bg-[#0A0A0A] border border-gray-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-700 focus:border-primary outline-none transition-all"
+          class="w-full bg-surface border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-text-main placeholder-text-dim focus:border-primary outline-none transition-all"
         />
       </div>
     </div>
 
     <div class="flex items-center gap-6">
+      <button
+        (click)="toggleTheme()"
+        class="flex items-center justify-center p-2 rounded-full border border-border bg-surface hover:border-primary transition-all active:scale-95"
+        aria-label="Alternar tema"
+      >
+        <ng-icon
+          [name]="isDarkMode() ? 'lucideSun' : 'lucideMoon'"
+          size="18"
+          class="text-primary"
+        ></ng-icon>
+      </button>
+
       <a
         routerLink="/products"
-        class="text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+        class="text-sm font-semibold text-text-muted hover:text-text-main transition-colors"
       >
         Catálogo
       </a>
@@ -35,7 +47,7 @@
       @if (isAuthenticated()) {
         <a
           routerLink="/account/profile"
-          class="flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+          class="flex items-center gap-2 text-sm font-semibold text-text-muted hover:text-text-main transition-colors"
         >
           <ng-icon name="heroUser" size="16"></ng-icon>
           {{ (currentUser()?.name ?? 'Conta').split(' ')[0] }}
@@ -44,23 +56,23 @@
         @if (currentUser()?.role === 'ADMIN') {
           <a
             routerLink="/admin"
-            class="flex items-center gap-2 px-3 py-1 rounded-full border border-primary text-primary text-xs font-bold transition-all hover:bg-primary hover:text-black active:scale-95"
+            class="flex items-center gap-2 px-3 py-1 rounded-full border border-primary text-primary text-[10px] font-bold transition-all hover:bg-primary hover:text-black active:scale-95"
           >
             <ng-icon name="lucideShieldCheck" size="14"></ng-icon>
-            Admin
+            ADMIN
           </a>
         }
 
         <button
           (click)="logout()"
-          class="flex items-center text-sm font-semibold text-gray-500 hover:text-white transition-colors"
+          class="flex items-center text-sm font-semibold text-text-dim hover:text-text-main transition-colors"
         >
           <ng-icon name="lucideLogOut" size="16"></ng-icon>
         </button>
       } @else {
         <a
           routerLink="/auth/login"
-          class="flex items-center gap-2 text-sm font-semibold text-white hover:text-primary transition-colors"
+          class="flex items-center gap-2 text-sm font-semibold text-text-main hover:text-primary transition-colors"
         >
           <ng-icon name="heroUser" size="16"></ng-icon>
           Entrar
@@ -69,14 +81,14 @@
 
       <button
         routerLink="/cart"
-        class="relative flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-black font-bold transition-all hover:opacity-90 active:scale-95"
+        class="relative flex items-center gap-2 px-3 py-2 rounded-full bg-primary text-black font-bold transition-all hover:opacity-90 active:scale-95"
       >
         <ng-icon name="heroShoppingBag" size="18"></ng-icon>
         <span>Carrinho</span>
 
         @if (cartCount() > 0) {
           <span
-            class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white"
+            class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-text-main text-[10px] font-bold text-bg"
           >
             {{ cartCount() }}
           </span>

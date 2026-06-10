@@ -108,4 +108,8 @@ export class Profile implements OnInit {
   get user() {
     return this.authService.currentUser();
   }
+
+  setTab(tab: string) {
+    this.activeTab.set(tab as 'profile' | 'password');
+  }
 }

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideHistory } from '@ng-icons/lucide';
 import { Order } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -8,8 +10,9 @@ import { NotificationService } from '../../../core/services/notification.service
 
 @Component({
   selector: 'app-order-history',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './order-history.html',
+  providers: [provideIcons({ lucideHistory })],
 })
 export class OrderHistory implements OnInit {
   private apiService = inject(ApiService);

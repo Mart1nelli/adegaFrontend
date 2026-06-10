@@ -1,127 +1,97 @@
 @import "tailwindcss";
 
 @theme {
-  /* Paleta Elegante: Noir & Gold */
-  --color-primary: #FFD700;       /* Ouro clássico */
+  /* Cores Base (Padrão Escuro) */
+  --color-primary: #FFD700;
   --color-primary-hover: #E5C100;
+  --color-primary-soft: rgba(255, 215, 0, 0.1);
+  --color-primary-border: rgba(255, 215, 0, 0.2);
   
-  --color-bg: #050505;           /* Preto profundo */
-  --color-surface: #0f0f0f;      /* Superfície elevada */
-  --color-panel: #171717;        /* Painel interno */
-  --color-border: #262626;       /* Borda sutil */
+  --color-bg: #050505;
+  --color-surface: #0f0f0f;
+  --color-panel: #171717;
+  --color-border: #262626;
+  --color-border-soft: rgba(255, 255, 255, 0.05);
   
   --color-text-main: #f5f5f5;
   --color-text-muted: #a3a3a3;
-  --color-secondary: #ef4444;    /* Vermelho para ações de erro/admin */
+  --color-text-dim: rgba(255, 255, 255, 0.3);
+  
+  --color-danger: #ef4444;
+  --color-danger-soft: rgba(239, 68, 68, 0.1);
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
 
   --font-sans: 'Poppins', system-ui, sans-serif;
   --font-fun: 'Inter', sans-serif;
 }
 
-/* Reset básico elegante */
+/* Sobrescrita para o Tema Claro (aplicada via classe .light) */
+.light {
+  --color-bg: #FFFFFF;
+  --color-surface: #F5F5F5;
+  --color-panel: #E5E5E5;
+  --color-border: #D4D4D4;
+  --color-border-soft: rgba(0, 0, 0, 0.05);
+  --color-text-main: #171717;
+  --color-text-muted: #525252;
+  --color-text-dim: rgba(0, 0, 0, 0.3);
+  --color-primary: #B89E00; /* Dourado ajustado para melhor contraste no claro */
+}
+
+/* Base Global */
 body {
   background-color: var(--color-bg);
   color: var(--color-text-main);
   font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  margin: 0;
-  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Scrollbar Minimalista */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
-
 /* Utilitários de Componentes */
-
 @utility card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-radius: 1rem;
+}
+
+@utility input-field {
+  display: block;
+  width: 100%;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
-  transition: all 0.3s ease;
-  &:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 20px -5px rgba(255, 215, 0, 0.15);
+  padding: 0.85rem 1rem;
+  color: var(--color-text-main);
+  transition: all 0.2s;
+  &:focus { 
+    border-color: var(--color-primary); 
+    outline: none; 
+    box-shadow: 0 0 0 1px var(--color-primary);
   }
 }
 
 @utility btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 1.25rem;
   background-color: var(--color-primary);
   color: #000;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  &:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-  }
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-@utility input-field {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: var(--color-panel);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  color: white;
-  transition: all 0.2s;
-  &:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.1);
-  }
-  &::placeholder {
-    color: var(--color-text-muted);
-  }
-}
-
-/* Notificações Modernas (Estilo Toast) */
-.notifications-container {
-  position: fixed;
-  top: 5rem;
-  right: 1.5rem;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.notification {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-  padding: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
   border-radius: 0.75rem;
-  color: white;
-  min-width: 320px;
-  backdrop-filter: blur(10px);
-  transform: translateX(100%);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  transition: all 0.2s;
+  &:hover { background-color: var(--color-primary-hover); }
 }
 
-.notification--visible {
-  transform: translateX(0);
+@utility badge-admin {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.6rem;
+  text-transform: uppercase;
 }
 
-.notification--exiting {
-  opacity: 0;
-  transform: translateX(20px);
-}
+@utility text-dim { color: var(--color-text-dim); }
 
-/* Tipografia de auxílio */
-.font-fun {
-  font-family: var(--font-fun);
+button {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }

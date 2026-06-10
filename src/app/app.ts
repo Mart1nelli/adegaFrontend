@@ -7,10 +7,9 @@ import { Notifications } from './shared/components/notifications/notifications';
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, Notifications],
-  templateUrl: './app.html'
+  templateUrl: './app.html',
 })
 export class App implements OnInit {
-
   private authService = inject(AuthService);
 
   ngOnInit(): void {

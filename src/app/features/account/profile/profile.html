@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-bg text-white px-4 py-16 relative overflow-hidden">
+<div class="min-h-screen bg-bg text-text-main px-4 py-16 relative overflow-hidden">
   <div class="absolute inset-0 z-0">
     <div
       class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 rounded-full bg-primary/5 blur-[120px]"
@@ -6,25 +6,23 @@
   </div>
 
   <div class="max-w-2xl mx-auto space-y-8 relative z-10">
-    <div
-      class="bg-[#0A0A0B]/80 backdrop-blur-md border border-white/5 rounded-2xl p-8 flex items-center justify-between"
-    >
+    <div class="card p-8 flex items-center justify-between border-primary/20">
       <div class="flex items-center gap-6">
         <div
-          class="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-3xl"
+          class="w-16 h-16 rounded-2xl bg-primary-soft border border-primary-border flex items-center justify-center text-3xl"
         >
           <ng-icon name="lucideUser2" size="40"></ng-icon>
         </div>
         <div>
-          <h1 class="text-2xl font-bold tracking-tight text-white">Minha Conta</h1>
-          <p class="text-gray-400 text-sm mt-1">
+          <h1 class="text-2xl font-bold tracking-tight">Minha Conta</h1>
+          <p class="text-text-muted text-sm mt-1">
             Olá, <span class="text-primary">{{ user?.name ?? 'Usuário' }}</span>
           </p>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-2 bg-[#0A0A0B]/50 p-1.5 rounded-xl border border-white/5">
+    <div class="grid grid-cols-3 gap-2 bg-surface p-1.5 rounded-xl border border-border">
       <a
         routerLink="/account/profile"
         class="text-center py-2.5 text-xs font-bold text-black bg-primary rounded-lg shadow-lg"
@@ -32,40 +30,31 @@
       >
       <a
         routerLink="/account/addresses"
-        class="text-center py-2.5 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+        class="text-center py-2.5 text-xs font-semibold text-text-muted hover:text-text-main transition-colors"
         >Endereços</a
       >
       <a
         routerLink="/account/orders"
-        class="text-center py-2.5 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+        class="text-center py-2.5 text-xs font-semibold text-text-muted hover:text-text-main transition-colors"
         >Pedidos</a
       >
     </div>
 
-    <div
-      class="bg-[#0A0A0B]/80 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden shadow-2xl"
-    >
-      <div class="flex border-b border-white/5">
-        <button
-          (click)="activeTab.set('profile')"
-          [class]="
-            activeTab() === 'profile'
-              ? 'flex-1 py-4 text-[10px] font-bold text-primary border-b-2 border-primary uppercase tracking-widest'
-              : 'flex-1 py-4 text-[10px] font-medium text-gray-500 hover:bg-white/5 uppercase tracking-widest transition-all'
-          "
-        >
-          Dados Pessoais
-        </button>
-        <button
-          (click)="activeTab.set('password')"
-          [class]="
-            activeTab() === 'password'
-              ? 'flex-1 py-4 text-[10px] font-bold text-primary border-b-2 border-primary uppercase tracking-widest'
-              : 'flex-1 py-4 text-[10px] font-medium text-gray-500 hover:bg-white/5 uppercase tracking-widest transition-all'
-          "
-        >
-          Alterar Senha
-        </button>
+    <div class="card shadow-2xl overflow-hidden">
+      <div class="flex border-b border-border">
+        @for (tab of ['profile', 'password']; track tab) {
+          <button
+            type="button"
+            (click)="setTab(tab)"
+            class="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest transition-all"
+            [class.text-primary]="activeTab() === tab"
+            [class.border-b-2]="activeTab() === tab"
+            [class.border-primary]="activeTab() === tab"
+            [class.text-text-muted]="activeTab() !== tab"
+          >
+            {{ tab === 'profile' ? 'Dados Pessoais' : 'Alterar Senha' }}
+          </button>
+        }
       </div>
 
       <div class="p-8">
@@ -74,59 +63,54 @@
             <div>
               <label
                 for="full-name"
-                class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                 >Nome Completo</label
               >
               <input
                 id="full-name"
                 [(ngModel)]="profileForm.name"
                 name="name"
-                class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                class="input-field"
               />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
-                  for="email"
-                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                  for="email-field"
+                  class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                   >E-mail</label
                 >
                 <input
-                  id="email"
+                  id="email-field"
                   [value]="user?.email ?? ''"
                   disabled
-                  class="w-full bg-black/20 border border-white/5 rounded-lg px-4 py-3 text-gray-600 text-sm cursor-not-allowed"
+                  class="input-field opacity-60 cursor-not-allowed"
                 />
               </div>
               <div>
                 <label
-                  for="phone"
-                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                  for="phone-field"
+                  class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                   >Telefone</label
                 >
                 <input
-                  id="phone"
+                  id="phone-field"
                   [(ngModel)]="profileForm.phone"
                   name="phone"
-                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="input-field"
                 />
               </div>
             </div>
 
-            <button
-              type="submit"
-              class="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(254,217,15,0.2)]"
-            >
-              Salvar Alterações
-            </button>
+            <button type="submit" class="btn-primary w-full py-3.5">Salvar Alterações</button>
           </form>
         } @else {
           <form (ngSubmit)="savePassword()" class="space-y-6">
             <div>
               <label
                 for="curr-password"
-                class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                 >Senha Atual</label
               >
               <input
@@ -134,14 +118,14 @@
                 type="password"
                 [(ngModel)]="passwordForm.currentPassword"
                 name="curr"
-                class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                class="input-field"
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
                   for="new-password"
-                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                  class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                   >Nova Senha</label
                 >
                 <input
@@ -149,30 +133,25 @@
                   type="password"
                   [(ngModel)]="passwordForm.newPassword"
                   name="new"
-                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="input-field"
                 />
               </div>
               <div>
                 <label
-                  for="confirm-password"
-                  class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
+                  for="conf-password"
+                  class="block text-[10px] font-bold text-text-muted uppercase mb-2 tracking-widest"
                   >Confirmar</label
                 >
                 <input
-                  id="confirm-password"
+                  id="conf-password"
                   type="password"
                   [(ngModel)]="confirmPassword"
                   name="conf"
-                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="input-field"
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              class="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:opacity-90 transition-all shadow-[0_0_20px_rgba(254,217,15,0.2)]"
-            >
-              Atualizar Senha
-            </button>
+            <button type="submit" class="btn-primary w-full py-3.5">Atualizar Senha</button>
           </form>
         }
       </div>

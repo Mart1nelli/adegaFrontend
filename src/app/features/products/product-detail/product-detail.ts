@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroArrowLeft, heroMinus, heroPlus } from '@ng-icons/heroicons/outline';
 import { Product } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -8,7 +10,8 @@ import { NotificationService } from '../../../core/services/notification.service
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, NgIconComponent],
+  providers: [provideIcons({ heroArrowLeft, heroMinus, heroPlus })],
   templateUrl: './product-detail.html',
 })
 export class ProductDetail implements OnInit {

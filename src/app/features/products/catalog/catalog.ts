@@ -26,13 +26,12 @@ import { Category, Product, ProductFilters } from '../../../core/models/product.
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
-import { Header } from '../../../shared/components/header/header';
 import { ProductCard } from '../product-card/product-card';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProductCard, NgIconComponent, Header],
+  imports: [CommonModule, ReactiveFormsModule, ProductCard, NgIconComponent],
   templateUrl: './catalog.html',
   providers: [
     provideIcons({
