@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroShoppingBag, heroTag } from '@ng-icons/heroicons/outline';
+import { heroPhoto, heroShoppingBag, heroTag } from '@ng-icons/heroicons/outline';
+import { lucidePlus } from '@ng-icons/lucide';
 import { Product } from '../../../core/models/product.models';
 
 @Component({
@@ -14,6 +15,8 @@ import { Product } from '../../../core/models/product.models';
     provideIcons({
       heroShoppingBag,
       heroTag,
+      lucidePlus,
+      heroPhoto,
     }),
   ],
 })

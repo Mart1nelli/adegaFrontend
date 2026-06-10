@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroAdjustmentsHorizontal,
@@ -11,7 +12,16 @@ import {
   heroXMark,
 } from '@ng-icons/heroicons/outline';
 import { lucideAward, lucideChevronRight, lucideTruck, lucideWine } from '@ng-icons/lucide';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Category, Product, ProductFilters } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -44,6 +54,8 @@ export class Catalog implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
   private destroy$ = new Subject<void>();
+  private route = inject(ActivatedRoute);
+  private cache = new Map<string, { data: Product[]; total: number; totalPages: number }>();
 
   filterForm = new FormGroup({
     search: new FormControl<string>(''),
@@ -61,17 +73,76 @@ export class Catalog implements OnInit, OnDestroy {
   maxLimit = 500;
 
   ngOnInit() {
-    this.apiService.getCategories().subscribe({
-      next: (cats) => this.availableCategories.set(cats),
-    });
+    // 1. Carrega categorias primeiro
+    this.apiService
+      .getCategories()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((cats) => {
+        this.availableCategories.set(cats);
 
-    // Apenas a busca na API tem debounce para não sobrecarregar o servidor
-    this.filterForm.valueChanges.pipe(debounceTime(400), takeUntil(this.destroy$)).subscribe(() => {
-      this.currentPage.set(1);
-      this.loadProducts();
-    });
+        // 2. Verifica se há uma categoria na URL
+        const categoryName = this.route.snapshot.queryParamMap.get('category');
 
-    this.loadProducts();
+        if (categoryName) {
+          // Procura o ID correspondente ao nome da categoria
+          const catFound = cats.find((c) => c.name === categoryName);
+
+          if (catFound) {
+            // Atualiza o formulário silenciosamente (emitEvent: false)
+            this.filterForm.patchValue({ categoryId: catFound.id }, { emitEvent: false });
+          }
+        }
+
+        // 3. Só agora iniciamos o stream, que vai pegar o valor do form (já atualizado)
+        this.initFilterStream();
+      });
+  }
+
+  private initFilterStream() {
+    this.filterForm.valueChanges
+      .pipe(
+        startWith(this.filterForm.value),
+        debounceTime(150),
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        tap(() => this.isLoading.set(true)),
+        switchMap((formValues) => {
+          const cacheKey = JSON.stringify(formValues);
+
+          // Se tem no cache, retorna a resposta completa que salvamos
+          if (this.cache.has(cacheKey)) {
+            return of(this.cache.get(cacheKey)!);
+          }
+
+          const filters: ProductFilters = {
+            page: this.currentPage() - 1,
+            limit: this.itemsPerPage,
+            search: formValues.search?.trim() || undefined,
+            categoryId: formValues.categoryId || undefined,
+            maxPrice: formValues.priceRange || this.maxLimit,
+          };
+
+          return this.apiService.getProducts(filters).pipe(
+            tap((res) => {
+              // Salva a resposta inteira no cache
+              this.cache.set(cacheKey, res);
+            }),
+          );
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: (res) => {
+          // Atualiza todos os sinais necessários
+          this.products.set(res.data || []);
+          this.totalItems.set(res.total || 0); // Corrigido
+          this.totalPages.set(res.totalPages || 1); // Corrigido
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Erro na API:', err);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   ngOnDestroy() {
@@ -79,33 +150,7 @@ export class Catalog implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadProducts() {
-    this.isLoading.set(true);
-    const { search, categoryId, priceRange } = this.filterForm.value;
-
-    const filters: ProductFilters = {
-      page: this.currentPage(),
-      limit: this.itemsPerPage,
-      search: search?.trim() || undefined,
-      categoryId: categoryId || undefined,
-      maxPrice: priceRange || this.maxLimit,
-    };
-
-    this.apiService.getProducts(filters).subscribe({
-      next: (res) => {
-        this.products.set(res.data || []);
-        this.totalItems.set(res.total || 0);
-        this.totalPages.set(res.totalPages || 1);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      },
-    });
-  }
-
-  // O Angular chama esta função em tempo real conforme você arrasta,
-  // mantendo a bolinha e a barra sincronizadas instantaneamente.
+  // Métodos auxiliares permanecem inalterados
   getPricePercent() {
     const val = this.filterForm.value.priceRange || 0;
     return (val / this.maxLimit) * 100;

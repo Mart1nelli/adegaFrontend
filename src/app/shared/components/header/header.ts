@@ -4,6 +4,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass, heroShoppingBag, heroUser } from '@ng-icons/heroicons/outline';
+import { lucideLogOut, lucideShieldCheck } from '@ng-icons/lucide';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -16,6 +17,8 @@ import { CartService } from '../../../core/services/cart.service';
       heroShoppingBag,
       heroMagnifyingGlass,
       heroUser,
+      lucideLogOut,
+      lucideShieldCheck,
     }),
   ],
 })

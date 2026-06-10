@@ -65,7 +65,7 @@
         </thead>
         <tbody class="divide-y divide-white/5">
           @for (product of products(); track product.id) {
-            <tr class="hover:bg-white/[0.02] transition-colors">
+            <tr class="hover:bg-white/2 transition-colors">
               <td class="px-6 py-4 text-xs font-mono text-white/40">{{ product.id }}</td>
               <td class="px-6 py-4 text-sm font-medium text-white">{{ product.name }}</td>
               <td class="px-6 py-4">
@@ -148,10 +148,73 @@
       </div>
 
       <form (ngSubmit)="save()" class="p-6 space-y-4">
+        <div>
+          <label for="nomeProduto" class="text-xs font-bold text-gray-500 uppercase"
+            >Nome do Produto</label
+          >
+          <input
+            id="nomeProduto"
+            [(ngModel)]="form.name"
+            name="name"
+            class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+            required
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="preco" class="text-xs font-bold text-gray-500 uppercase">Preço (R$)</label>
+            <input
+              id="preco"
+              type="number"
+              [(ngModel)]="form.price"
+              name="price"
+              class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+              required
+            />
+          </div>
+          <div>
+            <label for="estoque" class="text-xs font-bold text-gray-500 uppercase">Estoque</label>
+            <input
+              id="estoque"
+              type="number"
+              [(ngModel)]="form.stock"
+              name="stock"
+              class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="categoria" class="text-xs font-bold text-gray-500 uppercase">Categoria</label>
+          <select
+            id="categoria"
+            [(ngModel)]="form.categoryId"
+            name="categoryId"
+            class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+          >
+            <option [ngValue]="null">Selecione uma categoria</option>
+            @for (cat of categories(); track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="descricao" class="text-xs font-bold text-gray-500 uppercase">Descrição</label>
+          <textarea
+            id="descricao"
+            [(ngModel)]="form.description"
+            name="description"
+            class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all h-24"
+          ></textarea>
+        </div>
+
         <button
           type="submit"
           [disabled]="isSaving()"
-          class="w-full bg-primary text-black font-bold py-3 rounded-xl text-sm mt-4"
+          class="w-full bg-primary text-black font-bold py-3 rounded-xl text-sm mt-4 hover:opacity-90 transition-all"
         >
           {{ isSaving() ? 'Salvando...' : 'Salvar' }}
         </button>

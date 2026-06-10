@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-[#050505] text-white px-4 py-16 relative overflow-hidden">
+<div class="min-h-screen bg-bg text-white px-4 py-16 relative overflow-hidden">
   <div class="absolute inset-0 z-0">
     <div
-      class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]"
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 rounded-full bg-primary/5 blur-[120px]"
     ></div>
   </div>
 
@@ -73,23 +73,27 @@
           <form (ngSubmit)="saveProfile()" class="space-y-6">
             <div>
               <label
+                for="full-name"
                 class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                 >Nome Completo</label
               >
               <input
+                id="full-name"
                 [(ngModel)]="profileForm.name"
                 name="name"
-                class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
               />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
+                  for="email"
                   class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >E-mail</label
                 >
                 <input
+                  id="email"
                   [value]="user?.email ?? ''"
                   disabled
                   class="w-full bg-black/20 border border-white/5 rounded-lg px-4 py-3 text-gray-600 text-sm cursor-not-allowed"
@@ -97,13 +101,15 @@
               </div>
               <div>
                 <label
+                  for="phone"
                   class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Telefone</label
                 >
                 <input
+                  id="phone"
                   [(ngModel)]="profileForm.phone"
                   name="phone"
-                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
             </div>
@@ -119,39 +125,45 @@
           <form (ngSubmit)="savePassword()" class="space-y-6">
             <div>
               <label
+                for="curr-password"
                 class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                 >Senha Atual</label
               >
               <input
+                id="curr-password"
                 type="password"
                 [(ngModel)]="passwordForm.currentPassword"
                 name="curr"
-                class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
+                  for="new-password"
                   class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Nova Senha</label
                 >
                 <input
+                  id="new-password"
                   type="password"
                   [(ngModel)]="passwordForm.newPassword"
                   name="new"
-                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
               <div>
                 <label
+                  for="confirm-password"
                   class="block text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-widest"
                   >Confirmar</label
                 >
                 <input
+                  id="confirm-password"
                   type="password"
                   [(ngModel)]="confirmPassword"
                   name="conf"
-                  class="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                  class="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
                 />
               </div>
             </div>

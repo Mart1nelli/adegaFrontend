@@ -44,17 +44,18 @@
         @if (currentUser()?.role === 'ADMIN') {
           <a
             routerLink="/admin"
-            class="text-sm font-semibold text-secondary hover:text-red-400 transition-colors"
+            class="flex items-center gap-2 px-3 py-1 rounded-full border border-primary text-primary text-xs font-bold transition-all hover:bg-primary hover:text-black active:scale-95"
           >
+            <ng-icon name="lucideShieldCheck" size="14"></ng-icon>
             Admin
           </a>
         }
 
         <button
           (click)="logout()"
-          class="text-sm font-semibold text-gray-500 hover:text-white transition-colors"
+          class="flex items-center text-sm font-semibold text-gray-500 hover:text-white transition-colors"
         >
-          Sair
+          <ng-icon name="lucideLogOut" size="16"></ng-icon>
         </button>
       } @else {
         <a
@@ -68,12 +69,14 @@
 
       <button
         routerLink="/cart"
-        class="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#0A0A0A] border border-gray-800 text-white transition-all hover:border-primary hover:text-primary"
+        class="relative flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-black font-bold transition-all hover:opacity-90 active:scale-95"
       >
-        <ng-icon name="heroShoppingBag" size="20"></ng-icon>
+        <ng-icon name="heroShoppingBag" size="18"></ng-icon>
+        <span>Carrinho</span>
+
         @if (cartCount() > 0) {
           <span
-            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-black"
+            class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white"
           >
             {{ cartCount() }}
           </span>

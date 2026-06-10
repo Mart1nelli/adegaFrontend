@@ -1,28 +1,21 @@
-<section class="py-20 lg:py-32 bg-bg text-white">
+<section class="py-20 lg:py-32 bg-[#050505] text-white">
   <div class="container mx-auto px-4 max-w-7xl">
     <div class="mb-16">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">Categorias</h3>
-      <div class="flex flex-wrap gap-3">
-        @for (
-          cat of [
-            'Todas',
-            'Cervejas',
-            'Vinhos',
-            'Destilados',
-            'Whiskies',
-            'Espumantes',
-            'Não Alcoólicos',
-          ];
-          track cat
-        ) {
+      <span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] block mb-2"
+        >Categorias</span
+      >
+      <h2 class="text-4xl lg:text-5xl font-bold mb-8">O que vai descer hoje?</h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 w-full">
+        @for (cat of categories(); track cat) {
           <button
-            (click)="activeCategory.set(cat)"
+            (click)="onCategoryClick(cat)"
             [class]="
               activeCategory() === cat
-                ? 'bg-primary text-black'
-                : 'bg-gray-900 text-white hover:bg-gray-800'
+                ? 'border-primary bg-transparent text-white'
+                : 'border-gray-800 bg-[#0A0A0A] text-white hover:border-primary'
             "
-            class="px-6 py-2.5 rounded-xl font-bold transition-all border border-gray-800 text-sm"
+            class="px-4 py-5 rounded-xl font-bold transition-all duration-300 border-2 text-sm flex items-center justify-center w-full"
           >
             {{ cat }}
           </button>
@@ -30,17 +23,17 @@
       </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row gap-8 justify-between items-end mb-16">
-      <div class="text-center lg:text-left mx-auto lg:mx-0">
-        <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-          <span class="text-primary block mb-2 uppercase tracking-widest text-sm">Em destaque</span>
-          Os queridinhos
-        </h2>
-        <p class="text-gray-400 text-lg">A seleção exclusiva para elevar a sua experiência.</p>
+    <div class="flex flex-col lg:flex-row justify-between items-baseline mb-12 gap-6">
+      <div>
+        <span class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] block mb-2"
+          >Em destaque</span
+        >
+        <h2 class="text-4xl lg:text-5xl font-bold">Os queridinhos</h2>
       </div>
+
       <a
         routerLink="/products"
-        class="text-primary font-semibold hover:underline flex items-center gap-2"
+        class="text-primary font-semibold hover:underline flex items-center gap-2 text-base"
       >
         Ver todos <ng-icon name="lucideChevronRight" size="18"></ng-icon>
       </a>
@@ -55,7 +48,7 @@
         </div>
       } @else {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          @for (product of featuredProducts() | slice: 0 : 4; track product.id) {
+          @for (product of featuredProducts(); track product.id) {
             <app-product-card
               [product]="product"
               (addToCart)="onAddToCart($event)"
@@ -67,13 +60,13 @@
 
     <div class="mt-24 border-t border-gray-900 pt-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
           <ng-icon name="lucideAward" size="20"></ng-icon>
         </div>
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Garantia</span>
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
           <ng-icon name="lucideTruck" size="20"></ng-icon>
         </div>
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400"
@@ -81,7 +74,7 @@
         >
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
           <ng-icon name="heroShieldCheck" size="20"></ng-icon>
         </div>
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400"
@@ -89,7 +82,7 @@
         >
       </div>
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
+        <div class="flex p-3 rounded-full bg-gray-900/50 border border-gray-800 text-primary">
           <ng-icon name="heroArrowPath" size="20"></ng-icon>
         </div>
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Qualidade</span>

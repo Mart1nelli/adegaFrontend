@@ -61,11 +61,26 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
     (click)="closeForm()"
+    (keydown.enter)="closeForm()"
+    (keydown.escape)="closeForm()"
+    role="button"
+    tabindex="0"
+    aria-label="Fechar formulário"
   >
-    <div class="card w-full max-w-lg p-0 overflow-hidden" (click)="$event.stopPropagation()">
+    <div
+      class="card w-full max-w-lg p-0 overflow-hidden"
+      (mousedown)="$event.stopPropagation()"
+      (click)="$event.stopPropagation()"
+      role="presentation"
+    >
       <div class="p-6 border-b border-gray-900 flex justify-between items-center">
         <h2 class="font-bold">{{ editingAddress() ? 'Editar Endereço' : 'Novo Endereço' }}</h2>
-        <button type="button" (click)="closeForm()" class="text-gray-500 hover:text-white">
+        <button
+          type="button"
+          (click)="closeForm()"
+          class="text-gray-500 hover:text-white"
+          aria-label="Fechar"
+        >
           ✕
         </button>
       </div>
@@ -73,8 +88,9 @@
       <form class="p-6 space-y-4" (ngSubmit)="saveAddress()">
         <div class="grid grid-cols-4 gap-4">
           <div class="col-span-3 space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
+            <label for="street" class="text-xs font-bold text-gray-500 uppercase">Rua *</label>
             <input
+              id="street"
               [(ngModel)]="formData.street"
               name="street"
               class="input-field w-full"
@@ -82,19 +98,34 @@
             />
           </div>
           <div class="col-span-1 space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Nº</label>
-            <input [(ngModel)]="formData.number" name="number" class="input-field w-full" />
+            <label for="number" class="text-xs font-bold text-gray-500 uppercase">Nº</label>
+            <input
+              id="number"
+              [(ngModel)]="formData.number"
+              name="number"
+              class="input-field w-full"
+            />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Complemento</label>
-            <input [(ngModel)]="formData.complement" name="complement" class="input-field w-full" />
+            <label for="complement" class="text-xs font-bold text-gray-500 uppercase"
+              >Complemento</label
+            >
+            <input
+              id="complement"
+              [(ngModel)]="formData.complement"
+              name="complement"
+              class="input-field w-full"
+            />
           </div>
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Bairro *</label>
+            <label for="neighborhood" class="text-xs font-bold text-gray-500 uppercase"
+              >Bairro *</label
+            >
             <input
+              id="neighborhood"
               [(ngModel)]="formData.neighborhood"
               name="neighborhood"
               class="input-field w-full"
@@ -105,8 +136,9 @@
 
         <div class="grid grid-cols-4 gap-4">
           <div class="col-span-2 space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">CEP *</label>
+            <label for="zipCode" class="text-xs font-bold text-gray-500 uppercase">CEP *</label>
             <input
+              id="zipCode"
               [(ngModel)]="formData.zipCode"
               name="zipCode"
               placeholder="00000-000"
@@ -115,12 +147,19 @@
             />
           </div>
           <div class="col-span-1 space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">Cidade *</label>
-            <input [(ngModel)]="formData.city" name="city" class="input-field w-full" required />
+            <label for="city" class="text-xs font-bold text-gray-500 uppercase">Cidade *</label>
+            <input
+              id="city"
+              [(ngModel)]="formData.city"
+              name="city"
+              class="input-field w-full"
+              required
+            />
           </div>
           <div class="col-span-1 space-y-1">
-            <label class="text-xs font-bold text-gray-500 uppercase">UF *</label>
+            <label for="state" class="text-xs font-bold text-gray-500 uppercase">UF *</label>
             <input
+              id="state"
               [(ngModel)]="formData.state"
               name="state"
               maxlength="2"
