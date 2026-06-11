@@ -104,7 +104,7 @@ export class ApiService {
   }
 
   addCartItem(userId: number, data: { productId: number; quantity: number }): Observable<CartItem> {
-    return this.http.post<CartItem>(`${this.apiUrl}/cart/${userId}/items`, data);
+    return this.http.post<CartItem>(`${this.apiUrl}/carts/user/${userId}/items`, data);
   }
 
   updateCartItem(userId: number, cartItemId: number, quantity: number): Observable<Cart> {

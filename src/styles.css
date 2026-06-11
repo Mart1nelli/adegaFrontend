@@ -36,7 +36,7 @@
   --color-text-main: #171717;
   --color-text-muted: #525252;
   --color-text-dim: rgba(0, 0, 0, 0.3);
-  --color-primary: #B89E00; /* Dourado ajustado para melhor contraste no claro */
+  --color-primary: #dbbb0d; /* Dourado ajustado para melhor contraste no claro #B89E00 */
 }
 
 /* Base Global */

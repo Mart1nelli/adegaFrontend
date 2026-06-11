@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
+// Importado lucideImage
+import { lucideImage, lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
 import { Category, PaginatedProducts, Product } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -21,14 +22,14 @@ interface ProductForm {
   selector: 'app-admin-products',
   standalone: true,
   imports: [CommonModule, FormsModule, NgIconComponent],
-  providers: [provideIcons({ lucidePencil, lucideTrash2 })],
+  // Adicionado lucideImage aos providers
+  providers: [provideIcons({ lucidePencil, lucideTrash2, lucideImage })],
   templateUrl: './admin-products.html',
 })
 export class AdminProducts implements OnInit {
   private apiService = inject(ApiService);
   private notificationService = inject(NotificationService);
 
-  // Estados
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   isLoading = signal(true);
@@ -36,12 +37,10 @@ export class AdminProducts implements OnInit {
   isSaving = signal(false);
   isEditing = signal(false);
 
-  // Paginação e Busca
   page = signal(1);
   totalPages = signal(1);
   searchText = '';
 
-  // Formulário
   form: ProductForm = this.emptyForm();
 
   ngOnInit() {
@@ -140,7 +139,6 @@ export class AdminProducts implements OnInit {
 
   delete(product: Product) {
     if (!confirm(`Tem certeza que deseja excluir "${product.name}"?`)) return;
-
     this.apiService.deleteProduct(product.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Produto excluído com sucesso.');
@@ -148,19 +146,5 @@ export class AdminProducts implements OnInit {
       },
       error: () => this.notificationService.showError('Erro ao excluir produto.'),
     });
-  }
-
-  prevPage() {
-    if (this.page() > 1) {
-      this.page.update((p) => p - 1);
-      this.loadProducts();
-    }
-  }
-
-  nextPage() {
-    if (this.page() < this.totalPages()) {
-      this.page.update((p) => p + 1);
-      this.loadProducts();
-    }
   }
 }
