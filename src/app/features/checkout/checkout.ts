@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Address, CreateOrderRequest, LocalCartItem, Order } from '../../core/models/product.models';
+import { Address, CreateOrderRequest, LocalCartItem, Order, PaymentMethod } from '../../core/models/product.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
@@ -28,6 +28,8 @@ export class Checkout implements OnInit {
 
   addresses = signal<Address[]>([]);
   selectedAddressId = signal<number | null>(null);
+  paymentMethods = signal<PaymentMethod[]>([]);
+  selectedPaymentMethodId = signal<number | null>(null);
   orderId = signal<number | null>(null);
 
   get cartItems() {
@@ -46,6 +48,7 @@ export class Checkout implements OnInit {
       return;
     }
     this.loadAddresses();
+    this.loadPaymentMethods();
   }
 
   loadAddresses() {
@@ -67,9 +70,26 @@ export class Checkout implements OnInit {
     });
   }
 
+  loadPaymentMethods() {
+    this.apiService.getPaymentMethods().subscribe({
+      next: (methods: PaymentMethod[]) => {
+        const activeMethods = methods.filter((m: PaymentMethod) => m.isActive);
+        this.paymentMethods.set(activeMethods);
+        if (activeMethods.length > 0) {
+          this.selectedPaymentMethodId.set(activeMethods[0].id);
+        }
+      },
+      error: () => { /* silently fail, payment methods optional */ },
+    });
+  }
+
   goToReview() {
     if (!this.selectedAddressId() && this.addresses().length > 0) {
       this.notificationService.showError('Selecione um endereço de entrega.');
+      return;
+    }
+    if (!this.selectedPaymentMethodId() && this.paymentMethods().length > 0) {
+      this.notificationService.showError('Selecione uma forma de pagamento.');
       return;
     }
     this.step.set('review');
@@ -87,7 +107,8 @@ export class Checkout implements OnInit {
 
     const body: CreateOrderRequest = {
       userId: user.id,
-      addressId: this.selectedAddressId() ?? undefined,
+      addressId: this.selectedAddressId()!,
+      paymentMethodId: this.selectedPaymentMethodId()!,
       items,
     };
 
@@ -108,5 +129,9 @@ export class Checkout implements OnInit {
 
   get selectedAddress(): Address | undefined {
     return this.addresses().find((a: Address) => a.id === this.selectedAddressId());
+  }
+
+  get selectedPaymentMethod(): PaymentMethod | undefined {
+    return this.paymentMethods().find((m: PaymentMethod) => m.id === this.selectedPaymentMethodId());
   }
 }

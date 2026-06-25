@@ -77,7 +77,7 @@ export class CartService {
       const cartItem = this.cartItems().find((i: CartItemView) => i.product.id === productId);
       if (cartItem) {
         this.apiService.deleteCartItem(cartItem.cartItemId!).subscribe({
-          next: () => this._refreshCart(),
+          next: (cart) => this._backendCart.set(cart),
         });
       }
     } else {
@@ -99,7 +99,7 @@ export class CartService {
       const cartItem = this.cartItems().find((i: CartItemView) => i.product.id === productId);
       if (cartItem) {
         this.apiService.updateCartItem(cartItem.cartItemId!, quantity).subscribe({
-          next: () => this._refreshCart(),
+          next: (cart) => this._backendCart.set(cart),
         });
       }
     } else {
@@ -120,7 +120,12 @@ export class CartService {
       if (backendItems.length === 0) return;
 
       this.apiService.clearCart().subscribe({
-        next: () => this._refreshCart(),
+        next: () => {
+          const current = this._backendCart();
+          if (current) {
+            this._backendCart.set({ ...current, cartItems: [] });
+          }
+        },
       });
     } else {
       this._localItems.set([]);
@@ -194,11 +199,11 @@ export class CartService {
       this.apiService
         .updateCartItem(existingItem.cartItemId!, existingItem.quantity + quantity)
         .subscribe({
-          next: () => this._refreshCart(),
+          next: (cart) => this._backendCart.set(cart),
         });
     } else {
       this.apiService.addCartItem({ productId: product.id!, quantity }).subscribe({
-        next: () => this._refreshCart(),
+        next: (cart) => this._backendCart.set(cart),
       });
     }
   }

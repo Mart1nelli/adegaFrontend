@@ -142,6 +142,7 @@ export interface Order {
 export interface CreateOrderRequest {
   userId?: number;
   addressId?: number;
+  paymentMethodId?: number;
   items: { productId: number; quantity: number }[];
   status?: string;
 }

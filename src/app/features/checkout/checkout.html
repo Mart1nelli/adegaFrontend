@@ -34,7 +34,7 @@
       <div class="card p-8">
         <h2 class="text-lg font-bold mb-6">Endereço de Entrega</h2>
         @if (isLoading()) {
-          <div class="py-10 text-center text-primary">Carregando endereços...</div>
+          <div class="py-10 text-center text-primary">Carregando dados do checkout...</div>
         } @else {
           <div class="grid gap-4">
             @for (addr of addresses(); track addr.id) {
@@ -64,6 +64,35 @@
               </label>
             }
           </div>
+
+          <h2 class="text-lg font-bold mt-10 mb-6">Forma de Pagamento</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @for (method of paymentMethods(); track method.id) {
+              <label
+                class="p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-3"
+                [class]="
+                  selectedPaymentMethodId() === method.id
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border bg-surface hover:border-text-dim'
+                "
+              >
+                <input
+                  type="radio"
+                  [value]="method.id"
+                  [checked]="selectedPaymentMethodId() === method.id"
+                  (change)="selectedPaymentMethodId.set(method.id)"
+                  class="accent-primary"
+                />
+                <div>
+                  <p class="font-bold text-sm">{{ method.name }}</p>
+                  @if (method.description) {
+                    <p class="text-xs text-text-muted mt-0.5">{{ method.description }}</p>
+                  }
+                </div>
+              </label>
+            }
+          </div>
+
           <div class="flex justify-end mt-8">
             <button class="btn-primary" (click)="goToReview()">Continuar</button>
           </div>
@@ -74,9 +103,22 @@
     @if (step() === 'review') {
       <div class="card p-8">
         <h2 class="text-lg font-bold mb-6">Revisão do Pedido</h2>
-        <div class="bg-surface p-4 rounded-lg border border-border mb-6 text-sm">
-          <p class="text-text-muted mb-1">Entregar em:</p>
-          <p class="font-bold">{{ selectedAddress?.street }}, {{ selectedAddress?.number }}</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div class="bg-surface p-4 rounded-lg border border-border text-sm">
+            <p class="text-text-muted mb-1">Entregar em:</p>
+            <p class="font-bold">{{ selectedAddress?.street }}, {{ selectedAddress?.number }}</p>
+            <p class="text-xs text-text-muted">
+              {{ selectedAddress?.neighborhood }} — {{ selectedAddress?.city }}/{{ selectedAddress?.state }}
+            </p>
+          </div>
+          <div class="bg-surface p-4 rounded-lg border border-border text-sm flex flex-col justify-center">
+            <p class="text-text-muted mb-1">Forma de Pagamento:</p>
+            <p class="font-bold text-primary">{{ selectedPaymentMethod?.name }}</p>
+            @if (selectedPaymentMethod?.description) {
+              <p class="text-xs text-text-muted">{{ selectedPaymentMethod?.description }}</p>
+            }
+          </div>
         </div>
 
         <div class="border border-border rounded-lg overflow-hidden mb-6">
