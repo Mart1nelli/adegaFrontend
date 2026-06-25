@@ -53,12 +53,9 @@ export class Addresses implements OnInit {
   }
 
   loadAddresses() {
-    const userId = this.authService.currentUser()?.id;
-    if (!userId) return;
-
     this.isLoading.set(true);
-    this.apiService.getMyAddresses(userId).subscribe({
-      next: (addresses) => {
+    this.apiService.getMyAddresses().subscribe({
+      next: (addresses: Address[]) => {
         this.addresses.set(addresses);
         this.isLoading.set(false);
       },
@@ -121,7 +118,7 @@ export class Addresses implements OnInit {
         error: () => this.notificationService.showError('Erro ao atualizar endereço.'),
       });
     } else {
-      this.apiService.createAddress(userId, this.formData).subscribe({
+      this.apiService.createAddress(this.formData).subscribe({
         next: () => {
           this.notificationService.showSuccess('Endereço criado!');
           this.loadAddresses();

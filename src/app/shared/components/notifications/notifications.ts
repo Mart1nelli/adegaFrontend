@@ -3,11 +3,11 @@ import {
   Component,
   ElementRef,
   inject,
-  OnDestroy,
-  OnInit,
   QueryList,
   ViewChildren,
+  effect,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroCheckCircle,
@@ -16,8 +16,7 @@ import {
   heroXCircle,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
-import { Subscription } from 'rxjs';
-import { Notification, NotificationService } from '../../../core/services/notification.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -33,34 +32,26 @@ import { Notification, NotificationService } from '../../../core/services/notifi
     }),
   ],
 })
-export class Notifications implements OnInit, OnDestroy {
+export class Notifications {
   private notificationService = inject(NotificationService);
-  private subscription!: Subscription;
 
   @ViewChildren('notificationElement') notificationElements!: QueryList<ElementRef>;
 
-  notifications: Notification[] = [];
+  notifications = toSignal(this.notificationService.notifications$, { initialValue: [] });
 
-  ngOnInit() {
-    this.subscription = this.notificationService.notifications$.subscribe((notifications) => {
-      this.notifications = notifications;
-      // Aguardar o próximo ciclo de detecção de mudanças
+  constructor() {
+    effect(() => {
+      // Re-executa sempre que a lista de notificações mudar
+      this.notifications(); // Registra a dependência do Signal
       setTimeout(() => {
         this.animateNotifications();
       }, 0);
     });
   }
 
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
   private animateNotifications() {
-    this.notificationElements.forEach((elementRef, index) => {
+    this.notificationElements?.forEach((elementRef: ElementRef, index: number) => {
       const element = elementRef.nativeElement;
-      // Pequeno delay escalonado para cada notificação
       setTimeout(() => {
         element.classList.add('notification--visible');
       }, index * 100);
@@ -80,12 +71,15 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   private findNotificationElement(notificationId: string): HTMLElement | null {
+    if (!this.notificationElements) return null;
+    
     const elements = this.notificationElements.toArray();
     for (const elementRef of elements) {
       const element = elementRef.nativeElement;
-      // Verificar se este elemento corresponde à notificação
       const notificationIndex = Array.from(element.parentElement?.children || []).indexOf(element);
-      if (this.notifications[notificationIndex]?.id === notificationId) {
+      
+      const currentNotifications = this.notifications();
+      if (currentNotifications[notificationIndex]?.id === notificationId) {
         return element;
       }
     }

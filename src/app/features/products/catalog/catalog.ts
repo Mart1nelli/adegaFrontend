@@ -22,7 +22,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { Category, Product, ProductFilters } from '../../../core/models/product.models';
+import { Category, PaginatedProducts, Product, ProductFilters } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -54,7 +54,7 @@ export class Catalog implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);
   private destroy$ = new Subject<void>();
   private route = inject(ActivatedRoute);
-  private cache = new Map<string, { data: Product[]; total: number; totalPages: number }>();
+  private cache = new Map<string, PaginatedProducts>();
 
   filterForm = new FormGroup({
     search: new FormControl<string>(''),
@@ -76,7 +76,7 @@ export class Catalog implements OnInit, OnDestroy {
     this.apiService
       .getCategories()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((cats) => {
+      .subscribe((cats: Category[]) => {
         this.availableCategories.set(cats);
 
         // 2. Verifica se há uma categoria na URL
@@ -121,7 +121,7 @@ export class Catalog implements OnInit, OnDestroy {
           };
 
           return this.apiService.getProducts(filters).pipe(
-            tap((res) => {
+            tap((res: PaginatedProducts) => {
               // Salva a resposta inteira no cache
               this.cache.set(cacheKey, res);
             }),
@@ -130,7 +130,7 @@ export class Catalog implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe({
-        next: (res) => {
+        next: (res: PaginatedProducts) => {
           // Atualiza todos os sinais necessários
           this.products.set(res.data || []);
           this.totalItems.set(res.total || 0); // Corrigido

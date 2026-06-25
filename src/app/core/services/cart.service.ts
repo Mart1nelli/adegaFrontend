@@ -1,6 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { Cart, LocalCartItem, Product } from '../models/product.models';
+import { Cart, CartItem, LocalCartItem, Product } from '../models/product.models';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 
@@ -25,14 +25,14 @@ export class CartService {
     const backendCart = this._backendCart();
 
     if (backendCart) {
-      return (backendCart.cartItems ?? []).map((item) => ({
+      return (backendCart.cartItems ?? []).map((item: CartItem) => ({
         product: item.product,
         quantity: item.quantity,
         cartItemId: item.id,
       }));
     }
 
-    return (this._localItems() ?? []).map((item) => ({
+    return (this._localItems() ?? []).map((item: LocalCartItem) => ({
       product: item.product,
       quantity: item.quantity,
     }));
@@ -41,11 +41,11 @@ export class CartService {
   readonly cartItems$ = this.cartItems;
 
   readonly totalItems = computed(() =>
-    this.cartItems().reduce((sum, item) => sum + item.quantity, 0),
+    this.cartItems().reduce((sum: number, item: CartItemView) => sum + item.quantity, 0),
   );
 
   readonly totalPrice = computed(() =>
-    this.cartItems().reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+    this.cartItems().reduce((sum: number, item: CartItemView) => sum + item.product.price * item.quantity, 0),
   );
 
   constructor() {
@@ -74,14 +74,14 @@ export class CartService {
       const userId = this.authService.currentUser()?.id;
       if (!userId) return;
 
-      const cartItem = this._backendCart()?.cartItems?.find((i) => i.productId === productId);
+      const cartItem = this.cartItems().find((i: CartItemView) => i.product.id === productId);
       if (cartItem) {
-        this.apiService.deleteCartItem(userId, cartItem.id!).subscribe({
+        this.apiService.deleteCartItem(cartItem.cartItemId!).subscribe({
           next: () => this._refreshCart(),
         });
       }
     } else {
-      this._localItems.set(this._localItems().filter((i) => i.product.id !== productId));
+      this._localItems.set(this._localItems().filter((i: LocalCartItem) => i.product.id !== productId));
       this._saveToStorage();
     }
   }
@@ -96,14 +96,14 @@ export class CartService {
       const userId = this.authService.currentUser()?.id;
       if (!userId) return;
 
-      const cartItem = this._backendCart()?.cartItems?.find((i) => i.productId === productId);
+      const cartItem = this.cartItems().find((i: CartItemView) => i.product.id === productId);
       if (cartItem) {
-        this.apiService.updateCartItem(userId, cartItem.id!, quantity).subscribe({
+        this.apiService.updateCartItem(cartItem.cartItemId!, quantity).subscribe({
           next: () => this._refreshCart(),
         });
       }
     } else {
-      const items = this._localItems().map((i) =>
+      const items = this._localItems().map((i: LocalCartItem) =>
         i.product.id === productId ? { ...i, quantity } : i,
       );
       this._localItems.set(items);
@@ -119,7 +119,7 @@ export class CartService {
       const backendItems = this._backendCart()?.cartItems ?? [];
       if (backendItems.length === 0) return;
 
-      forkJoin(backendItems.map((i) => this.apiService.deleteCartItem(userId, i.id!))).subscribe({
+      this.apiService.clearCart().subscribe({
         next: () => this._refreshCart(),
       });
     } else {
@@ -133,7 +133,7 @@ export class CartService {
   }
 
   getOrderItems(): { productId: number; quantity: number }[] {
-    return this.cartItems().map((i) => ({
+    return this.cartItems().map((i: CartItemView) => ({
       productId: i.product.id!,
       quantity: i.quantity,
     }));
@@ -145,12 +145,12 @@ export class CartService {
     const userId = this.authService.currentUser()?.id;
     if (!userId) return;
 
-    this.apiService.getCart(userId).subscribe({
-      next: (cart) => {
+    this.apiService.getCart().subscribe({
+      next: (cart: Cart) => {
         this._backendCart.set(cart);
         const localItems = this._localItems();
         if (localItems.length > 0) {
-          this._migrateLocalToBackend(userId);
+          this._migrateLocalToBackend();
         }
       },
       error: () => {
@@ -159,12 +159,12 @@ export class CartService {
     });
   }
 
-  private _migrateLocalToBackend(userId: number): void {
+  private _migrateLocalToBackend(): void {
     const localItems = this._localItems();
     if (localItems.length === 0) return;
 
-    const requests = localItems.map((item) =>
-      this.apiService.addCartItem(userId, { productId: item.product.id!, quantity: item.quantity }),
+    const requests = localItems.map((item: LocalCartItem) =>
+      this.apiService.addCartItem({ productId: item.product.id!, quantity: item.quantity }),
     );
 
     forkJoin(requests).subscribe({
@@ -179,8 +179,8 @@ export class CartService {
   private _refreshCart(): void {
     const userId = this.authService.currentUser()?.id;
     if (userId) {
-      this.apiService.getCart(userId).subscribe({
-        next: (cart) => this._backendCart.set(cart),
+      this.apiService.getCart().subscribe({
+        next: (cart: Cart) => this._backendCart.set(cart),
       });
     }
   }
@@ -189,15 +189,15 @@ export class CartService {
     const userId = this.authService.currentUser()?.id;
     if (!userId) return;
 
-    const existingItem = this._backendCart()?.cartItems?.find((i) => i.productId === product.id);
+    const existingItem = this.cartItems().find((i: CartItemView) => i.product.id === product.id);
     if (existingItem) {
       this.apiService
-        .updateCartItem(userId, existingItem.id!, existingItem.quantity + quantity)
+        .updateCartItem(existingItem.cartItemId!, existingItem.quantity + quantity)
         .subscribe({
           next: () => this._refreshCart(),
         });
     } else {
-      this.apiService.addCartItem(userId, { productId: product.id!, quantity }).subscribe({
+      this.apiService.addCartItem({ productId: product.id!, quantity }).subscribe({
         next: () => this._refreshCart(),
       });
     }
@@ -205,7 +205,7 @@ export class CartService {
 
   private _addToLocal(product: Product, quantity: number): void {
     const items = this._localItems();
-    const idx = items.findIndex((i) => i.product.id === product.id);
+    const idx = items.findIndex((i: LocalCartItem ) => i.product.id === product.id);
     if (idx > -1) {
       const updated = [...items];
       updated[idx] = { ...updated[idx], quantity: updated[idx].quantity + quantity };

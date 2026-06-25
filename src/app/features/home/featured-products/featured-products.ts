@@ -5,7 +5,7 @@ import { heroArrowPath, heroShieldCheck, heroStar } from '@ng-icons/heroicons/ou
 import { lucideAward, lucideChevronRight, lucideTruck, lucideWine } from '@ng-icons/lucide';
 
 import { Router } from '@angular/router';
-import { Product } from '../../../core/models/product.models';
+import { PaginatedProducts, Product } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -43,7 +43,7 @@ export class FeaturedProducts implements OnInit {
   // Resolve o erro de tipagem garantindo que extraímos a string (name)
   categories = computed(() => {
     const cats = this.allProducts()
-      .map((p) => p.category?.name) // <-- Ajuste aqui se a propriedade for diferente de 'name'
+      .map((p: Product) => p.category?.name) // <-- Ajuste aqui se a propriedade for diferente de 'name'
       .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '');
 
     return ['Todas', ...new Set(cats)];
@@ -54,7 +54,7 @@ export class FeaturedProducts implements OnInit {
     const cat = this.activeCategory();
     if (cat === 'Todas') return this.allProducts();
 
-    return this.allProducts().filter((p) => p.category?.name === cat);
+    return this.allProducts().filter((p: Product) => p.category?.name === cat);
   });
 
   ngOnInit() {
@@ -65,7 +65,7 @@ export class FeaturedProducts implements OnInit {
     this.isLoading.set(true);
 
     this.apiService.getProducts({ page: 0, limit: 20 }).subscribe({
-      next: (response) => {
+      next: (response: PaginatedProducts) => {
         this.allProducts.set(response.data || []);
         this.isLoading.set(false);
       },

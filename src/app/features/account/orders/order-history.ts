@@ -28,12 +28,9 @@ export class OrderHistory implements OnInit {
   }
 
   loadOrders() {
-    const userId = this.authService.currentUser()?.id;
-    if (!userId) return;
-
     this.isLoading.set(true);
-    this.apiService.getMyOrders(userId).subscribe({
-      next: (orders) => {
+    this.apiService.getMyOrders().subscribe({
+      next: (orders: Order[]) => {
         this.orders.set(orders);
         this.isLoading.set(false);
       },

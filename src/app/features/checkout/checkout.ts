@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Address, CreateOrderRequest } from '../../core/models/product.models';
+import { Address, CreateOrderRequest, LocalCartItem, Order } from '../../core/models/product.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
@@ -53,10 +53,10 @@ export class Checkout implements OnInit {
     if (!user) return;
 
     this.isLoading.set(true);
-    this.apiService.getMyAddresses(user.id).subscribe({
-      next: (addresses) => {
+    this.apiService.getMyAddresses().subscribe({
+      next: (addresses: Address[]) => {
         this.addresses.set(addresses);
-        const def = addresses.find((a) => a.isDefault);
+        const def = addresses.find((a: Address) => a.isDefault);
         if (def) this.selectedAddressId.set(def.id);
         else if (addresses.length > 0) this.selectedAddressId.set(addresses[0].id);
         this.isLoading.set(false);
@@ -80,7 +80,7 @@ export class Checkout implements OnInit {
     if (!user) return;
     this.isPlacing.set(true);
 
-    const items = this.cartItems.map((item) => ({
+    const items = this.cartItems.map((item: LocalCartItem) => ({
       productId: item.product.id!,
       quantity: item.quantity,
     }));
@@ -91,8 +91,8 @@ export class Checkout implements OnInit {
       items,
     };
 
-    this.apiService.createOrder(user.id, body).subscribe({
-      next: (order) => {
+    this.apiService.createOrder(body).subscribe({
+      next: (order: Order) => {
         this.orderId.set(order.id);
         this.cartService.clearCart();
         this.step.set('done');
@@ -107,6 +107,6 @@ export class Checkout implements OnInit {
   }
 
   get selectedAddress(): Address | undefined {
-    return this.addresses().find((a) => a.id === this.selectedAddressId());
+    return this.addresses().find((a: Address) => a.id === this.selectedAddressId());
   }
 }

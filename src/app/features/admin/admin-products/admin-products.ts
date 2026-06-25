@@ -46,7 +46,7 @@ export class AdminProducts implements OnInit {
   ngOnInit() {
     this.loadProducts();
     this.apiService.getCategories().subscribe({
-      next: (cats) => this.categories.set(cats),
+      next: (cats: Category[]) => this.categories.set(cats),
     });
   }
 

@@ -1,5 +1,5 @@
 <div class="fixed top-20 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
-  @for (notification of notifications; track notification.id) {
+  @for (notification of notifications(); track notification.id) {
     <div
       #notificationElement
       class="notification pointer-events-auto flex items-start gap-4 p-4 rounded-xl border border-border bg-surface/90 backdrop-blur-xl shadow-2xl transition-all duration-300 opacity-0 translate-x-10 min-w-[320px] max-w-sm"

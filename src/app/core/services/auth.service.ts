@@ -25,7 +25,7 @@ export class AuthService {
 
   login(loginData: LoginRequest): Observable<AuthResponse> {
     return this.apiService.login(loginData).pipe(
-      tap((response) => {
+      tap((response: AuthResponse) => {
         this.setAuthData(response);
         this.router.navigate(['/']);
       }),
@@ -34,7 +34,7 @@ export class AuthService {
 
   register(registerData: RegisterRequest): Observable<AuthResponse> {
     return this.apiService.register(registerData).pipe(
-      tap((response) => {
+      tap((response: AuthResponse) => {
         this.setAuthData(response);
         this.router.navigate(['/']);
       }),
@@ -48,17 +48,17 @@ export class AuthService {
 
   loadUserProfile(): Observable<User> {
     return this.apiService.getProfile().pipe(
-      tap((user) => {
+      tap((user: User) => {
         this._currentUser.set(user);
         this._isAuthenticated.set(true);
       }),
     );
   }
 
-  refreshToken(): Observable<{ accessToken: string }> {
+  refreshToken(): Observable<AuthResponse> {
     const refresh_token = localStorage.getItem('refresh_token');
     return this.apiService.refreshToken(refresh_token ?? '').pipe(
-      tap((response) => {
+      tap((response: AuthResponse) => {
         localStorage.setItem('access_token', response.accessToken);
       }),
     );

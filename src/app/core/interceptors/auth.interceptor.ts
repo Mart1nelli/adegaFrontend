@@ -7,6 +7,8 @@ import {
 import { inject } from '@angular/core';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { NotificationService } from '../services/notification.service';
 
 // Variáveis de controle globais do interceptor
 let isRefreshing = false;
@@ -14,8 +16,10 @@ const refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<
   null,
 );
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
+export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
+  const notificationService = inject(NotificationService);
   const token = localStorage.getItem('access_token');
 
   // 1. A VACINA DO BACKEND: Proteção contra envio de 'null' ou 'undefined'
@@ -33,6 +37,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && !req.url.includes('/auth/')) {
         return handle401Error(authReq, next, authService);
       }
+      if (error.status === 403) {
+        notificationService.showError('Você não tem permissão para realizar esta ação.', 'Acesso Negado');
+        router.navigate(['/']);
+      }
       return throwError(() => error);
     }),
   );
@@ -41,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 // --- Funções Auxiliares ---
 
 // Função limpa para injetar o cabeçalho
-const addTokenHeader = (request: HttpRequest<any>, token: string) => {
+const addTokenHeader = (request: HttpRequest<unknown>, token: string) => {
   return request.clone({
     setHeaders: { Authorization: `Bearer ${token}` },
   });
@@ -49,7 +57,7 @@ const addTokenHeader = (request: HttpRequest<any>, token: string) => {
 
 // Lógica principal de renovação de token e fila de espera
 const handle401Error = (
-  request: HttpRequest<any>,
+  request: HttpRequest<unknown>,
   next: HttpHandlerFn,
   authService: AuthService,
 ) => {
@@ -59,7 +67,7 @@ const handle401Error = (
     refreshTokenSubject.next(null); // Reseta a fila
 
     return authService.refreshToken().pipe(
-      switchMap((tokens: any) => {
+      switchMap((tokens: { accessToken: string }) => {
         isRefreshing = false; // Destranca a porta
 
         // Emite o novo token para quem estava na fila esperando
@@ -68,7 +76,7 @@ const handle401Error = (
         // Tenta novamente a requisição original que falhou primeiro
         return next(addTokenHeader(request, tokens.accessToken));
       }),
-      catchError((err) => {
+      catchError((err: unknown) => {
         isRefreshing = false;
         authService.logout(); // Se o refresh falhar, o usuário cai e precisa logar de novo
         return throwError(() => err);
@@ -78,9 +86,9 @@ const handle401Error = (
     // 3. A FILA DE ESPERA: A 2ª, 3ª, etc requisições simultâneas caem aqui
     return refreshTokenSubject.pipe(
       // Fica "congelado" aqui até que o subject não seja mais null (ou seja, quando o token novo chegar)
-      filter((token) => token !== null),
+      filter((token: string | null) => token !== null),
       take(1), // Pega apenas a primeira emissão de token novo e "se desinscreve"
-      switchMap((token) => {
+      switchMap((token: string | null) => {
         // Tenta novamente a requisição usando o token fresquinho
         return next(addTokenHeader(request, token!));
       }),

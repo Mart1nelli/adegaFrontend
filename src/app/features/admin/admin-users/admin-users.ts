@@ -32,7 +32,7 @@ export class AdminUsers implements OnInit {
   loadUsers() {
     this.isLoading.set(true);
     this.apiService.getAllUsers().subscribe({
-      next: (users) => {
+      next: (users: User[]) => {
         this.users.set(users);
         this.isLoading.set(false);
       },

@@ -41,7 +41,7 @@ export class ProductDetail implements OnInit {
     this.errorMessage.set(null);
 
     this.apiService.getProduct(id).subscribe({
-      next: (product) => {
+      next: (product: Product) => {
         this.product.set(product);
         this.isLoading.set(false);
       },

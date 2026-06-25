@@ -43,7 +43,7 @@ export class Header {
   }
 
   toggleTheme(): void {
-    this.isDarkMode.update((v) => !v);
+    this.isDarkMode.update((v: boolean) => !v);
     const isLight = !this.isDarkMode();
     document.body.classList.toggle('light', isLight);
     localStorage.setItem('theme', isLight ? 'light' : 'dark');

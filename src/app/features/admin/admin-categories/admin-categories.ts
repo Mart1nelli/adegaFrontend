@@ -35,7 +35,7 @@ export class AdminCategories implements OnInit {
   loadCategories() {
     this.isLoading.set(true);
     this.apiService.getCategories().subscribe({
-      next: (data) => {
+      next: (data: Category[]) => {
         this.categories.set(data);
         this.isLoading.set(false);
       },

@@ -82,12 +82,12 @@ export class ApiService {
   }
 
   // --- ADDRESSES
-  getMyAddresses(userId: number): Observable<Address[]> {
-    return this.http.get<Address[]>(`${this.apiUrl}/addresses/user/${userId}`);
+  getMyAddresses(): Observable<Address[]> {
+    return this.http.get<Address[]>(`${this.apiUrl}/addresses`);
   }
 
-  createAddress(userId: number, data: CreateAddressRequest): Observable<Address> {
-    return this.http.post<Address>(`${this.apiUrl}/addresses/user/${userId}`, data);
+  createAddress(data: CreateAddressRequest): Observable<Address> {
+    return this.http.post<Address>(`${this.apiUrl}/addresses`, data);
   }
 
   updateAddress(id: number, data: CreateAddressRequest): Observable<Address> {
@@ -99,41 +99,40 @@ export class ApiService {
   }
 
   // --- CART
-  getCart(userId: number): Observable<Cart> {
-    return this.http.get<Cart>(`${this.apiUrl}/carts/user/${userId}`);
+  getCart(): Observable<Cart> {
+    return this.http.get<Cart>(`${this.apiUrl}/carts`);
   }
 
-  addCartItem(userId: number, data: { productId: number; quantity: number }): Observable<CartItem> {
-    return this.http.post<CartItem>(`${this.apiUrl}/carts/user/${userId}/items`, data);
+  addCartItem(data: { productId: number; quantity: number }): Observable<CartItem> {
+    return this.http.post<CartItem>(`${this.apiUrl}/carts/items`, data);
   }
 
-  updateCartItem(userId: number, cartItemId: number, quantity: number): Observable<Cart> {
+  updateCartItem(cartItemId: number, quantity: number): Observable<Cart> {
     const params = new HttpParams().set('quantity', quantity.toString());
-    return this.http.put<Cart>(`${this.apiUrl}/carts/user/${userId}/items/${cartItemId}`, null, {
+    return this.http.put<Cart>(`${this.apiUrl}/carts/items/${cartItemId}`, null, {
       params,
     });
   }
 
-  deleteCartItem(userId: number, cartItemId: number): Observable<Cart> {
-    return this.http.delete<Cart>(`${this.apiUrl}/carts/user/${userId}/items/${cartItemId}`);
+  deleteCartItem(cartItemId: number): Observable<Cart> {
+    return this.http.delete<Cart>(`${this.apiUrl}/carts/items/${cartItemId}`);
   }
 
-  clearCart(userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/carts/user/${userId}`);
+  clearCart(): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/carts`);
   }
 
   // --- ORDERS ---
-  createOrder(userId: number, data: CreateOrderRequest): Observable<Order> {
-    return this.http.post<Order>(`${this.apiUrl}/orders/user/${userId}`, data);
+  createOrder(data: CreateOrderRequest): Observable<Order> {
+    return this.http.post<Order>(`${this.apiUrl}/orders`, data);
   }
 
-  getMyOrders(userId: number): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.apiUrl}/orders/user/${userId}`);
+  getMyOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/orders`);
   }
 
-  getOrder(userId: number, orderId: number): Observable<Order> {
-    const params = new HttpParams().set('userId', userId.toString());
-    return this.http.get<Order>(`${this.apiUrl}/orders/${orderId}`, { params });
+  getOrder(orderId: number): Observable<Order> {
+    return this.http.get<Order>(`${this.apiUrl}/orders/${orderId}`);
   }
 
   // --- PAYMENT METHODS ---

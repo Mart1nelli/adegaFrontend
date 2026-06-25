@@ -29,7 +29,7 @@ export class AdminOrders implements OnInit {
   loadOrders() {
     this.isLoading.set(true);
     this.apiService.getAllOrders().subscribe({
-      next: (data) => {
+      next: (data: Order[]) => {
         this.orders.set(data);
         this.isLoading.set(false);
       },
@@ -49,7 +49,7 @@ export class AdminOrders implements OnInit {
     this.apiService.updateOrderStatus(order.id, status).subscribe({
       next: () => {
         this.notificationService.showSuccess('Status atualizado com sucesso!');
-        this.orders.update((list) => list.map((o) => (o.id === order.id ? { ...o, status } : o)));
+        this.orders.update((list: Order[]) => list.map((o: Order) => (o.id === order.id ? { ...o, status } : o)));
       },
       error: () => {
         this.notificationService.showError('Erro ao atualizar status.');
