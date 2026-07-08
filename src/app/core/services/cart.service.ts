@@ -1,5 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { concat } from 'rxjs';
+import { toArray } from 'rxjs/operators';
 import { Cart, CartItem, LocalCartItem, Product } from '../models/product.models';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
@@ -20,7 +21,6 @@ export class CartService {
   private _backendCart = signal<Cart | null>(null);
   private _localItems = signal<LocalCartItem[]>([]);
 
-  // CORRIGIDO: Adicionado (?? []) para garantir que sempre retorne um array
   readonly cartItems = computed<CartItemView[]>(() => {
     const backendCart = this._backendCart();
 
@@ -45,7 +45,10 @@ export class CartService {
   );
 
   readonly totalPrice = computed(() =>
-    this.cartItems().reduce((sum: number, item: CartItemView) => sum + item.product.price * item.quantity, 0),
+    this.cartItems().reduce(
+      (sum: number, item: CartItemView) => sum + item.product.price * item.quantity,
+      0,
+    ),
   );
 
   constructor() {
@@ -81,7 +84,9 @@ export class CartService {
         });
       }
     } else {
-      this._localItems.set(this._localItems().filter((i: LocalCartItem) => i.product.id !== productId));
+      this._localItems.set(
+        this._localItems().filter((i: LocalCartItem) => i.product.id !== productId),
+      );
       this._saveToStorage();
     }
   }
@@ -168,26 +173,27 @@ export class CartService {
     const localItems = this._localItems();
     if (localItems.length === 0) return;
 
+    // Mapeia cada item para uma requisição de adição individual
     const requests = localItems.map((item: LocalCartItem) =>
       this.apiService.addCartItem({ productId: item.product.id!, quantity: item.quantity }),
     );
 
-    forkJoin(requests).subscribe({
-      next: () => {
-        this._localItems.set([]);
-        localStorage.removeItem('cart');
-        this._refreshCart();
-      },
-    });
-  }
+    // concat garante a execução sequencial segura para o banco de dados.
+    // toArray junta os resultados de retorno.
+    concat(...requests)
+      .pipe(toArray())
+      .subscribe({
+        next: (responses: Cart[]) => {
+          this._localItems.set([]);
+          localStorage.removeItem('cart');
 
-  private _refreshCart(): void {
-    const userId = this.authService.currentUser()?.id;
-    if (userId) {
-      this.apiService.getCart().subscribe({
-        next: (cart: Cart) => this._backendCart.set(cart),
+          // A última resposta emitida é o estado final e completo do carrinho no backend
+          const finalCart = responses[responses.length - 1];
+          if (finalCart) {
+            this._backendCart.set(finalCart);
+          }
+        },
       });
-    }
   }
 
   private _addToBackend(product: Product, quantity: number): void {
@@ -210,7 +216,7 @@ export class CartService {
 
   private _addToLocal(product: Product, quantity: number): void {
     const items = this._localItems();
-    const idx = items.findIndex((i: LocalCartItem ) => i.product.id === product.id);
+    const idx = items.findIndex((i: LocalCartItem) => i.product.id === product.id);
     if (idx > -1) {
       const updated = [...items];
       updated[idx] = { ...updated[idx], quantity: updated[idx].quantity + quantity };

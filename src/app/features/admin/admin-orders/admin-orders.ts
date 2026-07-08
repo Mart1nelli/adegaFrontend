@@ -5,7 +5,8 @@ import { Order } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
-const STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+// CORRIGIDO: Agora bate idêntico com o OrderStatus.java do Spring Boot
+const STATUS_OPTIONS = ['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELED'];
 
 @Component({
   selector: 'app-admin-orders',
@@ -49,11 +50,12 @@ export class AdminOrders implements OnInit {
     this.apiService.updateOrderStatus(order.id, status).subscribe({
       next: () => {
         this.notificationService.showSuccess('Status atualizado com sucesso!');
-        this.orders.update((list: Order[]) => list.map((o: Order) => (o.id === order.id ? { ...o, status } : o)));
+        this.orders.update((list: Order[]) =>
+          list.map((o: Order) => (o.id === order.id ? { ...o, status } : o)),
+        );
       },
       error: () => {
         this.notificationService.showError('Erro ao atualizar status.');
-        // Opcional: recarregar pedidos caso a sincronização falhe
         this.loadOrders();
       },
     });
@@ -65,11 +67,10 @@ export class AdminOrders implements OnInit {
   statusLabel(status: string): string {
     const map: Record<string, string> = {
       PENDING: 'Pendente',
-      CONFIRMED: 'Confirmado',
-      PROCESSING: 'Processando',
+      PAID: 'Pago', // Adicionado para mapear o Enum do Java
       SHIPPED: 'Enviado',
       DELIVERED: 'Entregue',
-      CANCELLED: 'Cancelado',
+      CANCELED: 'Cancelado', // Corrigido para um "L" conforme o Java
     };
     return map[status] ?? status;
   }
@@ -80,11 +81,10 @@ export class AdminOrders implements OnInit {
   statusClass(status: string): string {
     const map: Record<string, string> = {
       PENDING: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-      CONFIRMED: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-      PROCESSING: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+      PAID: 'bg-blue-500/10 text-blue-400 border-blue-500/20', // Cor para Pago
       SHIPPED: 'bg-primary/10 text-primary border-primary/20',
       DELIVERED: 'bg-green-500/10 text-green-400 border-green-500/20',
-      CANCELLED: 'bg-red-500/10 text-red-400 border-red-500/20',
+      CANCELED: 'bg-red-500/10 text-red-400 border-red-500/20', // Corrigido para um "L"
     };
     return map[status] ?? 'border-border-soft text-white border-white/10';
   }

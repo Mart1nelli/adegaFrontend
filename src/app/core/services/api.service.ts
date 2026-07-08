@@ -195,7 +195,7 @@ export class ApiService {
 
   updateOrderStatus(id: number, status: string): Observable<Order> {
     const params = new HttpParams().set('status', status);
-    return this.http.put<Order>(`${this.apiUrl}/orders/${id}/status`, null, { params });
+    return this.http.put<Order>(`${this.apiUrl}/orders/admin/${id}/status`, null, { params });
   }
 
   // --- CATEGORIES ---
