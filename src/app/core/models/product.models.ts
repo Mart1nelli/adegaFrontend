@@ -155,7 +155,13 @@ export interface Payment {
   status: string;
   methodId?: number;
   transactionId?: string;
+  checkoutUrl?: string;
   createdAt?: string;
+}
+
+export interface CreatePaymentRequest {
+  orderId: number;
+  paymentMethodId: number;
 }
 
 export interface PaymentMethod {

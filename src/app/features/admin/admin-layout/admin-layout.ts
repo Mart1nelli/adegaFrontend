@@ -4,6 +4,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   lucideArrowLeft,
   lucideBeer,
+  lucideCreditCard,
   lucidePackage,
   lucideShoppingCart,
   lucideTag,
@@ -21,6 +22,7 @@ import { AuthService } from '../../../core/services/auth.service';
       lucideTag,
       lucideUsers,
       lucideShoppingCart,
+      lucideCreditCard,
       lucideArrowLeft,
       lucideBeer,
     }),
@@ -35,5 +37,6 @@ export class AdminLayout {
     { route: '/admin/categories', label: 'Categorias', icon: 'lucideTag' },
     { route: '/admin/users', label: 'Usuários', icon: 'lucideUsers' },
     { route: '/admin/orders', label: 'Pedidos', icon: 'lucideShoppingCart' },
+    { route: '/admin/payment-methods', label: 'Pagamentos', icon: 'lucideCreditCard' },
   ];
 }

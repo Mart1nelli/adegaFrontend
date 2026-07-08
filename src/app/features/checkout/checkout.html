@@ -2,15 +2,16 @@
   <div class="max-w-4xl mx-auto">
     <h1 class="text-3xl font-black text-center mb-12 tracking-tight">Finalizar Pedido</h1>
 
+    <!-- Stepper -->
     <div class="flex items-center justify-center gap-4 mb-12">
-      @for (s of ['address', 'review', 'done']; track s; let i = $index) {
+      @for (s of ['address', 'review']; track s; let i = $index) {
         <div class="flex items-center gap-2">
           <div
             class="w-8 h-8 flex items-center justify-center rounded-full border text-sm font-bold transition-all"
             [class]="
               step() === s
                 ? 'border-primary bg-primary/10 text-primary'
-                : step() === 'done' || (s !== 'done' && step() === 'done')
+                : (step() === 'review' && s === 'address') || step() === 'redirecting'
                   ? 'border-primary bg-primary text-black'
                   : 'border-border text-text-dim'
             "
@@ -21,15 +22,16 @@
             class="text-xs font-semibold uppercase tracking-widest"
             [class]="step() === s ? 'text-text-main' : 'text-text-dim'"
           >
-            {{ s === 'address' ? 'Endereço' : s === 'review' ? 'Revisão' : 'Confirmação' }}
+            {{ s === 'address' ? 'Endereço' : 'Revisão' }}
           </span>
         </div>
-        @if (i < 2) {
+        @if (i < 1) {
           <div class="w-10 h-px bg-border"></div>
         }
       }
     </div>
 
+    <!-- STEP: address -->
     @if (step() === 'address') {
       <div class="card p-8">
         <h2 class="text-lg font-bold mb-6">Endereço de Entrega</h2>
@@ -62,6 +64,12 @@
                   </div>
                 </div>
               </label>
+            }
+            @if (addresses().length === 0) {
+              <p class="text-text-muted text-sm py-4">
+                Nenhum endereço cadastrado.
+                <a routerLink="/account/addresses" class="text-primary underline ml-1">Cadastrar endereço</a>
+              </p>
             }
           </div>
 
@@ -100,6 +108,7 @@
       </div>
     }
 
+    <!-- STEP: review -->
     @if (step() === 'review') {
       <div class="card p-8">
         <h2 class="text-lg font-bold mb-6">Revisão do Pedido</h2>
@@ -135,6 +144,12 @@
                 </td>
               </tr>
             }
+            <tr class="border-t border-border bg-surface">
+              <td class="p-3 font-bold">Total</td>
+              <td class="p-3 text-right font-black text-primary text-base">
+                R$ {{ cartTotal | number: '1.2-2' }}
+              </td>
+            </tr>
           </table>
         </div>
 
@@ -146,22 +161,31 @@
             Voltar
           </button>
           <button class="btn-primary" (click)="placeOrder()" [disabled]="isPlacing()">
-            {{ isPlacing() ? 'Processando...' : 'Confirmar Pedido' }}
+            {{ isPlacing() ? 'Processando...' : 'Ir para Pagamento' }}
           </button>
         </div>
       </div>
     }
 
-    @if (step() === 'done') {
+    <!-- STEP: redirecting (aguardando redirect para Mercado Pago) -->
+    @if (step() === 'redirecting') {
       <div class="card p-12 text-center">
-        <div
-          class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-2xl"
-        >
-          ✓
+        <div class="flex flex-col items-center gap-6">
+          <!-- Spinner animado -->
+          <div class="relative w-20 h-20">
+            <div class="absolute inset-0 rounded-full border-4 border-primary/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-2xl">💳</span>
+            </div>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold mb-2">Preparando seu pagamento...</h2>
+            <p class="text-text-muted text-sm">
+              Você será redirecionado para o Mercado Pago em instantes.
+            </p>
+          </div>
         </div>
-        <h2 class="text-2xl font-bold mb-2">Pedido Confirmado!</h2>
-        <p class="text-text-muted mb-8">Seu pedido #{{ orderId() }} foi registrado.</p>
-        <a routerLink="/products" class="btn-primary">Continuar Comprando</a>
       </div>
     }
   </div>

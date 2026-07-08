@@ -2,13 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Address, CreateOrderRequest, LocalCartItem, Order, PaymentMethod } from '../../core/models/product.models';
+import {
+  Address,
+  CreateOrderRequest,
+  LocalCartItem,
+  Order,
+  Payment,
+  PaymentMethod,
+} from '../../core/models/product.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 
-type CheckoutStep = 'address' | 'review' | 'done';
+type CheckoutStep = 'address' | 'review' | 'payment' | 'redirecting';
 
 @Component({
   selector: 'app-checkout',
@@ -30,7 +37,9 @@ export class Checkout implements OnInit {
   selectedAddressId = signal<number | null>(null);
   paymentMethods = signal<PaymentMethod[]>([]);
   selectedPaymentMethodId = signal<number | null>(null);
-  orderId = signal<number | null>(null);
+
+  // Criados após createOrder()
+  createdOrder = signal<Order | null>(null);
 
   get cartItems() {
     return this.cartService.cartItems();
@@ -79,7 +88,7 @@ export class Checkout implements OnInit {
           this.selectedPaymentMethodId.set(activeMethods[0].id);
         }
       },
-      error: () => { /* silently fail, payment methods optional */ },
+      error: () => { /* silently fail */ },
     });
   }
 
@@ -95,34 +104,60 @@ export class Checkout implements OnInit {
     this.step.set('review');
   }
 
+  /**
+   * Passo 1: Cria o pedido no backend.
+   * Passo 2: Com o orderId retornado, chama createPayment para gerar a preferência no Mercado Pago.
+   * Passo 3: Redireciona para o checkoutUrl (sandbox_init_point) retornado.
+   */
   placeOrder() {
     const user = this.currentUser;
     if (!user) return;
-    this.isPlacing.set(true);
 
-    const items = this.cartItems.map((item: LocalCartItem) => ({
-      productId: item.product.id!,
-      quantity: item.quantity,
-    }));
+    this.isPlacing.set(true);
 
     const body: CreateOrderRequest = {
       userId: user.id,
       addressId: this.selectedAddressId()!,
       paymentMethodId: this.selectedPaymentMethodId()!,
-      items,
+      items: this.cartItems.map((item: LocalCartItem) => ({
+        productId: item.product.id!,
+        quantity: item.quantity,
+      })),
     };
 
     this.apiService.createOrder(body).subscribe({
       next: (order: Order) => {
-        this.orderId.set(order.id);
+        this.createdOrder.set(order);
         this.cartService.clearCart();
-        this.step.set('done');
-        this.isPlacing.set(false);
+        this.startPayment(order.id, this.selectedPaymentMethodId()!);
       },
       error: (err) => {
-        const msg = err?.error?.message ?? 'Erro ao finalizar o pedido.';
+        const msg = err?.error?.message ?? 'Erro ao criar o pedido.';
         this.notificationService.showError(msg);
         this.isPlacing.set(false);
+      },
+    });
+  }
+
+  private startPayment(orderId: number, paymentMethodId: number) {
+    this.step.set('redirecting');
+
+    this.apiService.createPayment({ orderId, paymentMethodId }).subscribe({
+      next: (payment: Payment) => {
+        if (payment.checkoutUrl) {
+          // Redireciona para o Checkout Pro do Mercado Pago (modo Sandbox)
+          window.location.href = payment.checkoutUrl;
+        } else {
+          this.notificationService.showError('URL de pagamento não retornada pelo gateway.');
+          this.isPlacing.set(false);
+          this.step.set('review');
+        }
+      },
+      error: (err) => {
+        const msg = err?.error?.message ?? 'Erro ao iniciar o pagamento com o Mercado Pago.';
+        this.notificationService.showError(msg);
+        this.isPlacing.set(false);
+        this.step.set('review');
       },
     });
   }

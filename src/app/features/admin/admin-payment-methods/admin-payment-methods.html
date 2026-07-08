@@ -1,0 +1,210 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-black tracking-tight">Formas de Pagamento</h1>
+      <p class="text-text-muted text-sm mt-0.5">
+        Gerencie os métodos de pagamento disponíveis no checkout
+      </p>
+    </div>
+    <button type="button" (click)="openCreate()" class="btn-primary flex items-center gap-2">
+      + Nova Forma de Pagamento
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-20">
+      <div class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+    </div>
+  } @else {
+
+    <!-- Empty state -->
+    @if (paymentMethods().length === 0) {
+      <div class="card p-16 flex flex-col items-center justify-center gap-4 text-center">
+        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+          <ng-icon name="lucideCreditCard" size="24" class="text-primary"></ng-icon>
+        </div>
+        <div>
+          <p class="font-bold text-base">Nenhuma forma de pagamento cadastrada</p>
+          <p class="text-text-muted text-sm mt-1">
+            Clique em "+ Nova Forma de Pagamento" para criar a primeira.
+          </p>
+        </div>
+        <button type="button" (click)="openCreate()" class="btn-primary mt-2">
+          Cadastrar agora
+        </button>
+      </div>
+    } @else {
+
+      <!-- Table -->
+      <div class="card overflow-hidden p-0">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="border-b border-border-soft">
+              <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                ID
+              </th>
+              <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                Nome
+              </th>
+              <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                Descrição
+              </th>
+              <th class="px-6 py-4 text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                Status
+              </th>
+              <th
+                class="px-6 py-4 text-right text-[10px] font-bold text-text-muted uppercase tracking-widest"
+              >
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border-soft">
+            @for (method of paymentMethods(); track method.id) {
+              <tr class="hover:bg-surface transition-colors">
+                <td class="px-6 py-4 text-xs font-mono text-text-dim">{{ method.id }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0"
+                    >
+                      <ng-icon name="lucideCreditCard" size="14" class="text-primary"></ng-icon>
+                    </div>
+                    <span class="text-sm font-semibold">{{ method.name }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-text-muted">
+                  {{ method.description || '—' }}
+                </td>
+                <td class="px-6 py-4">
+                  <button
+                    type="button"
+                    (click)="toggleActive(method)"
+                    class="flex items-center gap-2 text-xs font-semibold transition-all"
+                    [class]="method.isActive ? 'text-green-400' : 'text-text-dim'"
+                    [title]="method.isActive ? 'Clique para desativar' : 'Clique para ativar'"
+                  >
+                    <ng-icon
+                      [name]="method.isActive ? 'lucideCheck' : 'lucideX'"
+                      size="20"
+                    ></ng-icon>
+                    {{ method.isActive ? 'Ativo' : 'Inativo' }}
+                  </button>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      type="button"
+                      (click)="openEdit(method)"
+                      class="p-2 text-text-muted hover:text-text-main rounded-lg hover:bg-border transition-all"
+                      title="Editar"
+                    >
+                      <ng-icon name="lucidePencil" size="16"></ng-icon>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="delete(method)"
+                      class="p-2 text-text-muted hover:text-danger rounded-lg hover:bg-danger/10 transition-all"
+                      title="Excluir"
+                    >
+                      <ng-icon name="lucideTrash2" size="16"></ng-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Info card -->
+      <div class="card p-4 border-primary/20 bg-primary/5">
+        <p class="text-xs text-text-muted">
+          💡 Apenas formas de pagamento <strong class="text-primary">ativas</strong> aparecem para o
+          cliente no checkout. O Mercado Pago gerencia os métodos de cobrança disponíveis
+          internamente (cartão, PIX, boleto etc.).
+        </p>
+      </div>
+    }
+  }
+</div>
+
+<!-- Modal -->
+@if (showModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+    role="presentation"
+    (click)="showModal.set(false)"
+  >
+    <div
+      class="card w-full max-w-md p-0 relative z-10 overflow-hidden"
+      (click)="$event.stopPropagation()"
+      role="presentation"
+    >
+      <!-- Modal header -->
+      <div class="flex items-center justify-between p-6 border-b border-border">
+        <h2 class="font-bold text-lg">
+          {{ isEditing() ? 'Editar Forma de Pagamento' : 'Nova Forma de Pagamento' }}
+        </h2>
+        <button
+          type="button"
+          (click)="showModal.set(false)"
+          class="text-text-muted hover:text-text-main transition-colors"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal form -->
+      <form (ngSubmit)="save()" class="p-6 space-y-4">
+        <div>
+          <label for="pm-name" class="text-[10px] font-bold text-text-muted uppercase mb-1 block">
+            Nome *
+          </label>
+          <input
+            id="pm-name"
+            [(ngModel)]="form.name"
+            name="name"
+            class="input-field"
+            placeholder="Ex: Mercado Pago, PIX, Cartão de Crédito"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="pm-description"
+            class="text-[10px] font-bold text-text-muted uppercase mb-1 block"
+          >
+            Descrição
+          </label>
+          <input
+            id="pm-description"
+            [(ngModel)]="form.description"
+            name="description"
+            class="input-field"
+            placeholder="Ex: Pague com cartão, PIX ou boleto"
+          />
+        </div>
+
+        <label class="flex items-center gap-3 cursor-pointer py-1">
+          <input
+            type="checkbox"
+            [(ngModel)]="form.isActive"
+            name="isActive"
+            class="accent-primary w-4 h-4"
+          />
+          <span class="text-sm">Disponível no checkout (ativo)</span>
+        </label>
+
+        <div class="pt-2">
+          <button type="submit" [disabled]="isSaving()" class="btn-primary w-full py-3">
+            {{ isSaving() ? 'Salvando...' : (isEditing() ? 'Salvar Alterações' : 'Criar Forma de Pagamento') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

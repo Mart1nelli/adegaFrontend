@@ -12,12 +12,13 @@ import {
 import {
   Address,
   Cart,
-  CartItem,
   Category,
   CreateAddressRequest,
   CreateOrderRequest,
+  CreatePaymentRequest,
   Order,
   PaginatedProducts,
+  Payment,
   PaymentMethod,
   Product,
   ProductFilters,
@@ -138,6 +139,31 @@ export class ApiService {
   // --- PAYMENT METHODS ---
   getPaymentMethods(): Observable<PaymentMethod[]> {
     return this.http.get<PaymentMethod[]>(`${this.apiUrl}/payment-methods`);
+  }
+
+  // --- PAYMENTS ---
+  createPayment(data: CreatePaymentRequest): Observable<Payment> {
+    return this.http.post<Payment>(`${this.apiUrl}/payments`, data);
+  }
+
+  getMyPayments(): Observable<Payment[]> {
+    return this.http.get<Payment[]>(`${this.apiUrl}/payments/me`);
+  }
+
+  // --- ADMIN: Payment Methods ---
+  createPaymentMethod(data: { name: string; description?: string }): Observable<PaymentMethod> {
+    return this.http.post<PaymentMethod>(`${this.apiUrl}/payment-methods`, data);
+  }
+
+  updatePaymentMethod(
+    id: number,
+    data: { name?: string; description?: string; isActive?: boolean },
+  ): Observable<PaymentMethod> {
+    return this.http.put<PaymentMethod>(`${this.apiUrl}/payment-methods/${id}`, data);
+  }
+
+  deletePaymentMethod(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/payment-methods/${id}`);
   }
 
   // --- ADMIN: Products ---

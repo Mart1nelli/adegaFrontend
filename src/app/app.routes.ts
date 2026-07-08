@@ -35,6 +35,27 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'checkout/sucesso',
+        loadComponent: () =>
+          import('./features/checkout/checkout-success/checkout-success').then(
+            (m) => m.CheckoutSuccess,
+          ),
+      },
+      {
+        path: 'checkout/falha',
+        loadComponent: () =>
+          import('./features/checkout/checkout-failure/checkout-failure').then(
+            (m) => m.CheckoutFailure,
+          ),
+      },
+      {
+        path: 'checkout/pendente',
+        loadComponent: () =>
+          import('./features/checkout/checkout-pending/checkout-pending').then(
+            (m) => m.CheckoutPending,
+          ),
+      },
+      {
         path: 'account',
         canActivate: [authGuard],
         children: [
@@ -98,6 +119,13 @@ export const routes: Routes = [
         path: 'orders',
         loadComponent: () =>
           import('./features/admin/admin-orders/admin-orders').then((m) => m.AdminOrders),
+      },
+      {
+        path: 'payment-methods',
+        loadComponent: () =>
+          import('./features/admin/admin-payment-methods/admin-payment-methods').then(
+            (m) => m.AdminPaymentMethods,
+          ),
       },
     ],
   },

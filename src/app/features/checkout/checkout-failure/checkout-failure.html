@@ -1,0 +1,32 @@
+<div class="min-h-screen bg-bg text-text-main flex items-center justify-center px-4">
+  <div class="card p-12 text-center max-w-lg w-full">
+    <div
+      class="w-20 h-20 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
+    >
+      ✕
+    </div>
+
+    <h1 class="text-2xl font-black mb-2 text-red-400">Pagamento Recusado</h1>
+    <p class="text-text-muted mb-4">
+      Seu pagamento não foi aprovado. Isso pode ter acontecido por saldo insuficiente, dados inválidos ou recusa do banco emissor.
+    </p>
+
+    @if (paymentId()) {
+      <p class="text-xs text-text-dim mb-6">Referência: <span class="font-mono">{{ paymentId() }}</span></p>
+    }
+
+    <div class="bg-surface border border-border rounded-lg p-4 mb-8 text-sm text-left">
+      <p class="font-semibold mb-2">O que posso fazer?</p>
+      <ul class="list-disc list-inside text-text-muted space-y-1">
+        <li>Verifique os dados do cartão e tente novamente</li>
+        <li>Tente com outro método de pagamento</li>
+        <li>Entre em contato com seu banco</li>
+      </ul>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a routerLink="/checkout" class="btn-primary">Tentar novamente</a>
+      <a routerLink="/account/orders" class="btn-secondary">Meus pedidos</a>
+    </div>
+  </div>
+</div>
