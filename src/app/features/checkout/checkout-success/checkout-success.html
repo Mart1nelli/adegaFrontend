@@ -1,44 +1,219 @@
-<div class="min-h-screen bg-bg text-text-main flex items-center justify-center px-4">
-  <div class="card p-12 text-center max-w-lg w-full">
-    <!-- Ícone de sucesso com animação -->
-    <div
-      class="w-20 h-20 bg-green-500/10 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
-      style="animation: pop 0.4s ease-out;"
-    >
-      ✓
+<div class="min-h-screen bg-bg text-text-main pt-28 pb-16 px-4 md:px-8">
+  <div class="max-w-3xl mx-auto space-y-8">
+    <!-- Card Principal de Sucesso -->
+    <div class="card p-8 md:p-10 text-center relative overflow-hidden border-green-500/30 shadow-2xl">
+      <!-- Glow decorativo superior -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-green-500/10 blur-3xl rounded-full -z-0 pointer-events-none"></div>
+
+      <!-- Ícone de Sucesso -->
+      <div
+        class="w-20 h-20 bg-green-500/15 border-2 border-green-500/30 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg shadow-green-500/20"
+        style="animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);"
+      >
+        <ng-icon name="lucideCheckCircle2" size="44"></ng-icon>
+      </div>
+
+      <span class="badge-success px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
+        Pagamento Confirmado
+      </span>
+
+      <h1 class="text-3xl font-black text-text-main mb-2 tracking-tight">
+        Seu Pedido foi Aprovado!
+      </h1>
+      <p class="text-text-muted text-sm max-w-lg mx-auto leading-relaxed">
+        Excelente notícia! O Mercado Pago aprovou o seu pagamento e seu pedido já está sendo preparado com todo o carinho para entrega.
+      </p>
+
+      <!-- Linha do Tempo / Fluxo de Entrega ("vai sair pra entrega") -->
+      <div class="mt-10 pt-8 border-t border-border/80 text-left">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-text-dim mb-6 text-center">
+          Status do Fluxo de Entrega
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 relative">
+          <!-- Passo 1: Pagamento -->
+          <div class="bg-surface p-4 rounded-xl border border-green-500/40 relative flex sm:flex-col items-center sm:items-start gap-3">
+            <div class="w-9 h-9 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0">
+              <ng-icon name="lucideCheckCircle2" size="18"></ng-icon>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-green-400">1. Pagamento</p>
+              <p class="text-[11px] text-text-muted mt-0.5">Aprovado pelo MP</p>
+            </div>
+          </div>
+
+          <!-- Passo 2: Preparação (Ativo) -->
+          <div class="bg-primary/5 p-4 rounded-xl border-2 border-primary relative flex sm:flex-col items-center sm:items-start gap-3 shadow-md shadow-primary/10 animate-pulse">
+            <div class="w-9 h-9 rounded-full bg-primary text-black flex items-center justify-center shrink-0 font-bold">
+              <ng-icon name="lucidePackageCheck" size="18"></ng-icon>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-primary">2. Na Adega</p>
+              <p class="text-[11px] text-text-main font-medium mt-0.5">Em separação</p>
+            </div>
+          </div>
+
+          <!-- Passo 3: Saiu para Entrega -->
+          <div class="bg-surface p-4 rounded-xl border border-border relative flex sm:flex-col items-center sm:items-start gap-3 opacity-80">
+            <div class="w-9 h-9 rounded-full bg-surface border border-border text-text-dim flex items-center justify-center shrink-0">
+              <ng-icon name="lucideTruck" size="18"></ng-icon>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-text-muted">3. Em Rota</p>
+              <p class="text-[11px] text-text-dim mt-0.5">Sai para entrega</p>
+            </div>
+          </div>
+
+          <!-- Passo 4: Entregue -->
+          <div class="bg-surface p-4 rounded-xl border border-border relative flex sm:flex-col items-center sm:items-start gap-3 opacity-60">
+            <div class="w-9 h-9 rounded-full bg-surface border border-border text-text-dim flex items-center justify-center shrink-0">
+              <ng-icon name="lucideHome" size="18"></ng-icon>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-text-muted">4. Entregue</p>
+              <p class="text-[11px] text-text-dim mt-0.5">No seu endereço</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <h1 class="text-2xl font-black mb-2 text-green-400">Pagamento Aprovado!</h1>
-    <p class="text-text-muted mb-8">
-      Seu pagamento foi processado com sucesso. Em breve você receberá a confirmação do seu pedido.
-    </p>
+    <!-- Detalhes do Pedido e Pagamento -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Informações do Pagamento -->
+      <div class="card p-6 space-y-4">
+        <h3 class="text-sm font-bold flex items-center gap-2 text-text-main">
+          <ng-icon name="lucideCreditCard" class="text-primary" size="18"></ng-icon>
+          <span>Dados do Pagamento</span>
+        </h3>
 
-    @if (paymentId()) {
-      <div class="bg-surface border border-border rounded-lg p-4 mb-8 text-sm text-left">
-        <div class="flex justify-between mb-2">
-          <span class="text-text-muted">ID do Pagamento</span>
-          <span class="font-mono text-text-main">{{ paymentId() }}</span>
-        </div>
-        @if (merchantOrderId()) {
-          <div class="flex justify-between">
-            <span class="text-text-muted">Pedido MP</span>
-            <span class="font-mono text-text-main">{{ merchantOrderId() }}</span>
+        <div class="space-y-2.5 text-xs">
+          <div class="flex justify-between py-1.5 border-b border-border-soft">
+            <span class="text-text-muted">Forma de Pagamento:</span>
+            <span class="font-bold text-text-main">{{ paymentTypeLabel }}</span>
           </div>
-        }
+
+          @if (paymentId()) {
+            <div class="flex justify-between py-1.5 border-b border-border-soft">
+              <span class="text-text-muted">ID da Transação MP:</span>
+              <span class="font-mono text-text-main">{{ paymentId() }}</span>
+            </div>
+          }
+
+          @if (orderId()) {
+            <div class="flex justify-between py-1.5 border-b border-border-soft">
+              <span class="text-text-muted">Número do Pedido:</span>
+              <span class="font-bold text-primary">#{{ orderId() }}</span>
+            </div>
+          }
+
+          <div class="flex justify-between py-1.5">
+            <span class="text-text-muted">Status do Gateway:</span>
+            <span class="text-green-400 font-bold uppercase">Aprovado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Endereço de Entrega (se order carregado) -->
+      <div class="card p-6 space-y-4 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold flex items-center gap-2 text-text-main mb-3">
+            <ng-icon name="lucideMapPin" class="text-primary" size="18"></ng-icon>
+            <span>Destino da Entrega</span>
+          </h3>
+
+          @if (order()?.address) {
+            <div class="text-xs text-text-muted space-y-1">
+              <p class="font-bold text-text-main text-sm">
+                {{ order()?.address?.street }}, {{ order()?.address?.number }}
+              </p>
+              @if (order()?.address?.complement) {
+                <p>Complemento: {{ order()?.address?.complement }}</p>
+              }
+              <p>{{ order()?.address?.neighborhood }} — {{ order()?.address?.city }}/{{ order()?.address?.state }}</p>
+              <p class="font-mono text-text-dim">CEP: {{ order()?.address?.zipCode }}</p>
+            </div>
+          } @else {
+            <p class="text-xs text-text-muted leading-relaxed">
+              O pedido será entregue no endereço cadastrado na finalização da compra.
+              Você receberá avisos em tempo real.
+            </p>
+          }
+        </div>
+
+        <div class="pt-3 border-t border-border-soft flex items-center gap-2 text-xs text-green-400">
+          <ng-icon name="lucideTruck" size="16"></ng-icon>
+          <span>Entrega expressa pela equipe Adega do Pai</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Itens do Pedido (se carregado) -->
+    @if (order() && (order()?.items?.length || order()?.orderItems?.length)) {
+      <div class="card p-6">
+        <h3 class="text-sm font-bold mb-4 flex items-center gap-2">
+          <ng-icon name="lucideShoppingBag" class="text-primary" size="18"></ng-icon>
+          <span>Itens do Pedido</span>
+        </h3>
+
+        <div class="divide-y divide-border-soft text-xs">
+          @for (item of (order()?.items ?? order()?.orderItems ?? []); track item.id) {
+            <div class="py-3 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-text-main">{{ item.product?.name ?? 'Bebida / Produto' }}</p>
+                <p class="text-text-muted">Quantidade: {{ item.quantity }}</p>
+              </div>
+              <p class="font-bold text-text-main">
+                R$ {{ (item.unitPrice || item.price || 0) * item.quantity | number: '1.2-2' }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-border flex justify-between items-center text-sm">
+          <span class="font-bold text-text-muted">Total Pago</span>
+          <span class="font-black text-primary text-base">
+            R$ {{ order()?.totalAmount | number: '1.2-2' }}
+          </span>
+        </div>
       </div>
     }
 
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a routerLink="/account/orders" class="btn-primary">Ver meus pedidos</a>
-      <a routerLink="/products" class="btn-secondary">Continuar comprando</a>
+    <!-- Botões de Ação -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+      <a
+        routerLink="/account/orders"
+        class="btn-primary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/20"
+      >
+        <ng-icon name="lucideHistory" size="18"></ng-icon>
+        <span>Acompanhar em Meus Pedidos</span>
+      </a>
+
+      <a
+        routerLink="/products"
+        class="btn-secondary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm"
+      >
+        <ng-icon name="lucideShoppingBag" size="18"></ng-icon>
+        <span>Continuar Comprando</span>
+      </a>
+
+      <a
+        [href]="supportWhatsAppUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-secondary w-full sm:w-auto px-5 py-3.5 flex items-center justify-center gap-2 text-sm text-green-400 border-green-500/30 hover:border-green-400"
+      >
+        <ng-icon name="lucideMessageCircle" size="18"></ng-icon>
+        <span>Falar no WhatsApp</span>
+      </a>
     </div>
   </div>
 </div>
 
 <style>
-  @keyframes pop {
-    0% { transform: scale(0.5); opacity: 0; }
-    70% { transform: scale(1.1); }
+  @keyframes successPop {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.08); }
     100% { transform: scale(1); opacity: 1; }
   }
 </style>

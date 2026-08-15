@@ -1,192 +1,588 @@
-<div class="min-h-screen bg-bg text-text-main pt-32 pb-16 px-4 md:px-8">
+<div class="min-h-screen bg-bg text-text-main pt-28 pb-16 px-4 md:px-8">
   <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-black text-center mb-12 tracking-tight">Finalizar Pedido</h1>
-
-    <!-- Stepper -->
-    <div class="flex items-center justify-center gap-4 mb-12">
-      @for (s of ['address', 'review']; track s; let i = $index) {
-        <div class="flex items-center gap-2">
-          <div
-            class="w-8 h-8 flex items-center justify-center rounded-full border text-sm font-bold transition-all"
-            [class]="
-              step() === s
-                ? 'border-primary bg-primary/10 text-primary'
-                : (step() === 'review' && s === 'address') || step() === 'redirecting'
-                  ? 'border-primary bg-primary text-black'
-                  : 'border-border text-text-dim'
-            "
-          >
-            {{ i + 1 }}
-          </div>
-          <span
-            class="text-xs font-semibold uppercase tracking-widest"
-            [class]="step() === s ? 'text-text-main' : 'text-text-dim'"
-          >
-            {{ s === 'address' ? 'Endereço' : 'Revisão' }}
-          </span>
-        </div>
-        @if (i < 1) {
-          <div class="w-10 h-px bg-border"></div>
-        }
-      }
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-black tracking-tight">Finalizar Compra</h1>
+      <p class="text-text-muted text-sm mt-1">Conclua seu pedido com segurança e rapidez</p>
     </div>
 
-    <!-- STEP: address -->
+    <!-- Stepper -->
+    <div class="flex items-center justify-center gap-3 md:gap-6 mb-10 max-w-lg mx-auto">
+      <!-- Passo 1 -->
+      <div class="flex items-center gap-2">
+        <div
+          class="w-8 h-8 flex items-center justify-center rounded-full border text-xs font-bold transition-all"
+          [class]="
+            step() === 'address'
+              ? 'border-primary bg-primary text-black shadow-md shadow-primary/20'
+              : 'border-primary/50 bg-primary/20 text-primary'
+          "
+        >
+          @if (step() === 'review' || step() === 'redirecting') {
+            <ng-icon name="lucideCheck" size="16"></ng-icon>
+          } @else {
+            1
+          }
+        </div>
+        <span
+          class="text-xs font-semibold uppercase tracking-wider"
+          [class]="step() === 'address' ? 'text-primary font-bold' : 'text-text-muted'"
+        >
+          Entrega & Pagamento
+        </span>
+      </div>
+
+      <div
+        class="flex-1 h-0.5 transition-colors"
+        [class]="step() !== 'address' ? 'bg-primary' : 'bg-border'"
+      ></div>
+
+      <!-- Passo 2 -->
+      <div class="flex items-center gap-2">
+        <div
+          class="w-8 h-8 flex items-center justify-center rounded-full border text-xs font-bold transition-all"
+          [class]="
+            step() === 'review'
+              ? 'border-primary bg-primary text-black shadow-md shadow-primary/20'
+              : step() === 'redirecting'
+                ? 'border-primary/50 bg-primary/20 text-primary'
+                : 'border-border bg-surface text-text-dim'
+          "
+        >
+          @if (step() === 'redirecting') {
+            <ng-icon name="lucideCheck" size="16"></ng-icon>
+          } @else {
+            2
+          }
+        </div>
+        <span
+          class="text-xs font-semibold uppercase tracking-wider"
+          [class]="step() === 'review' ? 'text-primary font-bold' : 'text-text-dim'"
+        >
+          Revisão do Pedido
+        </span>
+      </div>
+    </div>
+
+    <!-- STEP 1: Endereço e Forma de Pagamento -->
     @if (step() === 'address') {
-      <div class="card p-8">
-        <h2 class="text-lg font-bold mb-6">Endereço de Entrega</h2>
-        @if (isLoading()) {
-          <div class="py-10 text-center text-primary">Carregando dados do checkout...</div>
-        } @else {
-          <div class="grid gap-4">
-            @for (addr of addresses(); track addr.id) {
-              <label
-                class="p-4 rounded-xl border transition-all cursor-pointer"
-                [class]="
-                  selectedAddressId() === addr.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border bg-surface hover:border-text-dim'
-                "
-              >
-                <div class="flex gap-4">
-                  <input
-                    type="radio"
-                    [value]="addr.id"
-                    [checked]="selectedAddressId() === addr.id"
-                    (change)="selectedAddressId.set(addr.id)"
-                    class="accent-primary mt-1"
-                  />
-                  <div>
-                    <p class="font-bold text-sm">{{ addr.street }}, {{ addr.number }}</p>
-                    <p class="text-xs text-text-muted">
-                      {{ addr.neighborhood }} — {{ addr.city }}/{{ addr.state }}
-                    </p>
-                  </div>
-                </div>
-              </label>
-            }
-            @if (addresses().length === 0) {
-              <p class="text-text-muted text-sm py-4">
-                Nenhum endereço cadastrado.
-                <a routerLink="/account/addresses" class="text-primary underline ml-1">Cadastrar endereço</a>
-              </p>
-            }
+      <div class="space-y-8">
+        <!-- Card: Endereço -->
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                <ng-icon name="lucideMapPin" size="20"></ng-icon>
+              </div>
+              <div>
+                <h2 class="text-lg font-bold">Endereço de Entrega</h2>
+                <p class="text-xs text-text-muted">Selecione onde você deseja receber seu pedido</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="openNewAddressModal()"
+              class="btn-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+            >
+              <ng-icon name="lucidePlus" size="14"></ng-icon>
+              <span>Novo Endereço</span>
+            </button>
           </div>
 
-          <h2 class="text-lg font-bold mt-10 mb-6">Forma de Pagamento</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          @if (isLoading()) {
+            <div class="py-12 text-center text-text-muted flex flex-col items-center gap-2">
+              <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-sm">Carregando endereços...</span>
+            </div>
+          } @else {
+            <div class="grid gap-3">
+              @for (addr of addresses(); track addr.id) {
+                <label
+                  class="p-4 rounded-xl border transition-all cursor-pointer block relative"
+                  [class]="
+                    selectedAddressId() === addr.id
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border bg-surface hover:border-text-dim/50'
+                  "
+                >
+                  <div class="flex items-start gap-3">
+                    <input
+                      type="radio"
+                      name="address"
+                      [value]="addr.id"
+                      [checked]="selectedAddressId() === addr.id"
+                      (change)="selectedAddressId.set(addr.id)"
+                      class="accent-primary mt-1"
+                    />
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <p class="font-bold text-sm text-text-main">
+                          {{ addr.street }}, {{ addr.number }}
+                        </p>
+                        @if (addr.isDefault) {
+                          <span class="badge-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase">
+                            Padrão
+                          </span>
+                        }
+                      </div>
+                      @if (addr.complement) {
+                        <p class="text-xs text-text-muted mt-0.5">Comp: {{ addr.complement }}</p>
+                      }
+                      <p class="text-xs text-text-muted mt-0.5">
+                        {{ addr.neighborhood }} — {{ addr.city }}/{{ addr.state }} • CEP {{ addr.zipCode }}
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              }
+
+              @if (addresses().length === 0) {
+                <div class="text-center py-8 px-4 bg-surface rounded-xl border border-dashed border-border">
+                  <p class="text-text-muted text-sm mb-3">Você ainda não tem nenhum endereço cadastrado.</p>
+                  <button
+                    type="button"
+                    (click)="openNewAddressModal()"
+                    class="btn-primary text-xs px-4 py-2.5 inline-flex items-center gap-2"
+                  >
+                    <ng-icon name="lucidePlus" size="14"></ng-icon>
+                    <span>Cadastrar Endereço de Entrega</span>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Card: Formas de Pagamento -->
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <ng-icon name="lucideCreditCard" size="20"></ng-icon>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold">Forma de Pagamento</h2>
+              <p class="text-xs text-text-muted">Processamento seguro e criptografado</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
             @for (method of paymentMethods(); track method.id) {
               <label
-                class="p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-3"
+                class="p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 relative"
                 [class]="
                   selectedPaymentMethodId() === method.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border bg-surface hover:border-text-dim'
+                    ? 'border-primary bg-primary/5 shadow-sm'
+                    : 'border-border bg-surface hover:border-text-dim/50'
                 "
               >
                 <input
                   type="radio"
+                  name="paymentMethod"
                   [value]="method.id"
                   [checked]="selectedPaymentMethodId() === method.id"
                   (change)="selectedPaymentMethodId.set(method.id)"
-                  class="accent-primary"
+                  class="accent-primary mt-1"
                 />
-                <div>
-                  <p class="font-bold text-sm">{{ method.name }}</p>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <p class="font-bold text-sm text-text-main">{{ method.name }}</p>
+                    <span class="text-[11px] font-semibold text-primary">Mercado Pago</span>
+                  </div>
                   @if (method.description) {
-                    <p class="text-xs text-text-muted mt-0.5">{{ method.description }}</p>
+                    <p class="text-xs text-text-muted mt-1">{{ method.description }}</p>
+                  } @else {
+                    <p class="text-xs text-text-muted mt-1">Cartão, Pix, Boleto e saldo Mercado Pago</p>
                   }
+                </div>
+              </label>
+            }
+
+            @if (paymentMethods().length === 0) {
+              <!-- Fallback padrão Mercado Pago -->
+              <label
+                class="p-4 rounded-xl border border-primary bg-primary/5 flex items-start gap-3 cursor-pointer col-span-full"
+              >
+                <input type="radio" checked disabled class="accent-primary mt-1" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <p class="font-bold text-sm">Mercado Pago (Checkout Pro)</p>
+                    <span class="badge-primary px-2 py-0.5 rounded text-[10px] font-bold">Oficial</span>
+                  </div>
+                  <p class="text-xs text-text-muted mt-1">
+                    Pague com Cartão de Crédito em até 12x, Pix instantâneo ou Boleto bancário.
+                  </p>
                 </div>
               </label>
             }
           </div>
 
-          <div class="flex justify-end mt-8">
-            <button class="btn-primary" (click)="goToReview()">Continuar</button>
-          </div>
-        }
-      </div>
-    }
-
-    <!-- STEP: review -->
-    @if (step() === 'review') {
-      <div class="card p-8">
-        <h2 class="text-lg font-bold mb-6">Revisão do Pedido</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div class="bg-surface p-4 rounded-lg border border-border text-sm">
-            <p class="text-text-muted mb-1">Entregar em:</p>
-            <p class="font-bold">{{ selectedAddress?.street }}, {{ selectedAddress?.number }}</p>
-            <p class="text-xs text-text-muted">
-              {{ selectedAddress?.neighborhood }} — {{ selectedAddress?.city }}/{{ selectedAddress?.state }}
-            </p>
-          </div>
-          <div class="bg-surface p-4 rounded-lg border border-border text-sm flex flex-col justify-center">
-            <p class="text-text-muted mb-1">Forma de Pagamento:</p>
-            <p class="font-bold text-primary">{{ selectedPaymentMethod?.name }}</p>
-            @if (selectedPaymentMethod?.description) {
-              <p class="text-xs text-text-muted">{{ selectedPaymentMethod?.description }}</p>
-            }
-          </div>
-        </div>
-
-        <div class="border border-border rounded-lg overflow-hidden mb-6">
-          <table class="w-full text-sm">
-            <tr class="bg-surface text-text-muted">
-              <th class="p-3 text-left">Produto</th>
-              <th class="p-3 text-right">Subtotal</th>
-            </tr>
-            @for (item of cartItems; track item.product.id) {
-              <tr class="border-t border-border">
-                <td class="p-3">{{ item.product.name }} (x{{ item.quantity }})</td>
-                <td class="p-3 text-right text-primary font-bold">
-                  R$ {{ item.product.price * item.quantity | number: '1.2-2' }}
-                </td>
-              </tr>
-            }
-            <tr class="border-t border-border bg-surface">
-              <td class="p-3 font-bold">Total</td>
-              <td class="p-3 text-right font-black text-primary text-base">
-                R$ {{ cartTotal | number: '1.2-2' }}
-              </td>
-            </tr>
-          </table>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <button
-            class="text-text-dim hover:text-text-main transition-colors"
-            (click)="step.set('address')"
-          >
-            Voltar
-          </button>
-          <button class="btn-primary" (click)="placeOrder()" [disabled]="isPlacing()">
-            {{ isPlacing() ? 'Processando...' : 'Ir para Pagamento' }}
-          </button>
-        </div>
-      </div>
-    }
-
-    <!-- STEP: redirecting (aguardando redirect para Mercado Pago) -->
-    @if (step() === 'redirecting') {
-      <div class="card p-12 text-center">
-        <div class="flex flex-col items-center gap-6">
-          <!-- Spinner animado -->
-          <div class="relative w-20 h-20">
-            <div class="absolute inset-0 rounded-full border-4 border-primary/20"></div>
-            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-2xl">💳</span>
+          <!-- Selo de Segurança -->
+          <div class="bg-surface border border-border-soft rounded-xl p-4 flex items-center gap-3">
+            <ng-icon name="lucideShieldCheck" class="text-green-400 shrink-0" size="24"></ng-icon>
+            <div class="text-xs text-text-muted">
+              <span class="text-text-main font-semibold">Ambiente 100% Protegido:</span>
+              Seus dados de pagamento são processados em ambiente seguro pelo Mercado Pago com certificação PCI e criptografia SSL.
             </div>
           </div>
+        </div>
+
+        <!-- Botão Avançar -->
+        <div class="flex justify-between items-center pt-2">
+          <a routerLink="/cart" class="btn-secondary text-sm">
+            <ng-icon name="lucideArrowLeft" size="16"></ng-icon>
+            <span>Voltar ao Carrinho</span>
+          </a>
+          <button
+            type="button"
+            (click)="goToReview()"
+            class="btn-primary text-sm flex items-center gap-2 px-6 py-3"
+          >
+            <span>Revisar Pedido</span>
+            <ng-icon name="lucideArrowRight" size="16"></ng-icon>
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- STEP 2: Revisão do Pedido -->
+    @if (step() === 'review') {
+      <div class="space-y-8">
+        <div class="card p-6 md:p-8">
+          <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+            <ng-icon name="lucideShoppingBag" class="text-primary" size="20"></ng-icon>
+            <span>Confirmação dos Dados do Pedido</span>
+          </h2>
+
+          <!-- Resumo de Entrega e Pagamento -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-surface p-4 rounded-xl border border-border text-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs uppercase font-bold text-text-dim tracking-wider flex items-center gap-1.5">
+                    <ng-icon name="lucideMapPin" class="text-primary" size="14"></ng-icon>
+                    Entregar em
+                  </span>
+                  <button
+                    type="button"
+                    (click)="goToAddress()"
+                    class="text-xs text-primary hover:underline font-semibold"
+                  >
+                    Alterar
+                  </button>
+                </div>
+                <p class="font-bold text-text-main">
+                  {{ selectedAddress?.street }}, {{ selectedAddress?.number }}
+                </p>
+                @if (selectedAddress?.complement) {
+                  <p class="text-xs text-text-muted">Comp: {{ selectedAddress?.complement }}</p>
+                }
+                <p class="text-xs text-text-muted mt-0.5">
+                  {{ selectedAddress?.neighborhood }} — {{ selectedAddress?.city }}/{{ selectedAddress?.state }}
+                </p>
+                <p class="text-xs text-text-dim mt-0.5 font-mono">CEP: {{ selectedAddress?.zipCode }}</p>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-border-soft flex items-center gap-2 text-xs text-green-400">
+                <ng-icon name="lucideTruck" size="14"></ng-icon>
+                <span>Envio rápido pela Adega do Pai</span>
+              </div>
+            </div>
+
+            <div class="bg-surface p-4 rounded-xl border border-border text-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs uppercase font-bold text-text-dim tracking-wider flex items-center gap-1.5">
+                    <ng-icon name="lucideCreditCard" class="text-primary" size="14"></ng-icon>
+                    Forma de Pagamento
+                  </span>
+                  <button
+                    type="button"
+                    (click)="goToAddress()"
+                    class="text-xs text-primary hover:underline font-semibold"
+                  >
+                    Alterar
+                  </button>
+                </div>
+                <p class="font-bold text-primary">{{ selectedPaymentMethod?.name ?? 'Mercado Pago' }}</p>
+                <p class="text-xs text-text-muted mt-1">
+                  {{ selectedPaymentMethod?.description ?? 'Processamento via Checkout Pro do Mercado Pago' }}
+                </p>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-border-soft flex items-center gap-2 text-xs text-text-muted">
+                <ng-icon name="lucideShieldCheck" class="text-green-400" size="14"></ng-icon>
+                <span>Aprovação rápida e proteção ao comprador</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabela / Lista de Itens do Pedido -->
+          <div class="border border-border rounded-xl overflow-hidden mb-6">
+            <div class="bg-surface px-4 py-3 border-b border-border flex justify-between text-xs font-bold text-text-muted uppercase tracking-wider">
+              <span>Produtos ({{ cartItems.length }})</span>
+              <span>Subtotal</span>
+            </div>
+
+            <div class="divide-y divide-border">
+              @for (item of cartItems; track item.product.id) {
+                <div class="p-4 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    @if (item.product.imageUrl) {
+                      <img
+                        [src]="item.product.imageUrl"
+                        [alt]="item.product.name"
+                        class="w-12 h-12 object-contain rounded-lg bg-black/40 p-1 border border-border-soft"
+                      />
+                    } @else {
+                      <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-xl border border-border-soft">
+                        🍷
+                      </div>
+                    }
+                    <div>
+                      <p class="font-bold text-sm text-text-main line-clamp-1">{{ item.product.name }}</p>
+                      <p class="text-xs text-text-muted">
+                        {{ item.quantity }}x de R$ {{ item.product.price | number: '1.2-2' }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="text-right">
+                    <p class="text-sm font-bold text-text-main">
+                      R$ {{ item.product.price * item.quantity | number: '1.2-2' }}
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Resumo Financeiro -->
+            <div class="bg-surface/60 p-4 border-t border-border space-y-2 text-sm">
+              <div class="flex justify-between text-text-muted text-xs">
+                <span>Subtotal dos produtos</span>
+                <span>R$ {{ cartTotal | number: '1.2-2' }}</span>
+              </div>
+              <div class="flex justify-between text-text-muted text-xs">
+                <span>Frete</span>
+                <span class="text-green-400 font-bold">Grátis</span>
+              </div>
+              <div class="flex justify-between items-baseline pt-2 border-t border-border font-bold text-base">
+                <span class="text-text-main">Total a Pagar</span>
+                <span class="text-xl font-black text-primary">
+                  R$ {{ cartTotal | number: '1.2-2' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ações -->
+          <div class="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-2">
+            <button
+              type="button"
+              class="btn-secondary w-full sm:w-auto text-sm"
+              (click)="goToAddress()"
+              [disabled]="isPlacing()"
+            >
+              <ng-icon name="lucideArrowLeft" size="16"></ng-icon>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="btn-primary w-full sm:w-auto text-base px-8 py-3.5 flex items-center justify-center gap-3 shadow-lg shadow-primary/20"
+              (click)="placeOrder()"
+              [disabled]="isPlacing()"
+            >
+              @if (isPlacing()) {
+                <div class="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                <span>Gerando Pagamento Seguro...</span>
+              } @else {
+                <ng-icon name="lucideCreditCard" size="18"></ng-icon>
+                <span>Ir para o Mercado Pago</span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- STEP 3: Redirecionando para o Mercado Pago -->
+    @if (step() === 'redirecting') {
+      <div class="card p-12 text-center max-w-lg mx-auto shadow-2xl border-primary/30">
+        <div class="flex flex-col items-center gap-6">
+          <div class="relative w-24 h-24">
+            <div class="absolute inset-0 rounded-full border-4 border-primary/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-primary animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center text-3xl text-primary">
+              💳
+            </div>
+          </div>
+
           <div>
-            <h2 class="text-xl font-bold mb-2">Preparando seu pagamento...</h2>
-            <p class="text-text-muted text-sm">
-              Você será redirecionado para o Mercado Pago em instantes.
+            <h2 class="text-2xl font-black mb-2 text-text-main">Abrindo o Mercado Pago...</h2>
+            <p class="text-text-muted text-sm leading-relaxed">
+              Você está sendo transferido com segurança para concluir o pagamento. Assim que finalizar, retornaremos você para acompanhar o envio!
             </p>
           </div>
+
+          @if (checkoutPaymentUrl()) {
+            <a
+              [href]="checkoutPaymentUrl()"
+              class="btn-primary text-xs px-5 py-2.5 mt-2"
+            >
+              Clique aqui se não for redirecionado automaticamente
+            </a>
+          }
         </div>
       </div>
     }
   </div>
 </div>
+
+<!-- Modal: Adicionar Novo Endereço Rápido -->
+@if (showAddressModal()) {
+  <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="card p-6 md:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold">Novo Endereço de Entrega</h3>
+        <button
+          type="button"
+          (click)="closeAddressModal()"
+          class="p-1 text-text-muted hover:text-text-main rounded-lg"
+        >
+          <ng-icon name="lucideX" size="20"></ng-icon>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveQuickAddress()" class="space-y-4 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-text-muted mb-1">CEP *</label>
+          <div class="relative">
+            <input
+              type="text"
+              [(ngModel)]="newAddressData.zipCode"
+              name="zipCode"
+              (blur)="onCepBlur()"
+              placeholder="00000-000"
+              maxlength="9"
+              required
+              class="input-field"
+            />
+            @if (isSearchingCep()) {
+              <div class="absolute right-3 top-3 text-primary text-xs animate-pulse">Buscando...</div>
+            }
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-text-muted mb-1">Rua / Logradouro *</label>
+            <input
+              type="text"
+              [(ngModel)]="newAddressData.street"
+              name="street"
+              placeholder="Ex: Av. Paulista"
+              required
+              class="input-field"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-text-muted mb-1">Número *</label>
+            <input
+              type="text"
+              [(ngModel)]="newAddressData.number"
+              name="number"
+              placeholder="123"
+              required
+              class="input-field"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-muted mb-1">Complemento (opcional)</label>
+          <input
+            type="text"
+            [(ngModel)]="newAddressData.complement"
+            name="complement"
+            placeholder="Apto 42, Bloco B"
+            class="input-field"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-muted mb-1">Bairro *</label>
+          <input
+            type="text"
+            [(ngModel)]="newAddressData.neighborhood"
+            name="neighborhood"
+            placeholder="Centro"
+            required
+            class="input-field"
+          />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-text-muted mb-1">Cidade *</label>
+            <input
+              type="text"
+              [(ngModel)]="newAddressData.city"
+              name="city"
+              placeholder="São Paulo"
+              required
+              class="input-field"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-text-muted mb-1">UF *</label>
+            <input
+              type="text"
+              [(ngModel)]="newAddressData.state"
+              name="state"
+              placeholder="SP"
+              maxlength="2"
+              required
+              class="input-field uppercase"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <input
+            type="checkbox"
+            id="isDefault"
+            [(ngModel)]="newAddressData.isDefault"
+            name="isDefault"
+            class="accent-primary"
+          />
+          <label for="isDefault" class="text-xs text-text-muted cursor-pointer">
+            Definir como meu endereço padrão
+          </label>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-border">
+          <button
+            type="button"
+            (click)="closeAddressModal()"
+            class="btn-secondary text-xs px-4 py-2.5"
+            [disabled]="isSavingAddress()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn-primary text-xs px-5 py-2.5 flex items-center gap-2"
+            [disabled]="isSavingAddress()"
+          >
+            @if (isSavingAddress()) {
+              <div class="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+              <span>Salvando...</span>
+            } @else {
+              <span>Salvar Endereço</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -1,32 +1,94 @@
-<div class="min-h-screen bg-bg text-text-main flex items-center justify-center px-4">
-  <div class="card p-12 text-center max-w-lg w-full">
-    <div
-      class="w-20 h-20 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
-    >
-      ✕
-    </div>
+<div class="min-h-screen bg-bg text-text-main pt-28 pb-16 px-4 md:px-8">
+  <div class="max-w-2xl mx-auto space-y-6">
+    <div class="card p-8 md:p-10 text-center relative overflow-hidden border-red-500/30 shadow-2xl">
+      <!-- Glow decorativo superior -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-red-500/10 blur-3xl rounded-full -z-0 pointer-events-none"></div>
 
-    <h1 class="text-2xl font-black mb-2 text-red-400">Pagamento Recusado</h1>
-    <p class="text-text-muted mb-4">
-      Seu pagamento não foi aprovado. Isso pode ter acontecido por saldo insuficiente, dados inválidos ou recusa do banco emissor.
-    </p>
+      <!-- Ícone de Falha -->
+      <div
+        class="w-20 h-20 bg-red-500/15 border-2 border-red-500/30 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg shadow-red-500/20"
+      >
+        <ng-icon name="lucideXCircle" size="44"></ng-icon>
+      </div>
 
-    @if (paymentId()) {
-      <p class="text-xs text-text-dim mb-6">Referência: <span class="font-mono">{{ paymentId() }}</span></p>
-    }
+      <span class="badge-danger px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
+        Pagamento Não Concluído
+      </span>
 
-    <div class="bg-surface border border-border rounded-lg p-4 mb-8 text-sm text-left">
-      <p class="font-semibold mb-2">O que posso fazer?</p>
-      <ul class="list-disc list-inside text-text-muted space-y-1">
-        <li>Verifique os dados do cartão e tente novamente</li>
-        <li>Tente com outro método de pagamento</li>
-        <li>Entre em contato com seu banco</li>
-      </ul>
-    </div>
+      <h1 class="text-2xl md:text-3xl font-black text-text-main mb-2 tracking-tight">
+        Não conseguimos processar o pagamento
+      </h1>
+      <p class="text-text-muted text-sm max-w-md mx-auto leading-relaxed mb-6">
+        Fique tranquilo, nenhuma cobrança foi realizada no seu cartão. Você pode tentar novamente com outro meio de pagamento.
+      </p>
 
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a routerLink="/checkout" class="btn-primary">Tentar novamente</a>
-      <a routerLink="/account/orders" class="btn-secondary">Meus pedidos</a>
+      @if (paymentId() || orderId()) {
+        <div class="bg-surface border border-border rounded-xl p-4 mb-6 text-xs text-left max-w-md mx-auto space-y-2">
+          @if (orderId()) {
+            <div class="flex justify-between">
+              <span class="text-text-muted">Pedido Relacionado:</span>
+              <span class="font-bold text-primary">#{{ orderId() }}</span>
+            </div>
+          }
+          @if (paymentId()) {
+            <div class="flex justify-between">
+              <span class="text-text-muted">Referência da Transação:</span>
+              <span class="font-mono text-text-main">{{ paymentId() }}</span>
+            </div>
+          }
+          @if (statusDetail()) {
+            <div class="flex justify-between">
+              <span class="text-text-muted">Motivo informado:</span>
+              <span class="text-red-400 font-medium">{{ statusDetail() }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Caixa de Dicas / O que fazer -->
+      <div class="bg-surface border border-border-soft rounded-xl p-5 text-left text-xs space-y-3 mb-8">
+        <p class="font-bold text-text-main flex items-center gap-2">
+          <ng-icon name="lucideHelpCircle" class="text-primary" size="16"></ng-icon>
+          <span>O que pode ter acontecido?</span>
+        </p>
+        <ul class="space-y-2 text-text-muted list-disc list-inside">
+          <li>Limite insuficiente ou bloqueio temporário do cartão de crédito pelo banco.</li>
+          <li>Dados digitados incorretamente (validade, código CVV de segurança ou nome impresso).</li>
+          <li>Instabilidade momentânea no gateway ou janela de pagamento fechada antes do término.</li>
+        </ul>
+        <div class="pt-2 border-t border-border-soft text-primary font-medium">
+          💡 Dica: Pagamentos via PIX são aprovados instantaneamente e costumam não ter bloqueios bancários!
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          routerLink="/checkout"
+          class="btn-primary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/20"
+        >
+          <ng-icon name="lucideRefreshCw" size="18"></ng-icon>
+          <span>Tentar Pagamento Novamente</span>
+        </a>
+
+        <a
+          routerLink="/account/orders"
+          class="btn-secondary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm"
+        >
+          <ng-icon name="lucideHistory" size="18"></ng-icon>
+          <span>Ver Meus Pedidos</span>
+        </a>
+
+        <a
+          [href]="supportWhatsAppUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary w-full sm:w-auto px-5 py-3.5 flex items-center justify-center gap-2 text-sm text-green-400 border-green-500/30 hover:border-green-400"
+        >
+          <ng-icon name="lucideMessageCircle" size="18"></ng-icon>
+          <span>Ajuda no WhatsApp</span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

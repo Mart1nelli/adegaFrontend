@@ -1,32 +1,95 @@
-<div class="min-h-screen bg-bg text-text-main flex items-center justify-center px-4">
-  <div class="card p-12 text-center max-w-lg w-full">
-    <div
-      class="w-20 h-20 bg-yellow-500/10 text-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
-    >
-      ⏳
-    </div>
+<div class="min-h-screen bg-bg text-text-main pt-28 pb-16 px-4 md:px-8">
+  <div class="max-w-2xl mx-auto space-y-6">
+    <div class="card p-8 md:p-10 text-center relative overflow-hidden border-yellow-500/30 shadow-2xl">
+      <!-- Glow decorativo superior -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-yellow-500/10 blur-3xl rounded-full -z-0 pointer-events-none"></div>
 
-    <h1 class="text-2xl font-black mb-2 text-yellow-400">Pagamento em Análise</h1>
-    <p class="text-text-muted mb-4">
-      Seu pagamento está sendo processado. Isso pode levar alguns instantes — você será notificado assim que for confirmado.
-    </p>
+      <!-- Ícone de Pendente -->
+      <div
+        class="w-20 h-20 bg-yellow-500/15 border-2 border-yellow-500/30 text-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg shadow-yellow-500/20"
+      >
+        <ng-icon name="lucideHourglass" size="40"></ng-icon>
+      </div>
 
-    @if (paymentId()) {
-      <p class="text-xs text-text-dim mb-6">Referência: <span class="font-mono">{{ paymentId() }}</span></p>
-    }
+      <span class="badge-warning px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 inline-block">
+        Pagamento em Análise
+      </span>
 
-    <div class="bg-surface border border-yellow-500/20 rounded-lg p-4 mb-8 text-sm text-left">
-      <p class="font-semibold mb-2 text-yellow-400">Por que está pendente?</p>
-      <ul class="list-disc list-inside text-text-muted space-y-1">
-        <li>Pagamentos via boleto podem levar até 3 dias úteis</li>
-        <li>Pagamentos via PIX são confirmados em minutos</li>
-        <li>Seu pedido ficará reservado enquanto o pagamento é analisado</li>
-      </ul>
-    </div>
+      <h1 class="text-2xl md:text-3xl font-black text-text-main mb-2 tracking-tight">
+        Seu Pedido está em Processamento
+      </h1>
+      <p class="text-text-muted text-sm max-w-md mx-auto leading-relaxed mb-6">
+        {{ paymentTypeDescription }}
+      </p>
 
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a routerLink="/account/orders" class="btn-primary">Acompanhar pedido</a>
-      <a routerLink="/products" class="btn-secondary">Continuar comprando</a>
+      @if (paymentId() || orderId()) {
+        <div class="bg-surface border border-border rounded-xl p-4 mb-6 text-xs text-left max-w-md mx-auto space-y-2">
+          @if (orderId()) {
+            <div class="flex justify-between">
+              <span class="text-text-muted">Número do Pedido:</span>
+              <span class="font-bold text-primary">#{{ orderId() }}</span>
+            </div>
+          }
+          @if (paymentId()) {
+            <div class="flex justify-between">
+              <span class="text-text-muted">ID da Transação MP:</span>
+              <span class="font-mono text-text-main">{{ paymentId() }}</span>
+            </div>
+          }
+          <div class="flex justify-between">
+            <span class="text-text-muted">Status Atual:</span>
+            <span class="text-yellow-400 font-bold uppercase">Pendente de Confirmação</span>
+          </div>
+        </div>
+      }
+
+      <!-- Linha do Tempo / O que acontece agora -->
+      <div class="bg-surface border border-yellow-500/20 rounded-xl p-5 text-left text-xs space-y-3 mb-8">
+        <p class="font-bold text-yellow-400 flex items-center gap-2">
+          <ng-icon name="lucideTruck" size="16"></ng-icon>
+          <span>O que acontece agora com meu pedido?</span>
+        </p>
+        <div class="space-y-2 text-text-muted">
+          <p>
+            1. <strong>Confirmação:</strong> Assim que o Mercado Pago validar o pagamento (Pix é quase instantâneo, boletos levam 1 a 3 dias), o status mudará automaticamente para <em>Aprovado</em>.
+          </p>
+          <p>
+            2. <strong>Separação & Envio:</strong> Com a confirmação, nossa adega iniciará a separação imediatamente e o pedido sairá para entrega no seu endereço.
+          </p>
+          <p>
+            3. <strong>Acompanhamento:</strong> Você pode checar o status atualizado em tempo real na aba <em>Meus Pedidos</em>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          routerLink="/account/orders"
+          class="btn-primary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/20"
+        >
+          <ng-icon name="lucideHistory" size="18"></ng-icon>
+          <span>Acompanhar em Meus Pedidos</span>
+        </a>
+
+        <a
+          routerLink="/products"
+          class="btn-secondary w-full sm:w-auto px-6 py-3.5 flex items-center justify-center gap-2 text-sm"
+        >
+          <ng-icon name="lucideShoppingBag" size="18"></ng-icon>
+          <span>Continuar Comprando</span>
+        </a>
+
+        <a
+          [href]="supportWhatsAppUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-secondary w-full sm:w-auto px-5 py-3.5 flex items-center justify-center gap-2 text-sm text-green-400 border-green-500/30 hover:border-green-400"
+        >
+          <ng-icon name="lucideMessageCircle" size="18"></ng-icon>
+          <span>Suporte no WhatsApp</span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

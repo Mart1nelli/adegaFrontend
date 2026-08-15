@@ -6,17 +6,17 @@
   --color-primary-hover: #E5C100;
   --color-primary-soft: rgba(255, 215, 0, 0.1);
   --color-primary-border: rgba(255, 215, 0, 0.2);
-  
+
   --color-bg: #050505;
   --color-surface: #0f0f0f;
   --color-panel: #171717;
   --color-border: #262626;
   --color-border-soft: rgba(255, 255, 255, 0.05);
-  
+
   --color-text-main: #f5f5f5;
   --color-text-muted: #a3a3a3;
   --color-text-dim: rgba(255, 255, 255, 0.3);
-  
+
   --color-danger: #ef4444;
   --color-danger-soft: rgba(239, 68, 68, 0.1);
   --color-success: #22c55e;
@@ -63,9 +63,9 @@ body {
   padding: 0.85rem 1rem;
   color: var(--color-text-main);
   transition: all 0.2s;
-  &:focus { 
-    border-color: var(--color-primary); 
-    outline: none; 
+  &:focus {
+    border-color: var(--color-primary);
+    outline: none;
     box-shadow: 0 0 0 1px var(--color-primary);
   }
 }
@@ -80,6 +80,24 @@ body {
   &:hover { background-color: var(--color-primary-hover); }
 }
 
+@utility btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
 @utility badge-admin {
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
@@ -88,6 +106,42 @@ body {
   border-radius: 0.25rem;
   font-size: 0.6rem;
   text-transform: uppercase;
+}
+
+@utility badge-primary {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
+}
+
+@utility badge-success {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+@utility badge-warning {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+@utility badge-danger {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+@utility badge-info {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+@utility badge-secondary {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
 }
 
 @utility text-dim { color: var(--color-text-dim); }

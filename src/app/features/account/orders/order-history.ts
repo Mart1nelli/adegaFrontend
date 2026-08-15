@@ -46,26 +46,42 @@ export class OrderHistory implements OnInit {
   }
 
   statusLabel(status: string): string {
+    const s = (status || '').toUpperCase().trim();
     const map: Record<string, string> = {
       PENDING: 'Pendente',
+      IN_PROCESS: 'Em Análise',
       CONFIRMED: 'Confirmado',
-      PROCESSING: 'Processando',
-      SHIPPED: 'Enviado',
+      APPROVED: 'Aprovado',
+      PAID: 'Pago',
+      PROCESSING: 'Em Preparação',
+      PREPARING: 'Na Adega',
+      SHIPPED: 'Saiu para Entrega',
+      DELIVERING: 'A Caminho',
       DELIVERED: 'Entregue',
+      COMPLETED: 'Concluído',
       CANCELLED: 'Cancelado',
+      REJECTED: 'Recusado',
     };
-    return map[status] ?? status;
+    return map[s] ?? status;
   }
 
   statusClass(status: string): string {
+    const s = (status || '').toUpperCase().trim();
     const map: Record<string, string> = {
       PENDING: 'badge-warning',
+      IN_PROCESS: 'badge-warning',
       CONFIRMED: 'badge-info',
+      APPROVED: 'badge-success',
+      PAID: 'badge-success',
       PROCESSING: 'badge-info',
+      PREPARING: 'badge-primary',
       SHIPPED: 'badge-primary',
+      DELIVERING: 'badge-primary',
       DELIVERED: 'badge-success',
+      COMPLETED: 'badge-success',
       CANCELLED: 'badge-danger',
+      REJECTED: 'badge-danger',
     };
-    return map[status] ?? 'badge-secondary';
+    return map[s] ?? 'badge-secondary';
   }
 }
