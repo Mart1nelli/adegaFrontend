@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   lucideAlertCircle,
@@ -12,6 +12,9 @@ import {
   lucideShoppingBag,
   lucideXCircle,
 } from '@ng-icons/lucide';
+import { PaymentService } from '../../../core/services/payment.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { PaymentResponse } from '../../../core/models/payment.models';
 
 @Component({
   selector: 'app-checkout-failure',
@@ -32,11 +35,15 @@ import {
 })
 export class CheckoutFailure implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private paymentService = inject(PaymentService);
+  private notificationService = inject(NotificationService);
 
   paymentId = signal<string | null>(null);
   status = signal<string | null>(null);
-  orderId = signal<string | null>(null);
+  orderId = signal<number | null>(null);
   statusDetail = signal<string | null>(null);
+  isRetrying = signal<boolean>(false);
 
   ngOnInit() {
     const params = this.route.snapshot.queryParams;
@@ -48,10 +55,54 @@ export class CheckoutFailure implements OnInit {
     this.status.set(rawStatus && rawStatus !== 'null' ? rawStatus : 'rejected');
 
     const rawExternalRef = params['external_reference'];
-    this.orderId.set(rawExternalRef && rawExternalRef !== 'null' ? rawExternalRef : null);
+    if (rawExternalRef && rawExternalRef !== 'null') {
+      this.resolvePaymentAndOrder(rawExternalRef);
+    }
 
     const rawDetail = params['status_detail'];
     this.statusDetail.set(rawDetail && rawDetail !== 'null' ? rawDetail : null);
+  }
+
+  private resolvePaymentAndOrder(externalRef: string) {
+    this.paymentService.getPaymentById(externalRef).subscribe({
+      next: (payment: PaymentResponse) => {
+        if (payment.orderId) {
+          this.orderId.set(payment.orderId);
+        }
+      },
+      error: () => {
+        const parsed = Number(externalRef);
+        if (!isNaN(parsed)) {
+          this.orderId.set(parsed);
+        }
+      },
+    });
+  }
+
+  retryPayment() {
+    const orderId = this.orderId();
+    if (!orderId) {
+      this.router.navigate(['/checkout']);
+      return;
+    }
+
+    this.isRetrying.set(true);
+    this.paymentService.createPayment({ orderId, paymentMethodId: 1 }).subscribe({
+      next: (res: PaymentResponse) => {
+        if (res.checkoutUrl) {
+          window.location.href = res.checkoutUrl;
+        } else {
+          this.isRetrying.set(false);
+          this.notificationService.showError('Não foi possível obter a URL de pagamento do Mercado Pago.');
+          this.router.navigate(['/checkout']);
+        }
+      },
+      error: () => {
+        this.isRetrying.set(false);
+        this.notificationService.showError('Erro ao gerar novo link de pagamento. Tente novamente pelo checkout.');
+        this.router.navigate(['/checkout']);
+      },
+    });
   }
 
   get supportWhatsAppUrl(): string {

@@ -1,3 +1,6 @@
+import { PaymentResponse } from './payment.models';
+export * from './payment.models';
+
 export interface Product {
   id?: number;
   name: string;
@@ -131,10 +134,11 @@ export interface Order {
   status: string;
   addressId?: number;
   address?: Address;
+  paymentMethodId?: number;
   user?: { id: number; name: string; email: string };
   items?: OrderItem[];
   orderItems?: OrderItem[];
-  payments?: Payment[];
+  payments?: PaymentResponse[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -145,23 +149,6 @@ export interface CreateOrderRequest {
   paymentMethodId?: number;
   items: { productId: number; quantity: number }[];
   status?: string;
-}
-
-export interface Payment {
-  id: number;
-  orderId: number;
-  userId: number;
-  amount: number;
-  status: string;
-  methodId?: number;
-  transactionId?: string;
-  checkoutUrl?: string;
-  createdAt?: string;
-}
-
-export interface CreatePaymentRequest {
-  orderId: number;
-  paymentMethodId: number;
 }
 
 export interface PaymentMethod {

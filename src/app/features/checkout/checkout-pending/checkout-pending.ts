@@ -14,7 +14,9 @@ import {
   lucideTruck,
 } from '@ng-icons/lucide';
 import { Order } from '../../../core/models/product.models';
+import { PaymentResponse } from '../../../core/models/payment.models';
 import { ApiService } from '../../../core/services/api.service';
+import { PaymentService } from '../../../core/services/payment.service';
 import { CartService } from '../../../core/services/cart.service';
 
 @Component({
@@ -38,6 +40,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class CheckoutPending implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
+  private paymentService = inject(PaymentService);
   private cartService = inject(CartService);
 
   paymentId = signal<string | null>(null);
@@ -46,6 +49,7 @@ export class CheckoutPending implements OnInit {
   paymentType = signal<string | null>(null);
 
   order = signal<Order | null>(null);
+  isSyncing = signal<boolean>(false);
 
   ngOnInit() {
     // Garante que o carrinho foi limpo pois o pedido já foi gerado
@@ -64,12 +68,29 @@ export class CheckoutPending implements OnInit {
 
     const rawExternalRef = params['external_reference'];
     if (rawExternalRef && rawExternalRef !== 'null') {
-      const parsedId = Number(rawExternalRef);
-      if (!isNaN(parsedId)) {
-        this.orderId.set(parsedId);
-        this.loadOrderDetails(parsedId);
-      }
+      this.syncAndLoad(rawExternalRef);
     }
+  }
+
+  private syncAndLoad(externalRef: string) {
+    this.isSyncing.set(true);
+    this.paymentService.syncPaymentStatus(externalRef).subscribe({
+      next: (payment: PaymentResponse) => {
+        this.isSyncing.set(false);
+        if (payment.orderId) {
+          this.orderId.set(payment.orderId);
+          this.loadOrderDetails(payment.orderId);
+        }
+      },
+      error: () => {
+        this.isSyncing.set(false);
+        const parsedId = Number(externalRef);
+        if (!isNaN(parsedId)) {
+          this.orderId.set(parsedId);
+          this.loadOrderDetails(parsedId);
+        }
+      },
+    });
   }
 
   loadOrderDetails(orderId: number) {

@@ -21,13 +21,14 @@ import {
   CreateAddressRequest,
   CreateOrderRequest,
   Order,
-  Payment,
   PaymentMethod,
+  PaymentResponse,
 } from '../../core/models/product.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartItemView, CartService } from '../../core/services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { PaymentService } from '../../core/services/payment.service';
 
 type CheckoutStep = 'address' | 'review' | 'redirecting';
 
@@ -53,6 +54,7 @@ type CheckoutStep = 'address' | 'review' | 'redirecting';
 })
 export class Checkout implements OnInit {
   private apiService = inject(ApiService);
+  private paymentService = inject(PaymentService);
   private cartService = inject(CartService);
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
@@ -300,8 +302,8 @@ export class Checkout implements OnInit {
   private startPayment(orderId: number, paymentMethodId: number) {
     this.step.set('redirecting');
 
-    this.apiService.createPayment({ orderId, paymentMethodId }).subscribe({
-      next: (payment: Payment) => {
+    this.paymentService.createPayment({ orderId, paymentMethodId }).subscribe({
+      next: (payment: PaymentResponse) => {
         if (payment.checkoutUrl) {
           this.checkoutPaymentUrl.set(payment.checkoutUrl);
           // Redireciona para o checkout do Mercado Pago

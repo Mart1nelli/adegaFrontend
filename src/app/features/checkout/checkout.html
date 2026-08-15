@@ -455,9 +455,10 @@
 
       <form (ngSubmit)="saveQuickAddress()" class="space-y-4 text-sm">
         <div>
-          <label class="block text-xs font-semibold text-text-muted mb-1">CEP *</label>
+          <label for="newAddressZipCode" class="block text-xs font-semibold text-text-muted mb-1">CEP *</label>
           <div class="relative">
             <input
+              id="newAddressZipCode"
               type="text"
               [(ngModel)]="newAddressData.zipCode"
               name="zipCode"
@@ -475,8 +476,9 @@
 
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
-            <label class="block text-xs font-semibold text-text-muted mb-1">Rua / Logradouro *</label>
+            <label for="newAddressStreet" class="block text-xs font-semibold text-text-muted mb-1">Rua / Logradouro *</label>
             <input
+              id="newAddressStreet"
               type="text"
               [(ngModel)]="newAddressData.street"
               name="street"
@@ -486,8 +488,9 @@
             />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-text-muted mb-1">Número *</label>
+            <label for="newAddressNumber" class="block text-xs font-semibold text-text-muted mb-1">Número *</label>
             <input
+              id="newAddressNumber"
               type="text"
               [(ngModel)]="newAddressData.number"
               name="number"
@@ -499,8 +502,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-text-muted mb-1">Complemento (opcional)</label>
+          <label for="newAddressComplement" class="block text-xs font-semibold text-text-muted mb-1">Complemento (opcional)</label>
           <input
+            id="newAddressComplement"
             type="text"
             [(ngModel)]="newAddressData.complement"
             name="complement"
@@ -510,8 +514,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-text-muted mb-1">Bairro *</label>
+          <label for="newAddressNeighborhood" class="block text-xs font-semibold text-text-muted mb-1">Bairro *</label>
           <input
+            id="newAddressNeighborhood"
             type="text"
             [(ngModel)]="newAddressData.neighborhood"
             name="neighborhood"
@@ -523,8 +528,9 @@
 
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
-            <label class="block text-xs font-semibold text-text-muted mb-1">Cidade *</label>
+            <label for="newAddressCity" class="block text-xs font-semibold text-text-muted mb-1">Cidade *</label>
             <input
+              id="newAddressCity"
               type="text"
               [(ngModel)]="newAddressData.city"
               name="city"
@@ -534,8 +540,9 @@
             />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-text-muted mb-1">UF *</label>
+            <label for="newAddressState" class="block text-xs font-semibold text-text-muted mb-1">UF *</label>
             <input
+              id="newAddressState"
               type="text"
               [(ngModel)]="newAddressData.state"
               name="state"

@@ -16,7 +16,9 @@ import {
   lucideTruck,
 } from '@ng-icons/lucide';
 import { Order } from '../../../core/models/product.models';
+import { PaymentResponse } from '../../../core/models/payment.models';
 import { ApiService } from '../../../core/services/api.service';
+import { PaymentService } from '../../../core/services/payment.service';
 import { CartService } from '../../../core/services/cart.service';
 
 @Component({
@@ -42,6 +44,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class CheckoutSuccess implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
+  private paymentService = inject(PaymentService);
   private cartService = inject(CartService);
 
   paymentId = signal<string | null>(null);
@@ -49,9 +52,11 @@ export class CheckoutSuccess implements OnInit {
   status = signal<string>('approved');
   paymentType = signal<string | null>(null);
   orderId = signal<number | null>(null);
+  paymentAmount = signal<number | null>(null);
 
   order = signal<Order | null>(null);
   isLoadingOrder = signal<boolean>(false);
+  isSyncing = signal<boolean>(false);
 
   ngOnInit() {
     // 1. Garante que o carrinho fique limpo após o pagamento
@@ -72,15 +77,34 @@ export class CheckoutSuccess implements OnInit {
     const rawPaymentType = params['payment_type'];
     this.paymentType.set(rawPaymentType && rawPaymentType !== 'null' ? rawPaymentType : null);
 
-    // 3. Obtém o orderId a partir de external_reference
+    // 3. Obtém external_reference (ID do pagamento no backend) e sincroniza imediatamente com o MP
     const rawExternalRef = params['external_reference'];
     if (rawExternalRef && rawExternalRef !== 'null') {
-      const parsedId = Number(rawExternalRef);
-      if (!isNaN(parsedId)) {
-        this.orderId.set(parsedId);
-        this.loadOrderDetails(parsedId);
-      }
+      this.syncAndLoad(rawExternalRef);
     }
+  }
+
+  private syncAndLoad(externalRef: string) {
+    this.isSyncing.set(true);
+    this.paymentService.syncPaymentStatus(externalRef).subscribe({
+      next: (payment: PaymentResponse) => {
+        this.isSyncing.set(false);
+        if (payment.orderId) {
+          this.orderId.set(payment.orderId);
+          this.paymentAmount.set(payment.amount);
+          this.loadOrderDetails(payment.orderId);
+        }
+      },
+      error: () => {
+        this.isSyncing.set(false);
+        // Fallback: se external_reference for numérico, tenta carregar o pedido diretamente
+        const parsedId = Number(externalRef);
+        if (!isNaN(parsedId)) {
+          this.orderId.set(parsedId);
+          this.loadOrderDetails(parsedId);
+        }
+      },
+    });
   }
 
   loadOrderDetails(orderId: number) {
@@ -88,6 +112,9 @@ export class CheckoutSuccess implements OnInit {
     this.apiService.getOrder(orderId).subscribe({
       next: (orderData: Order) => {
         this.order.set(orderData);
+        if (orderData.totalAmount && !this.paymentAmount()) {
+          this.paymentAmount.set(orderData.totalAmount);
+        }
         this.isLoadingOrder.set(false);
       },
       error: () => {

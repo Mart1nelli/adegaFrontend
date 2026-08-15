@@ -35,21 +35,57 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'checkout/sucesso',
+        path: 'checkout/success',
         loadComponent: () =>
           import('./features/checkout/checkout-success/checkout-success').then(
             (m) => m.CheckoutSuccess,
           ),
       },
       {
-        path: 'checkout/falha',
+        path: 'checkout/sucesso',
+        redirectTo: 'checkout/success',
+        pathMatch: 'full',
+      },
+      {
+        path: 'payment/success',
+        loadComponent: () =>
+          import('./features/checkout/checkout-success/checkout-success').then(
+            (m) => m.CheckoutSuccess,
+          ),
+      },
+      {
+        path: 'checkout/failure',
         loadComponent: () =>
           import('./features/checkout/checkout-failure/checkout-failure').then(
             (m) => m.CheckoutFailure,
           ),
       },
       {
+        path: 'checkout/falha',
+        redirectTo: 'checkout/failure',
+        pathMatch: 'full',
+      },
+      {
+        path: 'payment/failure',
+        loadComponent: () =>
+          import('./features/checkout/checkout-failure/checkout-failure').then(
+            (m) => m.CheckoutFailure,
+          ),
+      },
+      {
+        path: 'checkout/pending',
+        loadComponent: () =>
+          import('./features/checkout/checkout-pending/checkout-pending').then(
+            (m) => m.CheckoutPending,
+          ),
+      },
+      {
         path: 'checkout/pendente',
+        redirectTo: 'checkout/pending',
+        pathMatch: 'full',
+      },
+      {
+        path: 'payment/pending',
         loadComponent: () =>
           import('./features/checkout/checkout-pending/checkout-pending').then(
             (m) => m.CheckoutPending,

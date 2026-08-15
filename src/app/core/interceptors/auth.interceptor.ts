@@ -16,6 +16,17 @@ const refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<
   null,
 );
 
+const extractErrorMessage = (error: HttpErrorResponse, defaultMessage: string): string => {
+  if (!error.error) return defaultMessage;
+  if (typeof error.error === 'string') return error.error;
+  if (error.error.message && typeof error.error.message === 'string') return error.error.message;
+  if (error.error.error && typeof error.error.error === 'string') return error.error.error;
+  if (Array.isArray(error.error.errors) && error.error.errors.length > 0) {
+    return error.error.errors.map((e: { message?: string } | string) => (typeof e === 'object' && e?.message ? e.message : String(e))).join(', ');
+  }
+  return defaultMessage;
+};
+
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -40,7 +51,18 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
       if (error.status === 403) {
         notificationService.showError('Você não tem permissão para realizar esta ação.', 'Acesso Negado');
         router.navigate(['/']);
+      } else if (error.status === 429) {
+        notificationService.showWarning('Muitas requisições. Aguarde alguns segundos.', 'Limite Excedido');
+      } else if (error.status === 400) {
+        const msg = extractErrorMessage(error, 'Requisição inválida. Verifique os dados enviados.');
+        notificationService.showError(msg, 'Erro na Requisição (400)');
+      } else if (error.status === 404) {
+        const msg = extractErrorMessage(error, 'Recurso não encontrado.');
+        notificationService.showError(msg, 'Não Encontrado (404)');
+      } else if (error.status === 502) {
+        notificationService.showError('Serviço temporariamente indisponível. Tente novamente mais tarde.', 'Erro de Servidor (502)');
       }
+
       return throwError(() => error);
     }),
   );

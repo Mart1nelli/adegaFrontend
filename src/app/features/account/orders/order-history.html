@@ -49,14 +49,23 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-4">
-              <span class="font-bold">R$ {{ order.totalAmount | number: '1.2-2' }}</span>
-              <span
-                class="text-[10px] font-bold px-3 py-1 rounded-full uppercase"
-                [class]="statusClass(order.status)"
-              >
-                {{ statusLabel(order.status) }}
-              </span>
+            <div class="flex flex-wrap items-center gap-2 md:gap-4">
+              <span class="font-bold text-sm md:text-base">R$ {{ order.totalAmount | number: '1.2-2' }}</span>
+              <div class="flex items-center gap-1.5">
+                <span
+                  class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase"
+                  [class]="statusClass(order.status)"
+                >
+                  {{ statusLabel(order.status) }}
+                </span>
+                <span
+                  class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase"
+                  [class]="paymentStatusClass(order)"
+                  [title]="'Status do Pagamento: ' + paymentStatusLabel(order)"
+                >
+                  {{ paymentStatusLabel(order) }}
+                </span>
+              </div>
               <span
                 class="text-text-dim text-xs transition-transform"
                 [class.rotate-180]="expandedOrder() === order.id"
@@ -67,7 +76,7 @@
           </button>
 
           @if (expandedOrder() === order.id) {
-            <div class="p-5 border-t border-border-soft bg-surface/50">
+            <div class="p-5 border-t border-border-soft bg-surface/50 space-y-4">
               <table class="w-full text-sm">
                 <thead class="text-text-dim uppercase text-[10px]">
                   <tr>
@@ -88,6 +97,49 @@
                   }
                 </tbody>
               </table>
+
+              <!-- Ações e Status do Pagamento no Detalhe -->
+              <div class="pt-4 border-t border-border-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-xs text-text-muted">
+                  <ng-icon name="lucideCreditCard" size="16" class="text-primary"></ng-icon>
+                  <span>Status do Pagamento:</span>
+                  <span
+                    class="font-bold uppercase text-[11px] px-2 py-0.5 rounded-full"
+                    [class]="paymentStatusClass(order)"
+                  >
+                    {{ paymentStatusLabel(order) }}
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  @if (isOrderPending(order)) {
+                    <button
+                      type="button"
+                      (click)="payNow(order, $event)"
+                      [disabled]="payingOrderId() === order.id"
+                      class="btn-primary px-4 py-2 text-xs flex items-center justify-center gap-2 shadow-md shadow-primary/20 cursor-pointer disabled:opacity-50"
+                    >
+                      <ng-icon name="lucideCreditCard" size="15"></ng-icon>
+                      <span>{{ payingOrderId() === order.id ? 'Iniciando...' : 'Pagar Agora' }}</span>
+                    </button>
+                  }
+
+                  <button
+                    type="button"
+                    (click)="verifyPaymentStatus(order, $event)"
+                    [disabled]="syncingOrderId() === order.id"
+                    class="btn-secondary px-3.5 py-2 text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    title="Sincronizar status com Mercado Pago"
+                  >
+                    <ng-icon
+                      name="lucideRefreshCw"
+                      [class.animate-spin]="syncingOrderId() === order.id"
+                      size="15"
+                    ></ng-icon>
+                    <span>{{ syncingOrderId() === order.id ? 'Sincronizando...' : 'Verificar Status' }}</span>
+                  </button>
+                </div>
+              </div>
             </div>
           }
         </div>

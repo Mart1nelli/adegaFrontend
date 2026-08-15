@@ -18,8 +18,8 @@ import {
   CreatePaymentRequest,
   Order,
   PaginatedProducts,
-  Payment,
   PaymentMethod,
+  PaymentResponse,
   Product,
   ProductFilters,
 } from '../models/product.models';
@@ -142,12 +142,24 @@ export class ApiService {
   }
 
   // --- PAYMENTS ---
-  createPayment(data: CreatePaymentRequest): Observable<Payment> {
-    return this.http.post<Payment>(`${this.apiUrl}/payments`, data);
+  createPayment(data: CreatePaymentRequest): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.apiUrl}/payments`, data);
   }
 
-  getMyPayments(): Observable<Payment[]> {
-    return this.http.get<Payment[]>(`${this.apiUrl}/payments/me`);
+  getPaymentById(id: number | string): Observable<PaymentResponse> {
+    return this.http.get<PaymentResponse>(`${this.apiUrl}/payments/${id}`);
+  }
+
+  getPaymentsByOrderId(orderId: number | string): Observable<PaymentResponse[]> {
+    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/payments/order/${orderId}`);
+  }
+
+  getMyPayments(): Observable<PaymentResponse[]> {
+    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/payments/my-payments`);
+  }
+
+  syncPaymentStatus(id: number | string): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.apiUrl}/payments/${id}/sync`, {});
   }
 
   // --- ADMIN: Payment Methods ---
