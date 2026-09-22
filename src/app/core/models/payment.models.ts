@@ -13,6 +13,8 @@ export interface CreateTransparentPaymentRequest extends CreatePaymentRequest {
   installments?: number;
   issuerId?: string;
   payerEmail?: string;
+  payerIdentificationType?: string;
+  payerIdentificationNumber?: string;
 }
 
 export interface PaymentResponse {

@@ -40,7 +40,10 @@ interface TransparentPaymentFormData {
   payment_method_id: string;
   installments?: number;
   issuer_id?: string;
-  payer?: { email?: string };
+  payer?: {
+    email?: string;
+    identification?: { type?: string; number?: string };
+  };
 }
 
 interface PaymentBrickController {
@@ -395,6 +398,8 @@ export class Checkout implements OnInit {
       installments: paymentData.installments,
       issuerId: paymentData.issuer_id,
       payerEmail: paymentData.payer?.email,
+      payerIdentificationType: paymentData.payer?.identification?.type,
+      payerIdentificationNumber: paymentData.payer?.identification?.number,
     };
 
     this.paymentService.createTransparentPayment(request).subscribe({
