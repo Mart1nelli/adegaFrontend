@@ -134,7 +134,7 @@ describe('Checkout', () => {
     });
 
     expect(apiServiceSpy.createOrder).toHaveBeenCalled();
-    expect(cartServiceSpy.clearCart).toHaveBeenCalled();
+    expect(cartServiceSpy.clearCart).not.toHaveBeenCalled();
     expect(paymentServiceSpy.createTransparentPayment).toHaveBeenCalledWith({
       orderId: 100,
       paymentMethodId: 1,
@@ -144,7 +144,7 @@ describe('Checkout', () => {
       issuerId: undefined,
       payerEmail: 'joao@example.com',
     });
-    expect(component.step()).toBe('processing');
+    expect(component.step()).toBe('result');
   });
 
   it('placeOrder should handle payment creation error gracefully', () => {

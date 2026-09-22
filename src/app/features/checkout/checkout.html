@@ -18,7 +18,7 @@
               : 'border-primary/50 bg-primary/20 text-primary'
           "
         >
-            @if (step() === 'review' || step() === 'processing') {
+            @if (step() === 'review' || step() === 'processing' || step() === 'result') {
             <ng-icon name="lucideCheck" size="16"></ng-icon>
           } @else {
             1
@@ -44,12 +44,12 @@
           [class]="
             step() === 'review'
               ? 'border-primary bg-primary text-black shadow-md shadow-primary/20'
-              : step() === 'processing'
+              : step() === 'processing' || step() === 'result'
                 ? 'border-primary/50 bg-primary/20 text-primary'
                 : 'border-border bg-surface text-text-dim'
           "
         >
-            @if (step() === 'processing') {
+            @if (step() === 'processing' || step() === 'result') {
             <ng-icon name="lucideCheck" size="16"></ng-icon>
           } @else {
             2
@@ -423,6 +423,40 @@
           </div>
 
         </div>
+      </div>
+    }
+
+    @if (step() === 'result') {
+      <div class="card p-10 text-center max-w-lg mx-auto shadow-2xl"
+        [class.border-green-500/30]="paymentResult() === 'COMPLETED'"
+        [class.border-yellow-500/30]="paymentResult() === 'PENDING'"
+        [class.border-red-500/30]="paymentResult() === 'FAILED'"
+      >
+        @if (paymentResult() === 'COMPLETED') {
+          <div class="w-20 h-20 rounded-full bg-green-500/15 border-2 border-green-500/30 text-green-400 flex items-center justify-center mx-auto mb-6">
+            <ng-icon name="lucideCheck" size="44"></ng-icon>
+          </div>
+          <h2 class="text-2xl font-black mb-2">Pagamento aprovado</h2>
+          <p class="text-text-muted text-sm mb-6">Seu pedido foi confirmado e já está sendo preparado.</p>
+          <a routerLink="/account/orders" class="btn-primary inline-flex items-center gap-2 px-6 py-3">Acompanhar pedido</a>
+        } @else if (paymentResult() === 'PENDING') {
+          <div class="w-20 h-20 rounded-full bg-yellow-500/15 border-2 border-yellow-500/30 text-yellow-400 flex items-center justify-center mx-auto mb-6">
+            <ng-icon name="lucideAlertCircle" size="44"></ng-icon>
+          </div>
+          <h2 class="text-2xl font-black mb-2">Pagamento pendente</h2>
+          <p class="text-text-muted text-sm mb-6">Estamos aguardando a confirmação do Mercado Pago. Você pode tentar outra forma de pagamento.</p>
+          <button type="button" (click)="retryTransparentPayment()" class="btn-primary inline-flex items-center gap-2 px-6 py-3">Tentar novamente</button>
+        } @else {
+          <div class="w-20 h-20 rounded-full bg-red-500/15 border-2 border-red-500/30 text-red-400 flex items-center justify-center mx-auto mb-6">
+            <ng-icon name="lucideX" size="44"></ng-icon>
+          </div>
+          <h2 class="text-2xl font-black mb-2">Pagamento não aprovado</h2>
+          <p class="text-text-muted text-sm mb-6">Não houve cobrança confirmada. Revise os dados ou tente outra forma de pagamento.</p>
+          <button type="button" (click)="retryTransparentPayment()" class="btn-primary inline-flex items-center gap-2 px-6 py-3">Tentar novamente</button>
+        }
+        @if (paymentResultId()) {
+          <p class="text-xs text-text-dim mt-6">Pagamento #{{ paymentResultId() }}</p>
+        }
       </div>
     }
   </div>

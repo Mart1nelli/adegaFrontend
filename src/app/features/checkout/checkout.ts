@@ -16,6 +16,8 @@ import {
   lucideTruck,
   lucideX,
 } from '@ng-icons/lucide';
+import { environment } from '../../../environments/environment';
+import { CreateTransparentPaymentRequest, PaymentStatus } from '../../core/models/payment.models';
 import {
   Address,
   CreateAddressRequest,
@@ -24,15 +26,14 @@ import {
   PaymentMethod,
   PaymentResponse,
 } from '../../core/models/product.models';
-import { CreateTransparentPaymentRequest } from '../../core/models/payment.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartItemView, CartService } from '../../core/services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { PaymentService } from '../../core/services/payment.service';
-import { environment } from '../../../environments/environment';
+import { TelemetryService } from '../../core/services/telemetry.service';
 
-type CheckoutStep = 'address' | 'review' | 'processing';
+type CheckoutStep = 'address' | 'review' | 'processing' | 'result';
 
 interface TransparentPaymentFormData {
   token?: string;
@@ -99,6 +100,7 @@ export class Checkout implements OnInit {
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
+  private telemetryService = inject(TelemetryService);
 
   step = signal<CheckoutStep>('address');
   isLoading = signal(false);
@@ -131,7 +133,11 @@ export class Checkout implements OnInit {
   // Dados pós-criação
   createdOrder = signal<Order | null>(null);
   paymentBrickError = signal<string | null>(null);
+  paymentResult = signal<PaymentStatus | null>(null);
+  paymentResultId = signal<number | null>(null);
   private paymentBrick?: PaymentBrickController;
+  private paymentStatusPolls = 0;
+  private paymentStartedAt = 0;
 
   get cartItems() {
     return this.cartService.cartItems();
@@ -295,11 +301,19 @@ export class Checkout implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  retryTransparentPayment() {
+    this.paymentResult.set(null);
+    this.paymentResultId.set(null);
+    this.paymentBrickError.set(null);
+    this.step.set('review');
+    setTimeout(() => void this.initializePaymentBrick(), 0);
+  }
+
   /**
    * Fluxo de finalização do pedido:
    * 1. Cria o pedido no backend com os itens do carrinho e endereço.
-    * 2. Envia o token gerado pelo Payment Brick ao backend.
-    * 3. Direciona para a tela correspondente ao status retornado pelo Mercado Pago.
+   * 2. Envia o token gerado pelo Payment Brick ao backend.
+   * 3. Direciona para a tela correspondente ao status retornado pelo Mercado Pago.
    */
   async placeOrder(paymentData: TransparentPaymentFormData) {
     const user = this.currentUser;
@@ -332,7 +346,15 @@ export class Checkout implements OnInit {
       return;
     }
 
+    const existingOrder = this.createdOrder();
+    if (existingOrder) {
+      this.startTransparentPayment(existingOrder.id, this.selectedPaymentMethodId()!, paymentData);
+      return;
+    }
+
     this.isPlacing.set(true);
+    this.paymentStartedAt = performance.now();
+    this.telemetryService.recordCheckout({ event: 'payment_submitted' });
 
     const body: CreateOrderRequest = {
       userId: user.id,
@@ -347,6 +369,7 @@ export class Checkout implements OnInit {
     this.apiService.createOrder(body).subscribe({
       next: (order: Order) => {
         this.createdOrder.set(order);
+        this.telemetryService.recordCheckout({ event: 'order_created' });
         this.startTransparentPayment(order.id, this.selectedPaymentMethodId()!, paymentData);
       },
       error: (err) => {
@@ -363,6 +386,7 @@ export class Checkout implements OnInit {
     paymentData: TransparentPaymentFormData,
   ) {
     this.step.set('processing');
+    this.isPlacing.set(true);
     const request: CreateTransparentPaymentRequest = {
       orderId,
       paymentMethodId,
@@ -375,30 +399,68 @@ export class Checkout implements OnInit {
 
     this.paymentService.createTransparentPayment(request).subscribe({
       next: (payment: PaymentResponse) => {
-        this.cartService.clearCart();
         this.isPlacing.set(false);
-        const route = payment.status === 'COMPLETED'
-          ? '/checkout/success'
-          : payment.status === 'PENDING'
-            ? '/checkout/pending'
-            : '/checkout/failure';
-        void this.router.navigate([route], {
-          queryParams: { external_reference: payment.id, status: payment.status.toLowerCase() },
+        this.paymentResult.set(payment.status);
+        this.paymentResultId.set(payment.id);
+        this.step.set('result');
+        this.telemetryService.recordCheckout({
+          event: 'payment_result',
+          status: payment.status,
+          durationMs: Math.round(performance.now() - this.paymentStartedAt),
         });
+        if (payment.status === 'COMPLETED') {
+          this.cartService.clearCart();
+        } else if (payment.status === 'PENDING') {
+          this.startPaymentStatusPolling(payment.id);
+        }
       },
       error: (err) => {
         const msg = err?.error?.message ?? 'Erro ao gerar o pagamento com o Mercado Pago.';
         this.notificationService.showError(msg);
+        this.paymentBrickError.set(msg);
+        this.telemetryService.recordCheckout({
+          event: 'payment_error',
+          durationMs: Math.round(performance.now() - this.paymentStartedAt),
+        });
         this.isPlacing.set(false);
         this.step.set('review');
+        setTimeout(() => void this.initializePaymentBrick(), 0);
       },
     });
+  }
+
+  private startPaymentStatusPolling(paymentId: number) {
+    this.paymentStatusPolls = 0;
+    const poll = () => {
+      if (this.paymentResult() !== 'PENDING' || this.paymentStatusPolls >= 10) {
+        return;
+      }
+
+      this.paymentStatusPolls += 1;
+      this.paymentService.syncPaymentStatus(paymentId).subscribe({
+        next: (payment: PaymentResponse) => {
+          this.paymentResult.set(payment.status);
+          if (payment.status === 'COMPLETED') {
+            this.cartService.clearCart();
+            return;
+          }
+          if (payment.status === 'PENDING') {
+            setTimeout(poll, 3000);
+          }
+        },
+        error: () => setTimeout(poll, 3000),
+      });
+    };
+
+    setTimeout(poll, 3000);
   }
 
   private async initializePaymentBrick() {
     this.paymentBrickError.set(null);
     if (!environment.mercadoPagoPublicKey) {
-      this.paymentBrickError.set('Configure a public key do Mercado Pago para habilitar o pagamento.');
+      this.paymentBrickError.set(
+        'Configure a public key do Mercado Pago para habilitar o pagamento.',
+      );
       return;
     }
 
