@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { CreatePaymentRequest, PaymentResponse } from '../models/payment.models';
+import {
+  CreatePaymentRequest,
+  CreateTransparentPaymentRequest,
+  PaymentResponse,
+} from '../models/payment.models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +20,10 @@ export class PaymentService {
    */
   createPayment(data: CreatePaymentRequest): Observable<PaymentResponse> {
     return this.http.post<PaymentResponse>(this.apiUrl, data);
+  }
+
+  createTransparentPayment(data: CreateTransparentPaymentRequest): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.apiUrl}/transparent`, data);
   }
 
   /**
@@ -36,7 +44,7 @@ export class PaymentService {
    * Lista todos os pagamentos do usuário logado
    */
   getMyPayments(): Observable<PaymentResponse[]> {
-    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/my-payments`);
+    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/me`);
   }
 
   /**

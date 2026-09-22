@@ -15,11 +15,11 @@ import {
   lucideShoppingBag,
   lucideTruck,
 } from '@ng-icons/lucide';
-import { Order } from '../../../core/models/product.models';
 import { PaymentResponse } from '../../../core/models/payment.models';
+import { Order } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
-import { PaymentService } from '../../../core/services/payment.service';
 import { CartService } from '../../../core/services/cart.service';
+import { PaymentService } from '../../../core/services/payment.service';
 
 @Component({
   selector: 'app-checkout-success',
@@ -69,7 +69,9 @@ export class CheckoutSuccess implements OnInit {
     this.paymentId.set(rawPaymentId && rawPaymentId !== 'null' ? rawPaymentId : null);
 
     const rawMerchantOrderId = params['merchant_order_id'];
-    this.merchantOrderId.set(rawMerchantOrderId && rawMerchantOrderId !== 'null' ? rawMerchantOrderId : null);
+    this.merchantOrderId.set(
+      rawMerchantOrderId && rawMerchantOrderId !== 'null' ? rawMerchantOrderId : null,
+    );
 
     const rawStatus = params['collection_status'] ?? params['status'] ?? 'approved';
     this.status.set(rawStatus);
@@ -97,12 +99,6 @@ export class CheckoutSuccess implements OnInit {
       },
       error: () => {
         this.isSyncing.set(false);
-        // Fallback: se external_reference for numérico, tenta carregar o pedido diretamente
-        const parsedId = Number(externalRef);
-        if (!isNaN(parsedId)) {
-          this.orderId.set(parsedId);
-          this.loadOrderDetails(parsedId);
-        }
       },
     });
   }

@@ -11,6 +11,12 @@
 npm-debug.log
 yarn-error.log
 
+# Local environment files. The Mercado Pago access token never belongs here.
+.env
+.env.*
+!.env.example
+src/environments/environment.local.ts
+
 # IDEs and editors
 .idea/
 .project

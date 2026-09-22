@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { CheckoutSuccess } from './checkout-success';
-import { ApiService } from '../../../core/services/api.service';
-import { PaymentService } from '../../../core/services/payment.service';
-import { CartService } from '../../../core/services/cart.service';
 import { Order, PaymentResponse } from '../../../core/models/product.models';
+import { ApiService } from '../../../core/services/api.service';
+import { CartService } from '../../../core/services/cart.service';
+import { PaymentService } from '../../../core/services/payment.service';
+import { CheckoutSuccess } from './checkout-success';
 
 describe('CheckoutSuccess', () => {
   let component: CheckoutSuccess;
@@ -81,12 +81,12 @@ describe('CheckoutSuccess', () => {
     expect(apiServiceSpy.getOrder).toHaveBeenCalledWith(16);
   });
 
-  it('should fallback to direct order loading if sync fails but external_reference is numeric', () => {
+  it('should not treat external_reference as an order ID if sync fails', () => {
     paymentServiceSpy.syncPaymentStatus.and.returnValue(throwError(() => new Error('Sync error')));
 
     component.ngOnInit();
 
-    expect(component.orderId()).toBe(1);
-    expect(apiServiceSpy.getOrder).toHaveBeenCalledWith(1);
+    expect(component.orderId()).toBeNull();
+    expect(apiServiceSpy.getOrder).not.toHaveBeenCalled();
   });
 });

@@ -59,7 +59,7 @@ describe('Checkout', () => {
       'createAddress',
       'createOrder',
     ]);
-    paymentServiceSpy = jasmine.createSpyObj('PaymentService', ['createPayment']);
+    paymentServiceSpy = jasmine.createSpyObj('PaymentService', ['createTransparentPayment']);
     cartServiceSpy = jasmine.createSpyObj('CartService', ['cartItems', 'totalPrice', 'clearCart']);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['currentUser']);
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
@@ -86,7 +86,7 @@ describe('Checkout', () => {
     apiServiceSpy.getMyAddresses.and.returnValue(of([mockAddress]));
     apiServiceSpy.getPaymentMethods.and.returnValue(of([mockPaymentMethod]));
     apiServiceSpy.createOrder.and.returnValue(of(mockCreatedOrder));
-    paymentServiceSpy.createPayment.and.returnValue(of(mockPaymentResponse));
+    paymentServiceSpy.createTransparentPayment.and.returnValue(of(mockPaymentResponse));
 
     await TestBed.configureTestingModule({
       imports: [Checkout],
@@ -124,26 +124,36 @@ describe('Checkout', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/cart']);
   });
 
-  it('placeOrder should create order, clear cart and initiate payment', () => {
+  it('placeOrder should create order and initiate transparent payment', () => {
     component.ngOnInit();
-    component.placeOrder();
+    component.placeOrder({
+      payment_method_id: 'visa',
+      token: 'card-token',
+      installments: 1,
+      payer: { email: 'joao@example.com' },
+    });
 
     expect(apiServiceSpy.createOrder).toHaveBeenCalled();
     expect(cartServiceSpy.clearCart).toHaveBeenCalled();
-    expect(paymentServiceSpy.createPayment).toHaveBeenCalledWith({
+    expect(paymentServiceSpy.createTransparentPayment).toHaveBeenCalledWith({
       orderId: 100,
       paymentMethodId: 1,
+      mercadoPagoPaymentMethodId: 'visa',
+      token: 'card-token',
+      installments: 1,
+      issuerId: undefined,
+      payerEmail: 'joao@example.com',
     });
-    expect(component.step()).toBe('redirecting');
+    expect(component.step()).toBe('processing');
   });
 
   it('placeOrder should handle payment creation error gracefully', () => {
-    paymentServiceSpy.createPayment.and.returnValue(
+    paymentServiceSpy.createTransparentPayment.and.returnValue(
       throwError(() => ({ error: { message: 'Erro ao conectar com gateway.' } })),
     );
 
     component.ngOnInit();
-    component.placeOrder();
+    component.placeOrder({ payment_method_id: 'visa', token: 'card-token' });
 
     expect(notificationServiceSpy.showError).toHaveBeenCalledWith('Erro ao conectar com gateway.');
     expect(component.isPlacing()).toBeFalse();

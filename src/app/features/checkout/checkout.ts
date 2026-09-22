@@ -24,13 +24,53 @@ import {
   PaymentMethod,
   PaymentResponse,
 } from '../../core/models/product.models';
+import { CreateTransparentPaymentRequest } from '../../core/models/payment.models';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CartItemView, CartService } from '../../core/services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { PaymentService } from '../../core/services/payment.service';
+import { environment } from '../../../environments/environment';
 
-type CheckoutStep = 'address' | 'review' | 'redirecting';
+type CheckoutStep = 'address' | 'review' | 'processing';
+
+interface TransparentPaymentFormData {
+  token?: string;
+  payment_method_id: string;
+  installments?: number;
+  issuer_id?: string;
+  payer?: { email?: string };
+}
+
+interface PaymentBrickController {
+  unmount: () => void;
+}
+
+interface MercadoPagoBricks {
+  create: (
+    type: 'payment',
+    containerId: string,
+    settings: {
+      initialization: { amount: number };
+      customization: { paymentMethods: Record<string, string> };
+      callbacks: {
+        onReady: () => void;
+        onSubmit: (event: { formData: TransparentPaymentFormData }) => Promise<void>;
+        onError: () => void;
+      };
+    },
+  ) => Promise<PaymentBrickController>;
+}
+
+interface MercadoPagoSdk {
+  bricks: () => MercadoPagoBricks;
+}
+
+declare global {
+  interface Window {
+    MercadoPago?: new (publicKey: string, options?: { locale: string }) => MercadoPagoSdk;
+  }
+}
 
 @Component({
   selector: 'app-checkout',
@@ -90,7 +130,8 @@ export class Checkout implements OnInit {
 
   // Dados pós-criação
   createdOrder = signal<Order | null>(null);
-  checkoutPaymentUrl = signal<string | null>(null);
+  paymentBrickError = signal<string | null>(null);
+  private paymentBrick?: PaymentBrickController;
 
   get cartItems() {
     return this.cartService.cartItems();
@@ -109,7 +150,9 @@ export class Checkout implements OnInit {
   }
 
   get selectedPaymentMethod(): PaymentMethod | undefined {
-    return this.paymentMethods().find((m: PaymentMethod) => m.id === this.selectedPaymentMethodId());
+    return this.paymentMethods().find(
+      (m: PaymentMethod) => m.id === this.selectedPaymentMethodId(),
+    );
   }
 
   ngOnInit() {
@@ -201,8 +244,15 @@ export class Checkout implements OnInit {
   }
 
   saveQuickAddress() {
-    if (!this.newAddressData.street || !this.newAddressData.city || !this.newAddressData.state || !this.newAddressData.zipCode) {
-      this.notificationService.showError('Preencha os campos obrigatórios (CEP, Rua, Cidade, Estado).');
+    if (
+      !this.newAddressData.street ||
+      !this.newAddressData.city ||
+      !this.newAddressData.state ||
+      !this.newAddressData.zipCode
+    ) {
+      this.notificationService.showError(
+        'Preencha os campos obrigatórios (CEP, Rua, Cidade, Estado).',
+      );
       return;
     }
 
@@ -224,7 +274,9 @@ export class Checkout implements OnInit {
 
   goToReview() {
     if (!this.selectedAddressId()) {
-      this.notificationService.showError('Por favor, cadastre ou selecione um endereço de entrega.');
+      this.notificationService.showError(
+        'Por favor, cadastre ou selecione um endereço de entrega.',
+      );
       return;
     }
     if (!this.selectedPaymentMethodId()) {
@@ -233,9 +285,12 @@ export class Checkout implements OnInit {
     }
     this.step.set('review');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    void this.initializePaymentBrick();
   }
 
   goToAddress() {
+    this.paymentBrick?.unmount();
+    this.paymentBrick = undefined;
     this.step.set('address');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -243,10 +298,10 @@ export class Checkout implements OnInit {
   /**
    * Fluxo de finalização do pedido:
    * 1. Cria o pedido no backend com os itens do carrinho e endereço.
-   * 2. Inicia o pagamento gerando a preferência do Mercado Pago via createPayment.
-   * 3. Redireciona o usuário de forma segura para o checkoutUrl do Mercado Pago.
+    * 2. Envia o token gerado pelo Payment Brick ao backend.
+    * 3. Direciona para a tela correspondente ao status retornado pelo Mercado Pago.
    */
-  placeOrder() {
+  async placeOrder(paymentData: TransparentPaymentFormData) {
     const user = this.currentUser;
     if (!user) {
       this.notificationService.showError('Faça login para finalizar a compra.');
@@ -272,6 +327,11 @@ export class Checkout implements OnInit {
       return;
     }
 
+    if (!paymentData?.payment_method_id) {
+      this.notificationService.showError('Selecione uma forma de pagamento.');
+      return;
+    }
+
     this.isPlacing.set(true);
 
     const body: CreateOrderRequest = {
@@ -287,9 +347,7 @@ export class Checkout implements OnInit {
     this.apiService.createOrder(body).subscribe({
       next: (order: Order) => {
         this.createdOrder.set(order);
-        // Limpa o carrinho para evitar duplicidade
-        this.cartService.clearCart();
-        this.startPayment(order.id, this.selectedPaymentMethodId()!);
+        this.startTransparentPayment(order.id, this.selectedPaymentMethodId()!, paymentData);
       },
       error: (err) => {
         const msg = err?.error?.message ?? 'Erro ao criar o pedido. Tente novamente.';
@@ -299,22 +357,34 @@ export class Checkout implements OnInit {
     });
   }
 
-  private startPayment(orderId: number, paymentMethodId: number) {
-    this.step.set('redirecting');
+  private startTransparentPayment(
+    orderId: number,
+    paymentMethodId: number,
+    paymentData: TransparentPaymentFormData,
+  ) {
+    this.step.set('processing');
+    const request: CreateTransparentPaymentRequest = {
+      orderId,
+      paymentMethodId,
+      mercadoPagoPaymentMethodId: paymentData.payment_method_id,
+      token: paymentData.token,
+      installments: paymentData.installments,
+      issuerId: paymentData.issuer_id,
+      payerEmail: paymentData.payer?.email,
+    };
 
-    this.paymentService.createPayment({ orderId, paymentMethodId }).subscribe({
+    this.paymentService.createTransparentPayment(request).subscribe({
       next: (payment: PaymentResponse) => {
-        if (payment.checkoutUrl) {
-          this.checkoutPaymentUrl.set(payment.checkoutUrl);
-          // Redireciona para o checkout do Mercado Pago
-          setTimeout(() => {
-            window.location.href = payment.checkoutUrl!;
-          }, 600);
-        } else {
-          this.notificationService.showError('URL de pagamento não retornada pelo servidor.');
-          this.isPlacing.set(false);
-          this.step.set('review');
-        }
+        this.cartService.clearCart();
+        this.isPlacing.set(false);
+        const route = payment.status === 'COMPLETED'
+          ? '/checkout/success'
+          : payment.status === 'PENDING'
+            ? '/checkout/pending'
+            : '/checkout/failure';
+        void this.router.navigate([route], {
+          queryParams: { external_reference: payment.id, status: payment.status.toLowerCase() },
+        });
       },
       error: (err) => {
         const msg = err?.error?.message ?? 'Erro ao gerar o pagamento com o Mercado Pago.';
@@ -322,6 +392,57 @@ export class Checkout implements OnInit {
         this.isPlacing.set(false);
         this.step.set('review');
       },
+    });
+  }
+
+  private async initializePaymentBrick() {
+    this.paymentBrickError.set(null);
+    if (!environment.mercadoPagoPublicKey) {
+      this.paymentBrickError.set('Configure a public key do Mercado Pago para habilitar o pagamento.');
+      return;
+    }
+
+    try {
+      await this.loadMercadoPagoSdk();
+      this.paymentBrick?.unmount();
+      this.paymentBrick = await new window.MercadoPago!(environment.mercadoPagoPublicKey, {
+        locale: 'pt-BR',
+      })
+        .bricks()
+        .create('payment', 'paymentBrick_container', {
+          initialization: { amount: this.cartTotal },
+          customization: {
+            paymentMethods: {
+              creditCard: 'all',
+              debitCard: 'all',
+              bankTransfer: 'all',
+              ticket: 'all',
+            },
+          },
+          callbacks: {
+            onReady: () => undefined,
+            onSubmit: ({ formData }) => this.placeOrder(formData),
+            onError: () => {
+              this.paymentBrickError.set('Não foi possível carregar o formulário de pagamento.');
+            },
+          },
+        });
+    } catch {
+      this.paymentBrickError.set('Não foi possível carregar o pagamento transparente.');
+    }
+  }
+
+  private loadMercadoPagoSdk(): Promise<void> {
+    if (window.MercadoPago) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://sdk.mercadopago.com/js/v2';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Mercado Pago SDK indisponível'));
+      document.head.appendChild(script);
     });
   }
 }

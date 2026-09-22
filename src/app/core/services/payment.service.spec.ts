@@ -1,9 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { PaymentService } from './payment.service';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
-import { CreatePaymentRequest, PaymentResponse } from '../models/payment.models';
+import {
+  CreatePaymentRequest,
+  CreateTransparentPaymentRequest,
+  PaymentResponse,
+} from '../models/payment.models';
+import { PaymentService } from './payment.service';
 
 describe('PaymentService', () => {
   let service: PaymentService;
@@ -53,6 +57,26 @@ describe('PaymentService', () => {
     req.flush(mockResponse);
   });
 
+  it('createTransparentPayment should POST /api/v1/payments/transparent', () => {
+    const mockRequest: CreateTransparentPaymentRequest = {
+      orderId: 16,
+      paymentMethodId: 1,
+      mercadoPagoPaymentMethodId: 'visa',
+      token: 'card-token',
+      installments: 1,
+      payerEmail: 'cliente@example.com',
+    };
+
+    service.createTransparentPayment(mockRequest).subscribe((res) => {
+      expect(res.status).toBe('PENDING');
+    });
+
+    const req = httpTesting.expectOne(`${baseUrl}/transparent`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockRequest);
+    req.flush({ id: 2, amount: 150, status: 'PENDING', orderId: 16, userId: 5, paymentMethodId: 1 });
+  });
+
   it('getPaymentById should GET /api/v1/payments/:id', () => {
     const mockResponse: PaymentResponse = {
       id: 1,
@@ -94,7 +118,7 @@ describe('PaymentService', () => {
     req.flush(mockList);
   });
 
-  it('getMyPayments should GET /api/v1/payments/my-payments', () => {
+  it('getMyPayments should GET /api/v1/payments/me', () => {
     const mockList: PaymentResponse[] = [
       {
         id: 1,
@@ -111,7 +135,7 @@ describe('PaymentService', () => {
       expect(res.length).toBe(1);
     });
 
-    const req = httpTesting.expectOne(`${baseUrl}/my-payments`);
+    const req = httpTesting.expectOne(`${baseUrl}/me`);
     expect(req.request.method).toBe('GET');
     req.flush(mockList);
   });

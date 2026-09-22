@@ -7,6 +7,14 @@ export interface CreatePaymentRequest {
   paymentMethodId: number;
 }
 
+export interface CreateTransparentPaymentRequest extends CreatePaymentRequest {
+  mercadoPagoPaymentMethodId: string;
+  token?: string;
+  installments?: number;
+  issuerId?: string;
+  payerEmail?: string;
+}
+
 export interface PaymentResponse {
   id: number;
   amount: number;

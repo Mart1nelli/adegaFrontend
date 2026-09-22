@@ -12,9 +12,9 @@ import {
   lucideShoppingBag,
   lucideXCircle,
 } from '@ng-icons/lucide';
-import { PaymentService } from '../../../core/services/payment.service';
-import { NotificationService } from '../../../core/services/notification.service';
 import { PaymentResponse } from '../../../core/models/payment.models';
+import { NotificationService } from '../../../core/services/notification.service';
+import { PaymentService } from '../../../core/services/payment.service';
 
 @Component({
   selector: 'app-checkout-failure',
@@ -42,6 +42,7 @@ export class CheckoutFailure implements OnInit {
   paymentId = signal<string | null>(null);
   status = signal<string | null>(null);
   orderId = signal<number | null>(null);
+  paymentMethodId = signal<number | null>(null);
   statusDetail = signal<string | null>(null);
   isRetrying = signal<boolean>(false);
 
@@ -69,11 +70,8 @@ export class CheckoutFailure implements OnInit {
         if (payment.orderId) {
           this.orderId.set(payment.orderId);
         }
-      },
-      error: () => {
-        const parsed = Number(externalRef);
-        if (!isNaN(parsed)) {
-          this.orderId.set(parsed);
+        if (payment.paymentMethodId) {
+          this.paymentMethodId.set(payment.paymentMethodId);
         }
       },
     });
@@ -87,26 +85,43 @@ export class CheckoutFailure implements OnInit {
     }
 
     this.isRetrying.set(true);
-    this.paymentService.createPayment({ orderId, paymentMethodId: 1 }).subscribe({
+    const paymentMethodId = this.paymentMethodId();
+    if (!paymentMethodId) {
+      this.notificationService.showError(
+        'Não foi possível identificar a forma de pagamento original. Tente pelo checkout.',
+      );
+      this.router.navigate(['/checkout']);
+      return;
+    }
+
+    this.paymentService.createPayment({ orderId, paymentMethodId }).subscribe({
       next: (res: PaymentResponse) => {
         if (res.checkoutUrl) {
           window.location.href = res.checkoutUrl;
         } else {
           this.isRetrying.set(false);
-          this.notificationService.showError('Não foi possível obter a URL de pagamento do Mercado Pago.');
+          this.notificationService.showError(
+            'Não foi possível obter a URL de pagamento do Mercado Pago.',
+          );
           this.router.navigate(['/checkout']);
         }
       },
       error: () => {
         this.isRetrying.set(false);
-        this.notificationService.showError('Erro ao gerar novo link de pagamento. Tente novamente pelo checkout.');
+        this.notificationService.showError(
+          'Erro ao gerar novo link de pagamento. Tente novamente pelo checkout.',
+        );
         this.router.navigate(['/checkout']);
       },
     });
   }
 
   get supportWhatsAppUrl(): string {
-    const ref = this.orderId() ? `Pedido #${this.orderId()}` : (this.paymentId() ? `Transação #${this.paymentId()}` : 'checkout');
+    const ref = this.orderId()
+      ? `Pedido #${this.orderId()}`
+      : this.paymentId()
+        ? `Transação #${this.paymentId()}`
+        : 'checkout';
     const msg = encodeURIComponent(
       `Olá, Adega do Pai! Tive uma falha no pagamento do meu ${ref} e gostaria de ajuda para concluir minha compra.`,
     );

@@ -13,11 +13,11 @@ import {
   lucideShoppingBag,
   lucideTruck,
 } from '@ng-icons/lucide';
-import { Order } from '../../../core/models/product.models';
 import { PaymentResponse } from '../../../core/models/payment.models';
+import { Order } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
-import { PaymentService } from '../../../core/services/payment.service';
 import { CartService } from '../../../core/services/cart.service';
+import { PaymentService } from '../../../core/services/payment.service';
 
 @Component({
   selector: 'app-checkout-pending',
@@ -84,11 +84,6 @@ export class CheckoutPending implements OnInit {
       },
       error: () => {
         this.isSyncing.set(false);
-        const parsedId = Number(externalRef);
-        if (!isNaN(parsedId)) {
-          this.orderId.set(parsedId);
-          this.loadOrderDetails(parsedId);
-        }
       },
     });
   }
@@ -116,7 +111,11 @@ export class CheckoutPending implements OnInit {
   }
 
   get supportWhatsAppUrl(): string {
-    const ref = this.orderId() ? `Pedido #${this.orderId()}` : (this.paymentId() ? `Transação #${this.paymentId()}` : 'checkout');
+    const ref = this.orderId()
+      ? `Pedido #${this.orderId()}`
+      : this.paymentId()
+        ? `Transação #${this.paymentId()}`
+        : 'checkout';
     const msg = encodeURIComponent(
       `Olá, Adega do Pai! Meu pagamento do ${ref} está pendente e gostaria de verificar o status.`,
     );

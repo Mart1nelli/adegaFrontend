@@ -155,7 +155,7 @@ export class ApiService {
   }
 
   getMyPayments(): Observable<PaymentResponse[]> {
-    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/payments/my-payments`);
+    return this.http.get<PaymentResponse[]>(`${this.apiUrl}/payments/me`);
   }
 
   syncPaymentStatus(id: number | string): Observable<PaymentResponse> {

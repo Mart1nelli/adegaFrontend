@@ -4,6 +4,18 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Development server
 
+## Mercado Pago Transparente
+
+O checkout usa o Payment Brick do Mercado Pago. Configure a chave pública em
+`src/environments/environment.ts`:
+
+```ts
+mercadoPagoPublicKey: 'TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+```
+
+O token privado continua configurado somente no backend pela variável
+`MERCADOPAGO_ACCESS_TOKEN`.
+
 To start a local development server, run:
 
 ```bash
