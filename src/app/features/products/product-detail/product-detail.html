@@ -1,13 +1,5 @@
 <div class="min-h-screen bg-bg text-text-main pt-32 pb-16 px-4">
   <div class="max-w-5xl mx-auto">
-    <button
-      (click)="goBack()"
-      class="text-text-muted hover:text-primary transition-colors text-sm mb-12 flex items-center gap-2"
-    >
-      <ng-icon name="heroArrowLeft" size="16"></ng-icon>
-      Voltar à coleção
-    </button>
-
     @if (isLoading()) {
       <div class="flex justify-center py-20">
         <div

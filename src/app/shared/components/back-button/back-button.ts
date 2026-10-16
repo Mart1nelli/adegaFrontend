@@ -39,6 +39,7 @@ export class BackButton {
   }
 
   private shouldShow(url: string): boolean {
-    return !['/', '/home'].includes(url.split('?')[0]);
+    const path = url.split('?')[0];
+    return !['/', '/home'].includes(path) && !path.startsWith('/admin');
   }
 }

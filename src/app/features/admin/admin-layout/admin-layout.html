@@ -1,8 +1,8 @@
-<div class="flex h-screen bg-bg overflow-hidden text-text-main">
+<div class="flex min-h-screen flex-col bg-bg text-text-main md:h-screen md:flex-row md:overflow-hidden">
   <aside
-    class="w-60 min-w-60 bg-surface border-r border-border flex flex-col py-6 px-3 gap-1 overflow-y-auto"
+    class="flex w-full flex-col gap-1 border-b border-border bg-surface px-3 py-4 md:w-60 md:min-w-60 md:overflow-y-auto md:border-b-0 md:border-r md:py-6"
   >
-    <div class="flex items-center gap-2 px-3 pb-6 border-b border-border mb-2">
+    <div class="mb-2 flex items-center gap-2 border-b border-border px-3 pb-4 md:pb-6">
       <div
         class="w-8 h-8 rounded-lg bg-primary-soft border border-primary-border flex items-center justify-center text-base"
       >
@@ -15,7 +15,7 @@
       >
     </div>
 
-    <div class="flex items-center gap-3 px-3 py-3 rounded-xl mb-6">
+    <div class="mb-3 flex items-center gap-3 rounded-xl px-3 py-2 md:mb-6 md:py-3">
       <div
         class="w-8 h-8 rounded-full bg-primary-soft flex items-center justify-center text-primary font-bold text-xs"
       >
@@ -29,26 +29,28 @@
       </div>
     </div>
 
-    <p class="text-text-dim text-[10px] font-bold uppercase tracking-widest px-3 py-1 mb-1">
+    <p class="mb-1 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-text-dim">
       Gestão
     </p>
 
-    @for (item of navItems; track item.route) {
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="bg-surface-soft border-border text-primary"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent text-text-muted text-sm hover:text-text-main hover:border-border transition-all"
-      >
-        <ng-icon [name]="item.icon" size="18"></ng-icon>
-        {{ item.label }}
-      </a>
-    }
+    <nav class="flex flex-wrap gap-1" aria-label="Navegação administrativa">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-surface-soft border-border text-primary"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2.5 text-center text-xs text-text-muted transition-all hover:border-border hover:text-text-main sm:flex-none sm:text-sm md:flex-none md:justify-start md:text-left"
+        >
+          <ng-icon [name]="item.icon" size="18"></ng-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
 
-    <div class="mt-auto pt-6 border-t border-border">
+    <div class="mt-3 border-t border-border pt-4 md:mt-auto md:pt-6">
       <a
         routerLink="/home"
-        class="flex items-center gap-2 px-3 text-text-dim text-xs hover:text-primary transition-colors"
+        class="flex items-center justify-center gap-2 px-3 text-xs text-text-dim transition-colors hover:text-primary md:justify-start"
       >
         <ng-icon name="lucideArrowLeft" size="14"></ng-icon>
         Voltar à loja
@@ -56,7 +58,7 @@
     </div>
   </aside>
 
-  <main class="flex-1 overflow-y-auto p-8">
+  <main class="min-w-0 flex-1 overflow-visible p-4 sm:p-6 md:overflow-y-auto md:p-8">
     <router-outlet></router-outlet>
   </main>
 </div>
