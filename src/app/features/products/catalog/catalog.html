@@ -125,6 +125,43 @@
             </div>
           }
         </div>
+
+        @if (totalPages() > 1) {
+          <nav class="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label="Paginação do catálogo">
+            <button
+              type="button"
+              (click)="goToPage(currentPage() - 1)"
+              [disabled]="currentPage() === 1"
+              class="rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text-muted transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Anterior
+            </button>
+
+            @for (page of pageNumbers(); track page) {
+              <button
+                type="button"
+                (click)="goToPage(page)"
+                [attr.aria-current]="currentPage() === page ? 'page' : null"
+                [class]="
+                  currentPage() === page
+                    ? 'rounded-lg bg-primary px-3 py-2 text-sm font-bold text-black'
+                    : 'rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text-muted transition-all hover:border-primary hover:text-primary'
+                "
+              >
+                {{ page }}
+              </button>
+            }
+
+            <button
+              type="button"
+              (click)="goToPage(currentPage() + 1)"
+              [disabled]="currentPage() === totalPages()"
+              class="rounded-lg border border-border px-3 py-2 text-sm font-semibold text-text-muted transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Próxima
+            </button>
+          </nav>
+        }
       }
     </main>
   </div>

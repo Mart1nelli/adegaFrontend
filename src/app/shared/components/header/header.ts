@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass, heroShoppingBag, heroUser } from '@ng-icons/heroicons/outline';
 import {
@@ -16,7 +17,7 @@ import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, NgIconComponent],
+  imports: [CommonModule, FormsModule, RouterLink, NgIconComponent],
   templateUrl: './header.html',
   providers: [
     provideIcons({
@@ -35,10 +36,12 @@ import { CartService } from '../../../core/services/cart.service';
 export class Header {
   private authService = inject(AuthService);
   private cartService = inject(CartService);
+  private router = inject(Router);
 
   isScrolled = signal(false);
   isDarkMode = signal(true);
   isMobileMenuOpen = signal(false);
+  searchTerm = '';
 
   readonly isAuthenticated = this.authService.isAuthenticated;
   readonly currentUser = this.authService.currentUser;
@@ -70,6 +73,13 @@ export class Header {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  submitSearch(): void {
+    const search = this.searchTerm.trim();
+    this.router.navigate(['/products'], {
+      queryParams: search ? { search } : {},
+    });
   }
 
   @HostListener('window:scroll', [])

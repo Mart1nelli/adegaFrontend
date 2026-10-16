@@ -14,7 +14,7 @@ import {
 import { lucideAward, lucideChevronRight, lucideTruck, lucideWine } from '@ng-icons/lucide';
 import {
   debounceTime,
-  distinctUntilChanged,
+  combineLatest,
   of,
   startWith,
   Subject,
@@ -53,6 +53,7 @@ export class Catalog implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private notificationService = inject(NotificationService);
   private destroy$ = new Subject<void>();
+  private reload$ = new Subject<void>();
   private route = inject(ActivatedRoute);
   private cache = new Map<string, PaginatedProducts>();
 
@@ -82,7 +83,9 @@ export class Catalog implements OnInit, OnDestroy {
         // 2. Verifica se há uma categoria na URL
         const categoryName = this.route.snapshot.queryParamMap.get('category');
 
-        if (categoryName) {
+        const search = this.route.snapshot.queryParamMap.get('search');
+
+        if (categoryName || search) {
           // Procura o ID correspondente ao nome da categoria
           const catFound = cats.find((c) => c.name === categoryName);
 
@@ -91,6 +94,9 @@ export class Catalog implements OnInit, OnDestroy {
             this.filterForm.patchValue({ categoryId: catFound.id }, { emitEvent: false });
           }
         }
+        if (search) {
+          this.filterForm.patchValue({ search }, { emitEvent: false });
+        }
 
         // 3. Só agora iniciamos o stream, que vai pegar o valor do form (já atualizado)
         this.initFilterStream();
@@ -98,16 +104,21 @@ export class Catalog implements OnInit, OnDestroy {
   }
 
   private initFilterStream() {
-    this.filterForm.valueChanges
-      .pipe(
-        startWith(this.filterForm.value),
-        debounceTime(150),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-        tap(() => this.isLoading.set(true)),
-        switchMap((formValues) => {
-          const cacheKey = JSON.stringify(formValues);
+    this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.currentPage.set(1);
+      this.cache.clear();
+    });
 
-          // Se tem no cache, retorna a resposta completa que salvamos
+    combineLatest([
+      this.filterForm.valueChanges.pipe(startWith(this.filterForm.value)),
+      this.reload$.pipe(startWith(undefined)),
+    ])
+      .pipe(
+        debounceTime(150),
+        tap(() => this.isLoading.set(true)),
+        switchMap(([formValues]) => {
+          const cacheKey = JSON.stringify({ ...formValues, page: this.currentPage() });
+
           if (this.cache.has(cacheKey)) {
             return of(this.cache.get(cacheKey)!);
           }
@@ -122,7 +133,6 @@ export class Catalog implements OnInit, OnDestroy {
 
           return this.apiService.getProducts(filters).pipe(
             tap((res: PaginatedProducts) => {
-              // Salva a resposta inteira no cache
               this.cache.set(cacheKey, res);
             }),
           );
@@ -131,10 +141,9 @@ export class Catalog implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (res: PaginatedProducts) => {
-          // Atualiza todos os sinais necessários
           this.products.set(res.data || []);
-          this.totalItems.set(res.total || 0); // Corrigido
-          this.totalPages.set(res.totalPages || 1); // Corrigido
+          this.totalItems.set(res.total || 0);
+          this.totalPages.set(res.totalPages || 1);
           this.isLoading.set(false);
         },
         error: (err) => {
@@ -144,18 +153,31 @@ export class Catalog implements OnInit, OnDestroy {
       });
   }
 
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages() || page === this.currentPage()) {
+      return;
+    }
+    this.currentPage.set(page);
+    this.reload$.next();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages() }, (_, index) => index + 1);
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  // Métodos auxiliares permanecem inalterados
   getPricePercent() {
     const val = this.filterForm.value.priceRange || 0;
     return (val / this.maxLimit) * 100;
   }
 
   clearFilters() {
+    this.currentPage.set(1);
     this.filterForm.patchValue({
       search: '',
       categoryId: null,

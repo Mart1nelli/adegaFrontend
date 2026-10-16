@@ -19,6 +19,8 @@
         <input
           type="text"
           placeholder="Buscar rótulo..."
+          [(ngModel)]="searchTerm"
+          (keydown.enter)="submitSearch()"
           class="w-full bg-surface border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm text-text-main placeholder-text-dim focus:border-primary outline-none transition-all"
         />
       </div>
