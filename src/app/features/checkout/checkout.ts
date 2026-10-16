@@ -398,8 +398,12 @@ export class Checkout implements OnInit {
       installments: paymentData.installments,
       issuerId: paymentData.issuer_id,
       payerEmail: paymentData.payer?.email,
-      payerIdentificationType: paymentData.payer?.identification?.type,
-      payerIdentificationNumber: paymentData.payer?.identification?.number,
+      ...(paymentData.payer?.identification?.type
+        ? { payerIdentificationType: paymentData.payer.identification.type }
+        : {}),
+      ...(paymentData.payer?.identification?.number
+        ? { payerIdentificationNumber: paymentData.payer.identification.number }
+        : {}),
     };
 
     this.paymentService.createTransparentPayment(request).subscribe({

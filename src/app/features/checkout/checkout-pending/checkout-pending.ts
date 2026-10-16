@@ -117,7 +117,7 @@ export class CheckoutPending implements OnInit {
         ? `Transação #${this.paymentId()}`
         : 'checkout';
     const msg = encodeURIComponent(
-      `Olá, Adega do Pai! Meu pagamento do ${ref} está pendente e gostaria de verificar o status.`,
+      `Olá, Lume Reserve! Meu pagamento do ${ref} está pendente e gostaria de verificar o status.`,
     );
     return `https://wa.me/5511999999999?text=${msg}`;
   }

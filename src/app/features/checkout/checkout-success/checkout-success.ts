@@ -135,7 +135,7 @@ export class CheckoutSuccess implements OnInit {
   get supportWhatsAppUrl(): string {
     const orderNum = this.orderId() ? `#${this.orderId()}` : (this.paymentId() ?? 'recente');
     const msg = encodeURIComponent(
-      `Olá, Adega do Pai! Fiz o pedido ${orderNum} e gostaria de informações sobre a entrega.`,
+      `Olá, Lume Reserve! Fiz o pedido ${orderNum} e gostaria de informações sobre a entrega.`,
     );
     return `https://wa.me/5511999999999?text=${msg}`;
   }

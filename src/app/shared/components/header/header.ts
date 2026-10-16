@@ -3,7 +3,14 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass, heroShoppingBag, heroUser } from '@ng-icons/heroicons/outline';
-import { lucideLogOut, lucideMoon, lucideShieldCheck, lucideSun } from '@ng-icons/lucide';
+import {
+  lucideLogOut,
+  lucideMenu,
+  lucideMoon,
+  lucideShieldCheck,
+  lucideSun,
+  lucideX,
+} from '@ng-icons/lucide';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -17,9 +24,11 @@ import { CartService } from '../../../core/services/cart.service';
       heroMagnifyingGlass,
       heroUser,
       lucideLogOut,
+      lucideMenu,
       lucideShieldCheck,
-      lucideSun, // Adicionado
-      lucideMoon, // Adicionado
+      lucideSun,
+      lucideMoon,
+      lucideX,
     }),
   ],
 })
@@ -28,7 +37,8 @@ export class Header {
   private cartService = inject(CartService);
 
   isScrolled = signal(false);
-  isDarkMode = signal(true); // Sinal para controlar o estado do tema
+  isDarkMode = signal(true);
+  isMobileMenuOpen = signal(false);
 
   readonly isAuthenticated = this.authService.isAuthenticated;
   readonly currentUser = this.authService.currentUser;
@@ -51,6 +61,15 @@ export class Header {
 
   logout(): void {
     this.authService.logout();
+    this.isMobileMenuOpen.set(false);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update((isOpen) => !isOpen);
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
   }
 
   @HostListener('window:scroll', [])

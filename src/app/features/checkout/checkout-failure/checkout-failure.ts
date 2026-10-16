@@ -123,7 +123,7 @@ export class CheckoutFailure implements OnInit {
         ? `Transação #${this.paymentId()}`
         : 'checkout';
     const msg = encodeURIComponent(
-      `Olá, Adega do Pai! Tive uma falha no pagamento do meu ${ref} e gostaria de ajuda para concluir minha compra.`,
+      `Olá, Lume Reserve! Tive uma falha no pagamento do meu ${ref} e gostaria de ajuda para concluir minha compra.`,
     );
     return `https://wa.me/5511999999999?text=${msg}`;
   }

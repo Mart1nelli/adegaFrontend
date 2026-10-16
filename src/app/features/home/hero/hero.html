@@ -1,5 +1,5 @@
 <section
-  class="relative flex flex-col justify-center min-h-[calc(100vh-80px)] overflow-hidden bg-bg text-text-main"
+  class="relative flex min-h-[min(780px,calc(100svh-80px))] flex-col justify-center overflow-hidden bg-bg text-text-main"
   #heroSection
 >
   <div class="absolute inset-0 z-0">
@@ -7,83 +7,85 @@
     <div
       class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px]"
     ></div>
+    <div
+      class="absolute inset-y-0 right-0 hidden w-1/2 lg:block"
+      aria-hidden="true"
+    >
+      <img
+        src="/assets/images/hero-drinks.jpg"
+        alt=""
+        class="h-full w-full object-cover object-center opacity-80"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-bg via-bg/60 to-bg/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-bg/20"></div>
+    </div>
   </div>
 
   <div
-    class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center lg:text-left text-center py-12"
+    class="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 py-14 text-center sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:py-20 lg:text-left"
   >
-    <div class="lg:col-span-7 flex flex-col justify-center pt-16">
+    <div class="flex flex-col justify-center lg:col-span-7">
       <div
-        class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-6 text-[10px] font-bold uppercase tracking-widest text-primary self-center lg:self-start"
+        class="mb-6 inline-flex self-center items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-primary lg:self-start"
       >
         <ng-icon name="lucideBeer" size="16"></ng-icon>
         <span>Bebidas selecionadas a dedo</span>
       </div>
 
-      <h1 class="mb-6">
-        <span class="block text-4xl lg:text-6xl font-black mb-4 tracking-tight">Adega do Pai</span>
-        <span class="text-lg lg:text-xl text-text-muted font-light max-w-lg mx-auto lg:mx-0">
+      <h1 class="mb-6 max-w-3xl">
+        <span class="mb-4 block text-4xl font-black leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-7xl"
+          >Lume Reserve</span
+        >
+        <span class="mx-auto block max-w-xl text-base font-light leading-relaxed text-text-muted sm:text-lg lg:mx-0 lg:text-xl">
           Uma curadoria exclusiva de bebidas selecionadas para o seu momento. Elegância e sabor em
           cada rótulo.
         </span>
       </h1>
 
-      <div class="flex flex-wrap gap-4 mb-10 justify-center lg:justify-start">
-        <a routerLink="/products" class="btn-primary px-8 py-3 rounded-lg font-bold"
+      <div class="mb-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
+        <a routerLink="/products" class="btn-primary inline-flex min-h-12 items-center justify-center px-8 py-3 rounded-lg font-bold"
           >Explorar Catálogo</a
         >
         <a
           routerLink="/auth/login"
-          class="px-8 py-3 rounded-lg border border-border hover:border-primary transition-all text-text-muted hover:text-text-main"
+          class="inline-flex min-h-12 items-center justify-center rounded-lg border border-border px-8 py-3 text-text-muted transition-all hover:border-primary hover:text-text-main"
           >Fazer Login</a
         >
       </div>
 
-      <div class="flex gap-8 justify-center lg:justify-start border-t border-border pt-8">
-        <div>
-          <div class="text-2xl font-bold text-primary">200+</div>
-          <div class="text-[10px] uppercase tracking-widest text-text-muted">
+      <div class="grid max-w-md grid-cols-2 gap-4 border-t border-border pt-6 text-left sm:gap-8 lg:pt-8">
+        <div class="border-r border-border">
+          <div class="text-2xl font-bold text-primary sm:text-3xl">200+</div>
+          <div class="mt-1 text-[10px] uppercase tracking-[0.14em] text-text-muted">
             Rótulos Selecionados
           </div>
         </div>
         <div>
-          <div class="text-2xl font-bold text-primary">15+</div>
-          <div class="text-[10px] uppercase tracking-widest text-text-muted">Categorias</div>
+          <div class="text-2xl font-bold text-primary sm:text-3xl">15+</div>
+          <div class="mt-1 text-[10px] uppercase tracking-[0.14em] text-text-muted">Categorias</div>
         </div>
       </div>
     </div>
 
-    <div class="lg:col-span-5 flex items-center justify-center relative">
-      <div
-        class="w-80 h-80 rounded-full border border-primary/10 flex items-center justify-center animate-spin-slow"
-      >
-        <svg viewBox="0 0 200 200" class="w-64 h-64 opacity-60">
-          <circle
-            cx="100"
-            cy="100"
-            r="80"
-            fill="none"
-            stroke="currentColor"
-            class="text-primary"
-            stroke-width="1"
-          />
-          <circle
-            cx="100"
-            cy="100"
-            r="40"
-            fill="none"
-            stroke="currentColor"
-            class="text-primary"
-            stroke-width="1"
-            stroke-dasharray="10 5"
-          />
-        </svg>
+    <div class="relative flex min-h-80 items-center justify-center lg:col-span-5">
+      <div class="relative h-[22rem] w-full max-w-sm overflow-hidden rounded-[2rem] border border-primary/20 shadow-2xl shadow-black/40 sm:h-[28rem]">
+        <img
+          src="/assets/images/hero-drinks.jpg"
+          alt="Garrafas de vinho selecionadas"
+          class="h-full w-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+        <div class="absolute inset-x-5 bottom-5 text-left sm:inset-x-7 sm:bottom-7">
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Seleção especial</div>
+          <div class="mt-2 text-xl font-semibold text-white sm:text-2xl">Sabores para celebrar</div>
+          <div class="mt-2 text-sm text-white/70">Rótulos escolhidos para transformar o seu momento.</div>
+        </div>
       </div>
     </div>
   </div>
 
   <div
-    class="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer text-text-muted hover:text-primary transition-all duration-300"
+    class="absolute bottom-5 left-1/2 -translate-x-1/2 cursor-pointer text-text-muted transition-all duration-300 hover:text-primary sm:bottom-8"
     [class.opacity-0]="isScrollIndicatorHidden"
     [class.pointer-events-none]="isScrollIndicatorHidden"
     (click)="scrollToNextSection()"

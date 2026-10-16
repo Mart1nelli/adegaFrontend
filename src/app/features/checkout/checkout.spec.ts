@@ -159,4 +159,46 @@ describe('Checkout', () => {
     expect(component.isPlacing()).toBeFalse();
     expect(component.step()).toBe('review');
   });
+
+  it('should include payer identification only when provided by the payment form', () => {
+    component.ngOnInit();
+    component.placeOrder({
+      payment_method_id: 'visa',
+      token: 'card-token',
+      payer: {
+        email: 'joao@example.com',
+        identification: { type: 'CPF', number: '12345678900' },
+      },
+    });
+
+    expect(paymentServiceSpy.createTransparentPayment).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        payerIdentificationType: 'CPF',
+        payerIdentificationNumber: '12345678900',
+      }),
+    );
+  });
+
+  it('should not include empty optional payment fields in the request', () => {
+    component.ngOnInit();
+    component.placeOrder({
+      payment_method_id: 'pix',
+      payer: { email: 'joao@example.com' },
+    });
+
+    const request = paymentServiceSpy.createTransparentPayment.calls.mostRecent().args[0];
+    expect(Object.prototype.hasOwnProperty.call(request, 'payerIdentificationType')).toBeFalse();
+    expect(Object.prototype.hasOwnProperty.call(request, 'payerIdentificationNumber')).toBeFalse();
+  });
+
+  it('should not create a second order when payment data is missing', () => {
+    component.ngOnInit();
+    component.placeOrder({ payment_method_id: '' });
+
+    expect(apiServiceSpy.createOrder).not.toHaveBeenCalled();
+    expect(paymentServiceSpy.createTransparentPayment).not.toHaveBeenCalled();
+    expect(notificationServiceSpy.showError).toHaveBeenCalledWith(
+      'Selecione uma forma de pagamento.',
+    );
+  });
 });

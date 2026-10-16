@@ -44,7 +44,12 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text-main);
   font-family: var(--font-sans);
+  overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 /* Utilitários de Componentes */
