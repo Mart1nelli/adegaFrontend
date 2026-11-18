@@ -6,6 +6,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroEnvelope, heroLockClosed } from '@ng-icons/heroicons/outline';
 import { LoginRequest } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class Login {
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   loginData = signal<LoginRequest>({
@@ -37,6 +39,7 @@ export class Login {
     this.authService.login(this.loginData()).subscribe({
       next: () => {
         this.isLoading.set(false);
+        this.notificationService.showSuccess('Login realizado com sucesso!', 'Bem-vindo');
       },
       error: (error) => {
         this.isLoading.set(false);

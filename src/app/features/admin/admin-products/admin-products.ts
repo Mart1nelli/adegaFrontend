@@ -137,8 +137,15 @@ export class AdminProducts implements OnInit {
     });
   }
 
-  delete(product: Product) {
-    if (!confirm(`Tem certeza que deseja excluir "${product.name}"?`)) return;
+  async delete(product: Product) {
+    const confirmed = await this.notificationService.confirm({
+      title: 'Excluir produto',
+      message: `Deseja excluir "${product.name}"? Esta ação não poderá ser desfeita.`,
+      confirmText: 'Excluir',
+      danger: true,
+    });
+    if (!confirmed) return;
+
     this.apiService.deleteProduct(product.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Produto excluído com sucesso.');

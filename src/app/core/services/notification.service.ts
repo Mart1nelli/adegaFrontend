@@ -10,14 +10,26 @@ export interface Notification {
   timestamp: Date;
 }
 
+export interface Confirmation {
+  id: string;
+  title: string;
+  message: string;
+  confirmText: string;
+  cancelText: string;
+  danger: boolean;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
-
   private notifications = new BehaviorSubject<Notification[]>([]);
   public notifications$ = this.notifications.asObservable();
 
+  private confirmation = new BehaviorSubject<Confirmation | null>(null);
+  public confirmation$ = this.confirmation.asObservable();
+
+  private confirmationResolver: ((confirmed: boolean) => void) | null = null;
   private counter = 0;
 
   showSuccess(message: string, title = 'Sucesso', duration = 5000) {
@@ -36,14 +48,47 @@ export class NotificationService {
     this.showNotification('info', title, message, duration);
   }
 
-  private showNotification(type: Notification['type'], title: string, message: string, duration: number) {
+  confirm(options: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    danger?: boolean;
+  }): Promise<boolean> {
+    this.resolveConfirmation(false);
+
+    return new Promise<boolean>((resolve) => {
+      this.confirmationResolver = resolve;
+      this.confirmation.next({
+        id: `confirmation-${++this.counter}`,
+        title: options.title,
+        message: options.message,
+        confirmText: options.confirmText ?? 'Confirmar',
+        cancelText: options.cancelText ?? 'Cancelar',
+        danger: options.danger ?? false,
+      });
+    });
+  }
+
+  resolveConfirmation(confirmed: boolean) {
+    this.confirmation.next(null);
+    this.confirmationResolver?.(confirmed);
+    this.confirmationResolver = null;
+  }
+
+  private showNotification(
+    type: Notification['type'],
+    title: string,
+    message: string,
+    duration: number,
+  ) {
     const notification: Notification = {
       id: `notification-${++this.counter}`,
       type,
       title,
       message,
       duration,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     const currentNotifications = this.notifications.value;

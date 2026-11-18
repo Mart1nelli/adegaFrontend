@@ -43,12 +43,20 @@ export class AdminUsers implements OnInit {
     });
   }
 
-  deleteUser(user: User) {
+  async deleteUser(user: User) {
     if (user.id === this.currentUserId) {
       this.notificationService.showError('Você não pode excluir sua própria conta.');
       return;
     }
-    if (!confirm(`Excluir o usuário "${user.name}"?`)) return;
+
+    const confirmed = await this.notificationService.confirm({
+      title: 'Excluir usuário',
+      message: `Deseja excluir o usuário "${user.name}"? Esta ação não poderá ser desfeita.`,
+      confirmText: 'Excluir',
+      danger: true,
+    });
+    if (!confirmed) return;
+
     this.apiService.deleteUser(user.id).subscribe({
       next: () => {
         this.notificationService.showSuccess('Usuário excluído.');

@@ -129,8 +129,15 @@ export class Addresses implements OnInit {
     }
   }
 
-  deleteAddress(id: number) {
-    if (!confirm('Tem certeza que deseja excluir este endereço?')) return;
+  async deleteAddress(id: number) {
+    const confirmed = await this.notificationService.confirm({
+      title: 'Excluir endereço',
+      message: 'Este endereço será removido da sua conta.',
+      confirmText: 'Excluir',
+      danger: true,
+    });
+    if (!confirmed) return;
+
     this.apiService.deleteAddress(id).subscribe({
       next: () => {
         this.notificationService.showSuccess('Endereço excluído!');

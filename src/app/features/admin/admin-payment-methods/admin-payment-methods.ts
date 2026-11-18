@@ -2,7 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTrash2, lucideCheck, lucideX, lucideCreditCard } from '@ng-icons/lucide';
+import {
+  lucideCheck,
+  lucideCreditCard,
+  lucidePencil,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
 import { PaymentMethod } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -18,9 +24,7 @@ interface PaymentMethodForm {
   selector: 'app-admin-payment-methods',
   standalone: true,
   imports: [CommonModule, FormsModule, NgIconComponent],
-  providers: [
-    provideIcons({ lucidePencil, lucideTrash2, lucideCheck, lucideX, lucideCreditCard }),
-  ],
+  providers: [provideIcons({ lucidePencil, lucideTrash2, lucideCheck, lucideX, lucideCreditCard })],
   templateUrl: './admin-payment-methods.html',
 })
 export class AdminPaymentMethods implements OnInit {
@@ -87,9 +91,10 @@ export class AdminPaymentMethods implements OnInit {
       isActive: this.form.isActive,
     };
 
-    const req = this.isEditing() && this.form.id
-      ? this.apiService.updatePaymentMethod(this.form.id, payload)
-      : this.apiService.createPaymentMethod(payload);
+    const req =
+      this.isEditing() && this.form.id
+        ? this.apiService.updatePaymentMethod(this.form.id, payload)
+        : this.apiService.createPaymentMethod(payload);
 
     req.subscribe({
       next: () => {
@@ -120,8 +125,15 @@ export class AdminPaymentMethods implements OnInit {
     });
   }
 
-  delete(method: PaymentMethod) {
-    if (!confirm(`Excluir "${method.name}"? Esta ação não poderá ser desfeita.`)) return;
+  async delete(method: PaymentMethod) {
+    const confirmed = await this.notificationService.confirm({
+      title: 'Excluir forma de pagamento',
+      message: `Deseja excluir "${method.name}"? Esta ação não poderá ser desfeita.`,
+      confirmText: 'Excluir',
+      danger: true,
+    });
+    if (!confirmed) return;
+
     this.apiService.deletePaymentMethod(method.id).subscribe({
       next: () => {
         this.notificationService.showSuccess('Forma de pagamento excluída!');

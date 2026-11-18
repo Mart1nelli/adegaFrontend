@@ -14,6 +14,7 @@ import {
 } from '@ng-icons/lucide';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-header',
@@ -36,6 +37,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class Header {
   private authService = inject(AuthService);
   private cartService = inject(CartService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   isScrolled = signal(false);
@@ -62,7 +64,16 @@ export class Header {
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
+    const confirmed = await this.notificationService.confirm({
+      title: 'Sair da conta',
+      message: 'Deseja encerrar sua sessão atual?',
+      confirmText: 'Sair',
+      danger: true,
+    });
+
+    if (!confirmed) return;
+
     this.authService.logout();
     this.isMobileMenuOpen.set(false);
   }

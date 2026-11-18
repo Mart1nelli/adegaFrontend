@@ -11,6 +11,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { RegisterRequest } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-register',
@@ -20,6 +21,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class Register {
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   // Estado do formulário
@@ -46,8 +48,8 @@ export class Register {
 
     this.authService.register(this.registerData()).subscribe({
       next: () => {
-        // Registro sucesso - AuthService já redirecionou
         this.isLoading.set(false);
+        this.notificationService.showSuccess('Conta criada com sucesso!', 'Cadastro realizado');
       },
       error: (error) => {
         this.isLoading.set(false);

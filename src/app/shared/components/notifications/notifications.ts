@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  inject,
-  QueryList,
-  ViewChildren,
-  effect,
-} from '@angular/core';
+import { Component, effect, ElementRef, inject, QueryList, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -38,6 +31,7 @@ export class Notifications {
   @ViewChildren('notificationElement') notificationElements!: QueryList<ElementRef>;
 
   notifications = toSignal(this.notificationService.notifications$, { initialValue: [] });
+  confirmation = toSignal(this.notificationService.confirmation$, { initialValue: null });
 
   constructor() {
     effect(() => {
@@ -70,14 +64,18 @@ export class Notifications {
     }
   }
 
+  resolveConfirmation(confirmed: boolean) {
+    this.notificationService.resolveConfirmation(confirmed);
+  }
+
   private findNotificationElement(notificationId: string): HTMLElement | null {
     if (!this.notificationElements) return null;
-    
+
     const elements = this.notificationElements.toArray();
     for (const elementRef of elements) {
       const element = elementRef.nativeElement;
       const notificationIndex = Array.from(element.parentElement?.children || []).indexOf(element);
-      
+
       const currentNotifications = this.notifications();
       if (currentNotifications[notificationIndex]?.id === notificationId) {
         return element;

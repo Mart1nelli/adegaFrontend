@@ -72,6 +72,7 @@ export class FeaturedProducts implements OnInit {
       error: (error) => {
         console.error('Erro ao carregar produtos em destaque:', error);
         this.isLoading.set(false);
+        this.notificationService.showError('Não foi possível carregar os produtos em destaque.');
       },
     });
   }

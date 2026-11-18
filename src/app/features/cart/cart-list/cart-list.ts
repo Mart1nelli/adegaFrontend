@@ -45,15 +45,34 @@ export class CartList {
   }
 
   // Método para remover item
-  removeItem(productId: number) {
+  async removeItem(productId: number) {
+    const item = this.cartItems().find((cartItem) => cartItem.product.id === productId);
+    const confirmed = await this.notificationService.confirm({
+      title: 'Remover produto',
+      message: `Deseja remover "${item?.product.name ?? 'este produto'}" do carrinho?`,
+      confirmText: 'Remover',
+      danger: true,
+    });
+
+    if (!confirmed) return;
+
     this.cartService.removeFromCart(productId);
-    this.notificationService.showSuccess('Produto removido do carrinho!');
+    this.notificationService.showSuccess('Produto removido do carrinho!', 'Carrinho atualizado');
   }
 
   // Método para limpar carrinho
-  clearCart() {
+  async clearCart() {
+    const confirmed = await this.notificationService.confirm({
+      title: 'Limpar carrinho',
+      message: 'Todos os produtos serão removidos do carrinho.',
+      confirmText: 'Limpar carrinho',
+      danger: true,
+    });
+
+    if (!confirmed) return;
+
     this.cartService.clearCart();
-    this.notificationService.showSuccess('Carrinho limpo!');
+    this.notificationService.showSuccess('Carrinho limpo!', 'Carrinho atualizado');
   }
 
   // Método para calcular subtotal de um item

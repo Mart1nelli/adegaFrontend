@@ -13,8 +13,8 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { lucideAward, lucideChevronRight, lucideTruck, lucideWine } from '@ng-icons/lucide';
 import {
-  debounceTime,
   combineLatest,
+  debounceTime,
   of,
   startWith,
   Subject,
@@ -22,7 +22,12 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { Category, PaginatedProducts, Product, ProductFilters } from '../../../core/models/product.models';
+import {
+  Category,
+  PaginatedProducts,
+  Product,
+  ProductFilters,
+} from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -183,6 +188,7 @@ export class Catalog implements OnInit, OnDestroy {
       categoryId: null,
       priceRange: this.maxLimit,
     });
+    this.notificationService.showInfo('Os filtros foram removidos.', 'Filtros limpos');
   }
 
   onAddToCart(product: Product) {
