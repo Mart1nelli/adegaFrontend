@@ -9,7 +9,10 @@ import {
   heroXCircle,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
-import { NotificationService } from '../../../core/services/notification.service';
+import {
+  Notification,
+  NotificationService,
+} from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -32,13 +35,16 @@ export class Notifications {
 
   notifications = toSignal(this.notificationService.notifications$, { initialValue: [] });
   confirmation = toSignal(this.notificationService.confirmation$, { initialValue: null });
+  private removalTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private removingNotifications = new Set<string>();
 
   constructor() {
     effect(() => {
       // Re-executa sempre que a lista de notificações mudar
-      this.notifications(); // Registra a dependência do Signal
+      const currentNotifications = this.notifications();
       setTimeout(() => {
         this.animateNotifications();
+        currentNotifications.forEach((notification) => this.scheduleAutomaticRemoval(notification));
       }, 0);
     });
   }
@@ -53,15 +59,37 @@ export class Notifications {
   }
 
   removeNotification(id: string) {
+    if (this.removingNotifications.has(id)) return;
+    this.removingNotifications.add(id);
+
+    const timer = this.removalTimers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      this.removalTimers.delete(id);
+    }
+
     const element = this.findNotificationElement(id);
     if (element) {
       element.classList.add('notification--exiting');
       setTimeout(() => {
         this.notificationService.removeNotification(id);
+        this.removingNotifications.delete(id);
       }, 300);
     } else {
       this.notificationService.removeNotification(id);
+      this.removingNotifications.delete(id);
     }
+  }
+
+  private scheduleAutomaticRemoval(notification: Notification) {
+    if (!notification.duration || notification.duration <= 0) return;
+    if (this.removalTimers.has(notification.id)) return;
+
+    const timer = setTimeout(() => {
+      this.removalTimers.delete(notification.id);
+      this.removeNotification(notification.id);
+    }, notification.duration);
+    this.removalTimers.set(notification.id, timer);
   }
 
   resolveConfirmation(confirmed: boolean) {
