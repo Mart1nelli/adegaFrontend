@@ -193,6 +193,5 @@ export class Catalog implements OnInit, OnDestroy {
 
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
-    this.notificationService.showSuccess(`"${product.name}" adicionado!`, 'Sucesso');
   }
 }

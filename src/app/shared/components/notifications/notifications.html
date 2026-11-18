@@ -9,7 +9,12 @@
         <ng-icon
           [name]="getNotificationIcon(notification.type)"
           size="20"
-          class="text-primary"
+          [ngClass]="{
+            'text-green-400': notification.type === 'success',
+            'text-red-400': notification.type === 'error',
+            'text-yellow-400': notification.type === 'warning',
+            'text-blue-400': notification.type === 'info'
+          }"
         ></ng-icon>
       </div>
 

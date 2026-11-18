@@ -79,10 +79,6 @@ export class FeaturedProducts implements OnInit {
 
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
-    this.notificationService.showSuccess(
-      `"${product.name}" foi adicionado ao carrinho!`,
-      'Produto adicionado',
-    );
   }
 
   onCategoryClick(categoryName: string) {

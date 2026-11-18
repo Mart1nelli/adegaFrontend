@@ -6,7 +6,6 @@ import { heroMinus, heroPlus } from '@ng-icons/heroicons/outline';
 import { Product } from '../../../core/models/product.models';
 import { ApiService } from '../../../core/services/api.service';
 import { CartService } from '../../../core/services/cart.service';
-import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -19,7 +18,6 @@ export class ProductDetail implements OnInit {
   private router = inject(Router);
   private apiService = inject(ApiService);
   private cartService = inject(CartService);
-  private notificationService = inject(NotificationService);
 
   product = signal<Product | null>(null);
   isLoading = signal(true);
@@ -58,10 +56,6 @@ export class ProductDetail implements OnInit {
 
     if (prod) {
       this.cartService.addToCart(prod, this.quantity());
-      this.notificationService.showSuccess(
-        `"${prod.name}" foi adiciona ao carrinho!`,
-        'Produto adicionado',
-      );
     }
   }
 

@@ -4,6 +4,7 @@ import { toArray } from 'rxjs/operators';
 import { Cart, CartItem, LocalCartItem, Product } from '../models/product.models';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
+import { NotificationService } from './notification.service';
 
 export interface CartItemView {
   product: Product;
@@ -17,6 +18,7 @@ export interface CartItemView {
 export class CartService {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   private _backendCart = signal<Cart | null>(null);
   private _localItems = signal<LocalCartItem[]>([]);
@@ -69,6 +71,7 @@ export class CartService {
       this._addToBackend(product, quantity);
     } else {
       this._addToLocal(product, quantity);
+      this._showAddedNotification(product, quantity);
     }
   }
 
@@ -205,11 +208,19 @@ export class CartService {
       this.apiService
         .updateCartItem(existingItem.cartItemId!, existingItem.quantity + quantity)
         .subscribe({
-          next: (cart) => this._backendCart.set(cart),
+          next: (cart) => {
+            this._backendCart.set(cart);
+            this._showAddedNotification(product, quantity);
+          },
+          error: () => this.notificationService.showError('Não foi possível adicionar o item ao carrinho.'),
         });
     } else {
       this.apiService.addCartItem({ productId: product.id!, quantity }).subscribe({
-        next: (cart) => this._backendCart.set(cart),
+        next: (cart) => {
+          this._backendCart.set(cart);
+          this._showAddedNotification(product, quantity);
+        },
+        error: () => this.notificationService.showError('Não foi possível adicionar o item ao carrinho.'),
       });
     }
   }
@@ -225,6 +236,17 @@ export class CartService {
       this._localItems.set([...items, { product, quantity }]);
     }
     this._saveToStorage();
+  }
+
+  private _showAddedNotification(product: Product, quantity: number): void {
+    const message =
+      quantity === 1
+        ? `"${product.name}" foi adicionado ao carrinho.`
+        : `${quantity} unidades de "${product.name}" foram adicionadas ao carrinho.`;
+    this.notificationService.showSuccess(
+      message,
+      'Adicionado ao carrinho',
+    );
   }
 
   private _saveToStorage(): void {
